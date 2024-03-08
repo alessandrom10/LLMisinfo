@@ -8,7 +8,8 @@ Repository created for the Large Language Models for fact-checking online misinf
 - E. C. Choi and E. Ferrara, “Automated Claim Matching with Large Language Models: Empowering Fact-Checkers in the Fight Against Misinformation,” arXiv.org, Oct. 13, 2023. https://arxiv.org/abs/2310.09223
 
 ### Related papers - referenced in “The perils and promises of fact-checking with large language models”
-
+- S. Yao et al., “REACT: Synergizing reasoning and acting in language models,” arXiv.org, Oct. 06, 2022. https://arxiv.org/abs/2210.03629
+  
 ### Related papers - referenced in FACT-GPT papers
 - B. He, M. Ahamad, and S. Kumar, “Reinforcement Learning-based Counter-Misinformation Response Generation: A case study of COVID-19 vaccine misinformation,” arXiv.org, Mar. 11, 2023. https://arxiv.org/abs/2303.06433
 - H. Dai et al., “AUGGPT: Leveraging ChatGPT for text Data augmentation,” arXiv.org, Feb. 25, 2023. https://arxiv.org/abs/2302.13007
