@@ -1,7 +1,7 @@
 # LLMisinfo-MDP
 Repository created for the Large Language Models for fact-checking online misinformation (LLMisinfo) Multidisciplinary project
 
-## Related papers
+## References
 ### Initial papers
 - D. Quelle and A. Bovet, “The perils and promises of fact-checking with large language models” Frontiers in Artificial Intelligence, vol. 7, Feb. 2024, doi: 10.3389/frai.2024.1341697.
 - E. C. Choi and E. Ferrara, “FACT-GPT: Fact-Checking Augmentation via Claim Matching with LLMs,” arXiv.org, Feb. 08, 2024. https://arxiv.org/abs/2402.05904
