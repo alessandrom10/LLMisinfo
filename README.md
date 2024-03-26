@@ -1,7 +1,7 @@
 # LLMisinfo-MDP
 Repository created for the Large Language Models for fact-checking online misinformation (LLMisinfo) Multidisciplinary project
 
-## Related papers
+## References
 ### Initial papers
 - D. Quelle and A. Bovet, “The perils and promises of fact-checking with large language models” Frontiers in Artificial Intelligence, vol. 7, Feb. 2024, doi: 10.3389/frai.2024.1341697.
 - E. C. Choi and E. Ferrara, “FACT-GPT: Fact-Checking Augmentation via Claim Matching with LLMs,” arXiv.org, Feb. 08, 2024. https://arxiv.org/abs/2402.05904
@@ -19,6 +19,7 @@ Repository created for the Large Language Models for fact-checking online misinf
 ### Related Papers - foud on Google Scholar
 - X. Zhang and W. Gao, “Towards LLM-based Fact Verification on News Claims with a Hierarchical Step-by-Step Prompting Method,” arXiv.org, Sep. 30, 2023. https://arxiv.org/abs/2310.00305
 - Z. Li, H. Zhang, and J. Zhang, “A Revisit of Fake News Dataset with Augmented Fact-checking by ChatGPT,” arXiv.org, Dec. 19, 2023. https://arxiv.org/abs/2312.
+- N. Lee, Y. Bang, A. Madotto, and P. Fung, “Misinformation Has High Perplexity,” arXiv.org, Jun. 08, 2020. https://arxiv.org/abs/2006.04666
 
 ### Papers to Datasets
 - RAWFC: Zhiwei Yang, Jing Ma, Hechang Chen, Hongzhan Lin, Ziyang Luo, and Yi Chang. 2022. A coarse-to-fine cascaded evidence-distillation neural network for ex-plainable fake news detection. In COLING, pages 2608–2621. https://aclanthology.org/2022.coling-1.230.pdf
