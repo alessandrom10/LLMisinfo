@@ -14,8 +14,8 @@ model = AutoModelForCausalLM.from_pretrained(
     "microsoft/Phi-3-mini-4k-instruct",
     torch_dtype="auto", 
     trust_remote_code=True, 
-)
-tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct")
+).to("cuda")
+tokenizer = AutoTokenizer.from_pretrained("microsoft/Phi-3-mini-4k-instruct", device = "cuda")
 
 system_prompt = "You are an assistant that helps fact-checking claims. Given a claim and the label telling its veracity, you need to normalize the label to standart format, between this choices: True, Mostly False, False, Mixture. Answer only with the label."
 
@@ -45,5 +45,5 @@ generation_args = {
 }
 
 print(claim_review)
-#output = pipe(messages, **generation_args)
-#print(output[0]['generated_text'])
+output = pipe(messages, **generation_args)
+print(output[0]['generated_text'])
