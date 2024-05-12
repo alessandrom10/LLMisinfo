@@ -7,8 +7,8 @@ Original file is located at
     https://colab.research.google.com/drive/1vmtzmks8rqcRsCBdkkSODyt6zsXSmZww
 """
 
-!pip install transformers
-!pip install wikipedia
+# !pip install transformers
+# !pip install wikipedia
 
 import requests
 from transformers import pipeline
@@ -18,7 +18,7 @@ import wikipedia
 fact_checking_pipeline = pipeline("zero-shot-classification")
 
 # Define the claim to fact-check
-claim = "Climate change is a myth."
+claim = "photosynthesis in plants"
 
 # Define potential labels for fact-checking
 candidate_labels = ["True", "Half True", "Half False", "False"]
@@ -32,7 +32,13 @@ if search_results:
     page_summary = wikipedia.page(main_topic).content
 
     # Extract sentences mentioning "climate change" from the page summary
-    relevant_sentences = [sentence.strip() for sentence in page_summary.split(".") if "climate change" in sentence.lower()]
+    relevant_sentences = [sentence.strip() for sentence in page_summary.split(".") if "age" in sentence.lower()]
+
+    print(page_summary)
+
+    # write page summary to a file
+    with open("page_summary.txt", "w", encoding="utf-8")  as file:
+        file.write(page_summary)
 
     # Print out the relevant sentences
     print("Sentences mentioning 'climate change' from Wikipedia article:\n")
