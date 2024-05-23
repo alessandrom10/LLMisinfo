@@ -12,7 +12,7 @@ you just have to say \"i would search on the internet for that thing\" and we'll
 search you can just stop and wait for our answer" 
 
 # Load react prompt from txt file
-with open("ReAct_prompts.txt", "r") as file:
+with open("Prompts/ReAct_prompts.txt", "r") as file:
     react_shots = file.read()
 
 # question to be answered

@@ -37,7 +37,7 @@ if search_results:
     print(page_summary)
 
     # write page summary to a file
-    with open("page_summary.txt", "w", encoding="utf-8")  as file:
+    with open("../page_summary.txt", "w", encoding="utf-8")  as file:
         file.write(page_summary)
 
     # Print out the relevant sentences

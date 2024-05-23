@@ -27,5 +27,5 @@ outputs = model.generate(inputs,
 
 outputs = tokenizer.decode(outputs.tolist()[0][prompt_len+2:-1])
 
-with open("page_summary.txt", "w", encoding="utf-8")  as file:
+with open("../page_summary.txt", "w", encoding="utf-8")  as file:
     file.write(outputs)

@@ -3,11 +3,12 @@ import torch
 from wiki_api_utils import search_wikipedia_short, search_wikipedia
 
 def summarization_query(search_q, text, model, tokenizer):
-    input = "<|user|> Summarize this text, puttinh emphasis on " + search_q + ", do not summarize too much otherwise a lot of info will be lost. Text : " + text + "<|end|> \n<|assistant|> Summary: "
+    input = "<|user|> Summarize this text, putting emphasis on " + search_q + ", do not summarize too much otherwise a lot of info will be lost. Text : " + text + "<|end|> \n<|assistant|> Summary: "
     inputs = tokenizer.encode(input, add_special_tokens=False, return_tensors="pt").to("cuda")
     prompt_len = len(inputs[0])
     model.eval()
-    outputs = model.generate(inputs,
+    outputs = model.generate(
+        inputs,
         max_new_tokens=200,
         do_sample=True,
         top_k=10,
@@ -22,7 +23,7 @@ tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True).to("cuda")
 
 # Load react prompt from txt file
-with open("ReAct_prompts_phi.txt", "r") as file:
+with open("Prompts/ReAct_prompts_phi.txt", "r") as file:
     react_shots = file.read()
 
 # question to be answered
@@ -30,15 +31,12 @@ text = "<|user|> Question: Which is the strongest animal? <|end|>"
 
 # Tokenize the input
 tokens = tokenizer.encode(react_shots + text, add_special_tokens=False, return_tensors="pt").to("cuda")
-# inputs = tokenizer.encode(search_explanation + react_shots + question, add_special_tokens=False, return_tensors="pt")
-#inputs = torch.tensor(inputs).to("cuda")
 prompt_len = len(tokens[0])
 
 # Perform the question answering
 # if we did things right, we would be generating token by token, stopping generation when the end token is generated.
 for i in range(3):
-
-    pre = "<|assistant|> Thought "+str(i+1)+": "
+    pre = "<|assistant|> Thought " + str(i + 1) + ": "
     pre_tok = tokenizer.encode(pre, add_special_tokens=False, return_tensors="pt").to("cuda")
 
     tokens = model.generate( 
@@ -53,7 +51,7 @@ for i in range(3):
     print(generated_text)
     prompt_len = len(tokens[0])
 
-    pre = "<|assistant|> Action "+str(i+1)+": Search["  
+    pre = "<|assistant|> Action " + str(i + 1) + ": Search["  
     pre_tok = tokenizer.encode(pre, add_special_tokens=False, return_tensors="pt").to("cuda")
 
     tokens = model.generate( 
