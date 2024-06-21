@@ -6,6 +6,9 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import psutil
+import requests
+from bs4 import BeautifulSoup
+import spacy
 
 def kill_process_and_children(pid):
     try:
@@ -82,9 +85,37 @@ def google_search(query, keep_browser_open=False):
         
 
 # Example usage
-query = "photosynthesis"
+query = "è vero che " + "Il governo ha cancellato i 330 milioni di euro di supporto per gli affitti"
 results = google_search(query, keep_browser_open=False)
-
+nlp = spacy.load("en_core_web_sm")
+doc = nlp(query)
+# Extract keywords and entities
+keywords = [token.text for token in doc if token.is_alpha and not token.is_stop]
+entities = [(entity.text, entity.label_) for entity in doc.ents]
+print("Keywords:", keywords)
+print("Entities:", entities)
+keywords = ['governo', 'cancellato', '330', 'milioni', 'euro', 'supporto', 'affitti']
 for result in results:
     #print(f"Title: {result['title']}\nLink: {result['link']}\n")
     print(f"Title: {result['title']}\nLink: {result['link']}\nSnippet: {result['snippet']}\n")
+
+
+for result in results:
+    try:
+        print("GETTING ", result['link'], "page")
+        page = requests.get(result['link'])
+        page_soup = BeautifulSoup(page.text, 'html.parser')
+
+        # Extract main content
+        # We should customize this based on the website structure
+        paragraphs = page_soup.find_all('p')
+        paragraphs += page_soup.find_all('span')
+        content = " ".join([para.text for para in paragraphs])
+        # Check for relevance (e.g., keyword presence)
+        print("\n----------------------------------------------------------------\n")
+        if all(keyword in content for keyword in keywords):
+            print(f"Relevant content from {result['link']}:\n", content, "\n")
+        #else:
+        #    print(content)
+    except Exception as e:
+        print(f"Failed to scrape {result['link']}: {e}")

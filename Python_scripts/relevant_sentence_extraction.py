@@ -9,9 +9,12 @@ import psutil
 import requests
 from bs4 import BeautifulSoup
 import spacy
+import pandas as pd
 from transformers import pipeline
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+
+dataset_path = "C:\\Users\\flash\\Documents\\UNI\\MAG-ANNOII\\MDP\\dataset"
 
 def kill_process_and_children(pid):
     try:
@@ -118,6 +121,10 @@ def extract_relevant_sentences(content, query, similarity_model, top_n=5):
     top_indices = ranked_indices[:top_n]
     return top_sentences, top_indices
 
+
+df = pd.read_csv(dataset_path+"\\english_claim_review.csv")
+authors_url = df["author.url"].unique()
+
 language = "en"
 if language == "en":
     nlp = spacy.load("en_core_web_sm")
@@ -128,17 +135,14 @@ if language == "en":
 
 # Load transformer model for sentence similarity
 similarity_model = pipeline("feature-extraction", model="sentence-transformers/all-MiniLM-L6-v2")    
-query = "Il governo ha cancellato i 330 milioni di euro di supporto per gli affitti"
+query = df.loc[1,"claimReviewed"]
+date = pd.to_datetime(df.loc[1, 'datePublished']).date()
+if date != None:
+    query += " before:" + str(date)
+print("QUERY:",query,"\nDATE:",date)
 results = google_search(query, keep_browser_open=False)
 doc = nlp(query)
-# Extract keywords and entities
-#keywords = [token.text for token in doc if token.is_alpha and not token.is_stop]
-#entities = [(entity.text, entity.label_) for entity in doc.ents]
-#print("Keywords:", keywords)
-#print("Entities:", entities)
-#keywords = ['governo', 'cancellato', '330', 'milioni', 'euro', 'supporto', 'affitti']
 for result in results:
-    #print(f"Title: {result['title']}\nLink: {result['link']}\n")
     print(f"Title: {result['title']}\nLink: {result['link']}\nSnippet: {result['snippet']}\n")
 
 
