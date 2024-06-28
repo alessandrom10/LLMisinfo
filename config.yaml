@@ -1,0 +1,8 @@
+chromedriver_path: 'C:\\Users\\flash\\Documents\\UNI\\MAG-ANNOII\\MDP\\chromedriver-win64\\chromedriver.exe'
+dataset_path: 'C:\\Users\\flash\\Documents\\UNI\\MAG-ANNOII\\MDP\\dataset'
+
+#max number of results
+max_results: -1
+max_sentences: 5
+
+language: "en"

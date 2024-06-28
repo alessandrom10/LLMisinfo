@@ -9,12 +9,25 @@ import psutil
 import requests
 from bs4 import BeautifulSoup
 import spacy
+from urllib.parse import urlparse
+import re
 import pandas as pd
 from transformers import pipeline
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+import yaml
 
-dataset_path = "C:\\Users\\flash\\Documents\\UNI\\MAG-ANNOII\\MDP\\dataset"
+def load_config(filename='config.yaml'):
+    with open(filename, 'r') as f:
+        config = yaml.safe_load(f)
+    return config
+
+config = load_config()
+dataset_path = config['dataset_path']
+driver_path = config['chromedriver_path']
+max_results = config['max_results']
+max_sentences = config['max_sentences']
+language = config['language']
 
 def kill_process_and_children(pid):
     try:
@@ -25,10 +38,44 @@ def kill_process_and_children(pid):
     except psutil.NoSuchProcess:
         pass
 
-def google_search(query, keep_browser_open=False):
-    # Path to the ChromeDriver executable
-    driver_path = 'C:\\Users\\flash\\Documents\\UNI\\MAG-ANNOII\\MDP\\chromedriver-win64\\chromedriver.exe'  # Sostituisci con il percorso effettivo
+def filter_urls(urls):
+    def is_valid_url(url):
+        try:
+            result = urlparse(url)
+            return all([result.scheme, result.netloc])
+        except ValueError:
+            return False
+        
+    def is_allowed_domain(url):
+        parsed_url = urlparse(url)
+        domain = parsed_url.netloc.lower()
+        excluded_domains = ['facebook.com', 'google.com', 'youtube.com']
+        return not any(excluded in domain for excluded in excluded_domains)
+    
+    filtered_urls = [
+        url for url in urls
+        if is_valid_url(url) and is_allowed_domain(url)
+    ]
+    return filtered_urls
 
+def get_all_text(url):
+    # Fetch the web page content
+    response = requests.get(url)
+    if response.status_code != 200:
+        raise Exception(f"Failed to fetch page, status code: {response.status_code}")
+    # Parse the HTML content
+    soup = BeautifulSoup(response.text, 'html.parser')
+    # Remove unwanted sections
+    for element in soup(['header', 'footer', 'nav', 'aside', 'script', 'style']):
+        element.decompose()
+    # Get the cleaned text
+    text = soup.get_text(separator=' ')
+    # Clean the text
+    text = text.replace('\xa0', ' ')
+    text = re.sub(r'\s+', ' ', text)
+    return text.strip()
+
+def google_search(query, driver_path, keep_browser_open=False):
     # Configure Chrome options
     chrome_options = Options()
     #chrome_options.add_argument("--headless")  # Run Chrome in headless mode for faster execution
@@ -64,7 +111,7 @@ def google_search(query, keep_browser_open=False):
         # Wait for the results to load
         wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[jscontroller="SC7lYd"]')))
         
-        # Extract the search results
+        '''# Extract the search results
         results = driver.find_elements(By.CSS_SELECTOR, 'div[jscontroller="SC7lYd"]')
         print("Search results found:",len(results))
         search_results = []
@@ -79,7 +126,17 @@ def google_search(query, keep_browser_open=False):
             except Exception as e:
                 # If any element is not found, skip the result
                 #continue
-                search_results.append({'title': "NULL", 'link': "NULL", 'snippet': "NULL"})
+                search_results.append({'title': "NULL", 'link': "NULL", 'snippet': "NULL"})'''
+        # Find all search result links
+        results = driver.find_elements(By.CSS_SELECTOR, "div.g div.yuRUbf a")
+        print("Search results found:",len(results))
+        search_results = []
+        for result in results:
+            try:
+                search_results.append(result.get_attribute("href"))
+            except Exception as e:
+                search_results.append("NULL")
+        search_results = filter_urls(search_results)
         return search_results
 
     finally:
@@ -93,6 +150,9 @@ def google_search(query, keep_browser_open=False):
 def get_embeddings(sentences, model):
     return [model(sentence)[0][0] for sentence in sentences]
 
+def remove_questions(sentences):
+    return [sentence for sentence in sentences if "?" not in sentence]
+
 # Function to calculate cosine similarity
 def cosine_similarity_score(query_embedding, sentence_embeddings):
     query_embedding = np.array(query_embedding).reshape(1, -1)
@@ -100,12 +160,11 @@ def cosine_similarity_score(query_embedding, sentence_embeddings):
     similarities = cosine_similarity(query_embedding, sentence_embeddings)
     return similarities[0]
 
-# Main processing function
 def extract_relevant_sentences(content, query, similarity_model, top_n=5):
     # Tokenize document into sentences
     doc = nlp(content)
     sentences = [sent.text for sent in doc.sents]
-    
+    sentences = remove_questions(sentences)
     # Get embeddings for document sentences and query
     query_embedding = get_embeddings([query], similarity_model)[0]
     sentence_embeddings = get_embeddings(sentences, similarity_model)
@@ -116,56 +175,59 @@ def extract_relevant_sentences(content, query, similarity_model, top_n=5):
     # Rank sentences by similarity
     ranked_indices = np.argsort(similarities)[::-1]
     ranked_sentences = [sentences[idx] for idx in ranked_indices]
+    ranked_similarities = [similarities[idx] for idx in ranked_indices]
     # Extract top N sentences
     top_sentences = ranked_sentences[:top_n]
     top_indices = ranked_indices[:top_n]
-    return top_sentences, top_indices
+    top_similarities = ranked_similarities[:top_n]
+    return top_sentences, top_indices, top_similarities
 
 
 df = pd.read_csv(dataset_path+"\\english_claim_review.csv")
 authors_url = df["author.url"].unique()
 
-language = "en"
 if language == "en":
     nlp = spacy.load("en_core_web_sm")
-#elif language == "it":
-    #nlp = italian sentence tokenizer 
-#else:
-    #nlp = spanish sentence tokenizer 
+elif language == "it":
+    nlp = spacy.load("it_core_news_sm") 
+elif language == "es":
+    nlp = spacy.load("es_core_news_sm")
+else:
+    raise Exception("ERROR: LANGUAGE NOT CORRECT - should be set as either 'en', 'it' or 'es'")
 
 # Load transformer model for sentence similarity
 similarity_model = pipeline("feature-extraction", model="sentence-transformers/all-MiniLM-L6-v2")    
 query = df.loc[1,"claimReviewed"]
 date = pd.to_datetime(df.loc[1, 'datePublished']).date()
 if date != None:
-    query += " before:" + str(date)
+    query_search = query + " before:" + str(date)
+else:
+    query_search = query
+
 print("QUERY:",query,"\nDATE:",date)
-results = google_search(query, keep_browser_open=False)
-doc = nlp(query)
-for result in results:
-    print(f"Title: {result['title']}\nLink: {result['link']}\nSnippet: {result['snippet']}\n")
+results = google_search(query_search, driver_path, keep_browser_open=False)
+'''for result in results:
+    print(f"Title: {result['title']}\nLink: {result['link']}\nSnippet: {result['snippet']}\n")'''
+print(results,"\n\n")
 
-
+#result['link']
+n_good_results = 0
 for result in results:
-    #try:
-    print("GETTING ", result['link'], "page")
-    if result['link']!="NULL":
-        page = requests.get(result['link'])
-        page_soup = BeautifulSoup(page.text, 'html.parser')
-        # Extract main content
-        # We should customize this based on the website structure
-        paragraphs = page_soup.find_all('p')
-        paragraphs += page_soup.find_all('span')
-        content = "\n ".join([para.text for para in paragraphs])
-        # Check for relevance (e.g., keyword presence)
-        print("\n----------------------------------------------------------------\n")
-        top_s, top_i = extract_relevant_sentences(content, query, similarity_model)
-        print("\n".join([f"{top_i[i]}: {top_s[i]}" for i in range(len(top_i))]))
-        #if all(keyword in content for keyword in keywords):
-        #    print(f"Relevant content from {result['link']}:\n", content, "\n")
-        #else:
-        #    print(content)
-        #except Exception as e:
-        #    print(f"Failed to scrape {result['link']}: {e}")
-    
+    print("GETTING page:", result)
+    if result!="NULL":
+        try:
+            text = get_all_text(result)
+            print("----------------------------------------------------------------")
+            top_s, top_i, top_simil = extract_relevant_sentences(text, query, similarity_model, top_n=max_sentences)
+            print("\n".join([f"{top_i[i]}, {top_simil[i]}: {top_s[i]}" for i in range(len(top_i))]))
+            n_good_results += 1
+            if n_good_results==max_results:
+                break
+        except Exception as e:
+            # Method 1: Print just the error message
+            print(f"An error occurred: {e}")
+    else:
+        print("NULL result")
+print("NUMBER OF GOOD RETRIEVED RESULTS:", n_good_results)
+
     
