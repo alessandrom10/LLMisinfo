@@ -6,3 +6,6 @@ max_results: -1
 max_sentences: 5
 
 language: "en"
+
+url_blacklist: ['facebook.com', 'google.com', 'youtube.com']
+tag_blacklist: ['header', 'footer', 'nav', 'aside', 'script', 'style', 'meta', 'head', 'h1', 'h2', 'h3']

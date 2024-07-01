@@ -28,6 +28,8 @@ driver_path = config['chromedriver_path']
 max_results = config['max_results']
 max_sentences = config['max_sentences']
 language = config['language']
+url_blacklist = config['url_blacklist']
+tag_blacklist = config['tag_blacklist']
 
 def kill_process_and_children(pid):
     try:
@@ -49,8 +51,7 @@ def filter_urls(urls):
     def is_allowed_domain(url):
         parsed_url = urlparse(url)
         domain = parsed_url.netloc.lower()
-        excluded_domains = ['facebook.com', 'google.com', 'youtube.com']
-        return not any(excluded in domain for excluded in excluded_domains)
+        return not any(excluded in domain for excluded in url_blacklist)
     
     filtered_urls = [
         url for url in urls
@@ -58,22 +59,29 @@ def filter_urls(urls):
     ]
     return filtered_urls
 
+def save_soup_to_file(soup, filename):
+    # Open the file in write mode
+    with open(filename, 'w', encoding='utf-8') as file:
+        # Write the string representation of the soup object to the file
+        file.write(str(soup))
+
 def get_all_text(url):
     # Fetch the web page content
     response = requests.get(url)
     if response.status_code != 200:
         raise Exception(f"Failed to fetch page, status code: {response.status_code}")
+    
     # Parse the HTML content
     soup = BeautifulSoup(response.text, 'html.parser')
-    # Remove unwanted sections
-    for element in soup(['header', 'footer', 'nav', 'aside', 'script', 'style']):
+    for element in soup(tag_blacklist):
         element.decompose()
-    # Get the cleaned text
+
+    #save_soup_to_file(soup, 'soup.txt')
     text = soup.get_text(separator=' ')
-    # Clean the text
     text = text.replace('\xa0', ' ')
     text = re.sub(r'\s+', ' ', text)
-    return text.strip()
+    text = text.strip()
+    return text
 
 def google_search(query, driver_path, keep_browser_open=False):
     # Configure Chrome options
@@ -96,7 +104,6 @@ def google_search(query, driver_path, keep_browser_open=False):
         
         # Wait for the search box to be present and visible
         wait = WebDriverWait(driver, 10)
-        #search_box = driver.find_element(By.NAME, 'q')
         try:
             accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accetta tutto"]')))
             accept_cookies_button.click()
@@ -109,24 +116,8 @@ def google_search(query, driver_path, keep_browser_open=False):
         search_box.send_keys(Keys.RETURN)
         
         # Wait for the results to load
-        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[jscontroller="SC7lYd"]')))
+        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div.yuRUbf')))
         
-        '''# Extract the search results
-        results = driver.find_elements(By.CSS_SELECTOR, 'div[jscontroller="SC7lYd"]')
-        print("Search results found:",len(results))
-        search_results = []
-        
-        for result in results[:5]:
-            #print(result)
-            try:
-                title = result.find_element(By.TAG_NAME, 'h3').text
-                link = result.find_element(By.TAG_NAME, 'a').get_attribute('href')
-                snippet = result.find_element(By.CSS_SELECTOR, 'div[class="VwiC3b yXK7lf lVm3ye r025kc hJNv6b Hdw6tb"]').text
-                search_results.append({'title': title, 'link': link, 'snippet': snippet})
-            except Exception as e:
-                # If any element is not found, skip the result
-                #continue
-                search_results.append({'title': "NULL", 'link': "NULL", 'snippet': "NULL"})'''
         # Find all search result links
         results = driver.find_elements(By.CSS_SELECTOR, "div.g div.yuRUbf a")
         print("Search results found:",len(results))
@@ -165,16 +156,28 @@ def extract_relevant_sentences(content, query, similarity_model, top_n=5):
     doc = nlp(content)
     sentences = [sent.text for sent in doc.sents]
     sentences = remove_questions(sentences)
+
     # Get embeddings for document sentences and query
     query_embedding = get_embeddings([query], similarity_model)[0]
-    sentence_embeddings = get_embeddings(sentences, similarity_model)
+
+    filtered_sentences = []
+    sentence_embeddings = []
+    for sentence in sentences:
+        try:
+            embedding = get_embeddings([sentence], similarity_model)[0]
+            filtered_sentences.append(sentence)
+            sentence_embeddings.append(embedding)
+        except Exception as e:
+            continue        
+    # If no valid sentences remain, return empty results
+    if not filtered_sentences:
+        return [], [], []
     
     # Calculate similarities
     similarities = cosine_similarity_score(query_embedding, sentence_embeddings)
-    
     # Rank sentences by similarity
     ranked_indices = np.argsort(similarities)[::-1]
-    ranked_sentences = [sentences[idx] for idx in ranked_indices]
+    ranked_sentences = [filtered_sentences[idx] for idx in ranked_indices]
     ranked_similarities = [similarities[idx] for idx in ranked_indices]
     # Extract top N sentences
     top_sentences = ranked_sentences[:top_n]
@@ -184,7 +187,8 @@ def extract_relevant_sentences(content, query, similarity_model, top_n=5):
 
 
 df = pd.read_csv(dataset_path+"\\english_claim_review.csv")
-authors_url = df["author.url"].unique()
+#authors_url = df["author.url"].unique()
+url_blacklist = np.concatenate((df["author.url"].unique(), url_blacklist))
 
 if language == "en":
     nlp = spacy.load("en_core_web_sm")
@@ -197,8 +201,10 @@ else:
 
 # Load transformer model for sentence similarity
 similarity_model = pipeline("feature-extraction", model="sentence-transformers/all-MiniLM-L6-v2")    
-query = df.loc[1,"claimReviewed"]
-date = pd.to_datetime(df.loc[1, 'datePublished']).date()
+# that's the sentence transformer
+print(similarity_model)
+query = df.loc[0,"claimReviewed"]
+date = pd.to_datetime(df.loc[0, 'datePublished']).date()
 if date != None:
     query_search = query + " before:" + str(date)
 else:
@@ -206,11 +212,8 @@ else:
 
 print("QUERY:",query,"\nDATE:",date)
 results = google_search(query_search, driver_path, keep_browser_open=False)
-'''for result in results:
-    print(f"Title: {result['title']}\nLink: {result['link']}\nSnippet: {result['snippet']}\n")'''
 print(results,"\n\n")
 
-#result['link']
 n_good_results = 0
 for result in results:
     print("GETTING page:", result)
@@ -224,10 +227,11 @@ for result in results:
             if n_good_results==max_results:
                 break
         except Exception as e:
-            # Method 1: Print just the error message
             print(f"An error occurred: {e}")
+        finally:
+            print()
     else:
-        print("NULL result")
+        print("NULL result\n")
 print("NUMBER OF GOOD RETRIEVED RESULTS:", n_good_results)
 
     
