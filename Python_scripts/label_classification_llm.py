@@ -1,3 +1,6 @@
+# This script performs the mapping of the raw truth labels from the dataset into the standard ones,
+# By givining to the model both the claim and its corresponding truth label, this script fully works
+
 from datasets import Dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, pipeline
 import pandas as pd
@@ -5,7 +8,6 @@ import torch
 
 df = pd.read_csv("Datasets/dataset_english_only.csv", encoding="utf-16", sep="\t", dtype={24: str})
 
-#model_name = "microsoft/Phi-3-mini-4k-instruct"
 model_name = "meta-llama/Meta-Llama-3-8B-Instruct"
 
 bnb_config = BitsAndBytesConfig(

@@ -1,15 +1,18 @@
-import json
-import time
-import string
-import re
-import os
+# This script has been downloaded from here (https://github.com/jadeCurl/HiSS), it deals with the HiSS (Hierarchical Step-by-Step) prompting method to separate each claim
+# Into the subclaims that compose it, i'm still trying to understand what parts of it work
+
 from IPython.utils import io
+from serpapi import GoogleSearch
+import json
+import os
+import openai
+import re
+import string
+import time
 import urllib.request
 
-import openai
-from serpapi import GoogleSearch
-openai.api_key = "" #get one from https://openai.com , first few requests are free!
-serpapi_key = "" #get one from https://serpapi.com , first few requests are free!
+openai.api_key = "" # get one from https://openai.com , first few requests are free!
+serpapi_key = "" # get one from https://serpapi.com , first few requests are free!
 
 prompt = ['''
 Claim: "Emerson Moser, who was Crayola’s top crayon molder for almost 40 years, was colorblind."
@@ -92,7 +95,7 @@ Based on the answers to these questions, it is clear that among pants-fire, fals
 
 
 Claim: ''', '''A fact checker will''',
- ]
+]
 
 def promptf(question, prompt, intermediate = "\nAnswer:", followup = "Intermediate Question", finalans= '\nBased on the answers to these questions, it is clear that among among pants-fire, false, barely-true, half-true, mostly-true, and true, the claim '):
     '''
@@ -128,17 +131,19 @@ def promptf(question, prompt, intermediate = "\nAnswer:", followup = "Intermedia
 
     return cur_prompt + ret_text
 
+# This function asks gpt-3.5-turbo to generate a response to the prompt received as input
 def call_gpt(cur_prompt, stop=["\n"]):
   reasoner_messages = [{"role": "user", "content": cur_prompt}]
   completion = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo", 
-    messages=reasoner_messages,
-    stop= stop
-    )
+    model = "gpt-3.5-turbo", 
+    messages = reasoner_messages,
+    stop = stop
+  )
   returned = completion['choices'][0]["message"]["content"]
   print(returned)
   return returned
 
+# This function extracts the last sentence (and only that, not its answer) from the provided input
 def extract_question(generated):
     generated = generated.split('Question: ')[-1].split('Answer')[0]
     return generated
@@ -152,7 +157,7 @@ def get_answer(question):
     "gl": "us",
     "hl": "en"
   }
-  with io.capture_output() as captured: #disables prints from GoogleSearch
+  with io.capture_output() as captured: # disables prints from GoogleSearch
     search = GoogleSearch(params)
     res = search.get_dict()
 

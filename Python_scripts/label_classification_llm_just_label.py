@@ -1,3 +1,6 @@
+# This script performs the mapping of the raw truth labels from the dataset into the standard ones,
+# By givining to the model only the raw truth label (used for the media review dataset), this script fully works
+
 from datasets import Dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, pipeline
 import pandas as pd
@@ -5,7 +8,6 @@ import torch
 
 df = pd.read_csv("Datasets/media_review_english_only.csv", encoding="utf-16", sep="\t", dtype={24: str})
 
-#model_name = "microsoft/Phi-3-mini-4k-instruct"
 model_name = "meta-llama/Meta-Llama-3-8B-Instruct"
 
 bnb_config = BitsAndBytesConfig(
@@ -57,11 +59,9 @@ Your answer should be just the word: False
 inputs = []
 mapped_labels = 0
 for i in range(a, b):
-    #claim = df["claimReviewed"].iloc[i]
     label = df["mediaAuthenticityCategory"].iloc[i]
     if(label not in standard_labels):
         mapped_labels += 1
-        #claim_review = f"Claim: {claim}\nLabel: {label}"
         claim_review = f"Label: {label}"
 
         messages = [
@@ -82,7 +82,6 @@ outputs = pipe(inputs, **generation_args, batch_size=4)
 mapped_labels = 0
 for i in range(a, b):
     label = df["mediaAuthenticityCategory"].iloc[i]
-    #print(f"Old label is: {label}")
     if label not in standard_labels:
         input_string = "assistant"
         actual_output = outputs[mapped_labels][0]['generated_text']
