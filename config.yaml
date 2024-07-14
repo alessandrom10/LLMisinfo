@@ -3,7 +3,9 @@ dataset_path: 'C:\\Users\\flash\\Documents\\UNI\\MAG-ANNOII\\MDP\\dataset'
 
 #max number of results
 max_results: -1
-max_sentences: 5
+max_sentences: 2
+windowed: True
+window_size: 5
 
 language: "en"
 

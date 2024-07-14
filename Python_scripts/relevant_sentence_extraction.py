@@ -30,6 +30,8 @@ max_sentences = config['max_sentences']
 language = config['language']
 url_blacklist = config['url_blacklist']
 tag_blacklist = config['tag_blacklist']
+windowed = config['windowed']
+window_size = config['window_size']
 
 def kill_process_and_children(pid):
     try:
@@ -151,7 +153,7 @@ def cosine_similarity_score(query_embedding, sentence_embeddings):
     similarities = cosine_similarity(query_embedding, sentence_embeddings)
     return similarities[0]
 
-def extract_relevant_sentences(content, query, similarity_model, top_n=5):
+def extract_relevant_sentences(content, query, similarity_model, top_n=5, windowed=False, window_size=5):
     # Tokenize document into sentences
     doc = nlp(content)
     sentences = [sent.text for sent in doc.sents]
@@ -179,11 +181,22 @@ def extract_relevant_sentences(content, query, similarity_model, top_n=5):
     ranked_indices = np.argsort(similarities)[::-1]
     ranked_sentences = [filtered_sentences[idx] for idx in ranked_indices]
     ranked_similarities = [similarities[idx] for idx in ranked_indices]
-    # Extract top N sentences
-    top_sentences = ranked_sentences[:top_n]
+
     top_indices = ranked_indices[:top_n]
     top_similarities = ranked_similarities[:top_n]
+    if windowed:
+        # for each index in top_indices, get the corresponfing sentence and a window of window_size sentences around it
+        top_sentences = []
+        for i in top_indices:
+            start = max(0, i-(window_size//2))
+            end = min(len(ranked_sentences), i+(window_size//2)+1)
+            top_sentences.append(" ".join(filtered_sentences[start:end]))
+    else:
+        top_sentences = ranked_sentences[:top_n]
+        
     return top_sentences, top_indices, top_similarities
+
+
 
 
 df = pd.read_csv(dataset_path+"\\english_claim_review.csv")
@@ -221,7 +234,7 @@ for result in results:
         try:
             text = get_all_text(result)
             print("----------------------------------------------------------------")
-            top_s, top_i, top_simil = extract_relevant_sentences(text, query, similarity_model, top_n=max_sentences)
+            top_s, top_i, top_simil = extract_relevant_sentences(text, query, similarity_model, top_n=max_sentences, windowed=windowed, window_size=window_size)
             print("\n".join([f"{top_i[i]}, {top_simil[i]}: {top_s[i]}" for i in range(len(top_i))]))
             n_good_results += 1
             if n_good_results==max_results:
