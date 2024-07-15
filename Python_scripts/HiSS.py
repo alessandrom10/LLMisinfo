@@ -2,16 +2,11 @@
 # Into the subclaims that compose it, i'm still trying to understand what parts of it work
 
 from IPython.utils import io
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+from huggingface_hub import login
 from serpapi import GoogleSearch
 import json
-import os
-import openai
-import re
-import string
-import time
-import urllib.request
 
-openai.api_key = "" # get one from https://openai.com , first few requests are free!
 serpapi_key = "" # get one from https://serpapi.com , first few requests are free!
 
 prompt = ['''
@@ -97,6 +92,15 @@ Based on the answers to these questions, it is clear that among pants-fire, fals
 Claim: ''', '''A fact checker will''',
 ]
 
+huggingface_token = "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"
+login(token = huggingface_token)
+
+model_name = "meta-llama/Meta-Llama-3-8B"
+model = AutoModelForCausalLM.from_pretrained(model_name)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+generator = pipeline("text-generation", model = model, tokenizer = tokenizer)
+
 def promptf(question, prompt, intermediate = "\nAnswer:", followup = "Intermediate Question", finalans= '\nBased on the answers to these questions, it is clear that among among pants-fire, false, barely-true, half-true, mostly-true, and true, the claim '):
     '''
     parameters:
@@ -131,7 +135,14 @@ def promptf(question, prompt, intermediate = "\nAnswer:", followup = "Intermedia
 
     return cur_prompt + ret_text
 
-# This function asks gpt-3.5-turbo to generate a response to the prompt received as input
+# This function asks the current model to generate a response to the prompt received as input
+def call_gpt(cur_prompt, stop=["\n"]):
+  response = generator(cur_prompt, max_length = 500, num_return_sequences = 1, stop_sequence = stop)
+  returned = response[0]['generated_text']
+  print(returned)
+  return returned
+
+"""# This function asks gpt-3.5-turbo to generate a response to the prompt received as input
 def call_gpt(cur_prompt, stop=["\n"]):
   reasoner_messages = [{"role": "user", "content": cur_prompt}]
   completion = openai.ChatCompletion.create(
@@ -141,7 +152,7 @@ def call_gpt(cur_prompt, stop=["\n"]):
   )
   returned = completion['choices'][0]["message"]["content"]
   print(returned)
-  return returned
+  return returned"""
 
 # This function extracts the last sentence (and only that, not its answer) from the provided input
 def extract_question(generated):
@@ -174,7 +185,8 @@ def get_answer(question):
   return toret
 
 
-dataset_path = './Datasets/LIAR-RAW/test.json'
+#dataset_path = './Datasets/LIAR-RAW/test.json'
+dataset_path = 'C:\\Users\\alema\\OneDrive - Politecnico di Milano\\Appunti\\MP\\Python_scripts\\Datasets\\LIAR-RAW\\test.json'
 with open(dataset_path, 'r') as json_file:
     json_list = json.load(json_file)
 
@@ -182,8 +194,10 @@ with open(dataset_path, 'r') as json_file:
 for json_str in json_list:
     result = json_str
     label = result["label"]
-    claim = result["claim"]
-    idx = result["event_id"]
+    #claim = result["claim"]
+    claim = result["statement"]
+    #idx = result["event_id"]
+    idx = result["id"]
 
     print(str(idx)+'\n')
     question = claim 
