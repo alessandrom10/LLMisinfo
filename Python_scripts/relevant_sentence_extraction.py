@@ -9,6 +9,7 @@ import psutil
 import requests
 from bs4 import BeautifulSoup
 import spacy
+import os
 from urllib.parse import urlparse
 import re
 import pandas as pd
@@ -69,7 +70,8 @@ def save_soup_to_file(soup, filename):
 
 def get_all_text(url):
     # Fetch the web page content
-    response = requests.get(url)
+    headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36'}
+    response = requests.get(url, headers=headers)
     if response.status_code != 200:
         raise Exception(f"Failed to fetch page, status code: {response.status_code}")
     
@@ -85,14 +87,27 @@ def get_all_text(url):
     text = text.strip()
     return text
 
-def google_search(query, driver_path, keep_browser_open=False):
+def google_search(query, driver_path, keep_browser_open=True):
     # Configure Chrome options
     chrome_options = Options()
-    #chrome_options.add_argument("--headless")  # Run Chrome in headless mode for faster execution
+    #For ChromeDriver version 79.0.3945.16 or over
+    chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+    chrome_options.add_argument("--headless")  # Run Chrome in headless mode for faster execution
+    chrome_options.add_argument("--disable-search-engine-choice-screen")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-popup-blocking")
     chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--log-level=3")  # Fatal
+    chrome_options.add_argument("--silent")
+    chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+
+    # Redirect browser logging to /dev/null (or NUL on Windows)
+    if os.name == 'nt':  # For Windows
+        os.environ['WDM_LOG_LEVEL'] = '0'
+        chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    else:  # For Unix/Linux
+        chrome_options.add_argument("--log-path=/dev/null")
 
     # Set up Chrome service
     service = Service(driver_path)
