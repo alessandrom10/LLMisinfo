@@ -4,10 +4,73 @@ chromium_path: 'C:\\Users\\flash\\AppData\\Local\\Chromium\\Application\\chrome.
 #max number of results
 max_results: -1
 max_sentences: 2
+max_searches: 1
 windowed: True
 window_size: 5
 
 language: "en"
+model_name: "Llama 3.1 8B"
+#model_name: "Gemma 2 9B"
+model_id: "meta-llama/Meta-Llama-3.1-8B-Instruct"
+#model_id: "google/gemma-2-9b-it"
 
 url_blacklist: ['facebook.com', 'google.com', 'youtube.com']
 tag_blacklist: ['header', 'footer', 'nav', 'aside', 'script', 'style', 'meta', 'head', 'h1', 'h2', 'h3']
+
+
+standard_system_prompt_1: >
+  "You are a fact-checking expert. Evaluate the truthfulness of a statement given by the user. "
+  "Use the given function to make a google search if needed, and give it as parameter the query that you think will help you find relevant information. " 
+  
+standard_system_prompt_2: >
+  "Consider your sources, context and date while assessing. to answer return 'Final answer: {verdict}, {reason}.' "
+  "You must respond with a valid verdict ('false','mostly-false','half-true','mostly-true','true') or 'uncertain', "
+  "providing reasoning and citing sources by providing the domain of the pertinent search results."
+
+#tools: [{
+#        "type": "function",
+#        "function": {
+#            "name": "google_search",
+#            "description": "Get the google search results given a query",
+#            "parameters": {
+#                "type": "object",
+#                "properties": {
+#                    "query": {
+#                        "type": "string",
+#                        "description": "the query that will be used to perform the search"
+#                    }
+#                },
+#                "required": [
+#                    "query"
+#                ]
+#            },
+#            "return": {
+#                "type": "string",
+#                "description": "A sting containing the list of website given by the search results along with a snippet of their content."
+#            }
+#        }
+#      }]
+
+tools: [{
+        "type": "function",
+        "function": {
+            "name": "get_current_temperature",
+            "description": "Get the current temperature at a location.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The location to get the temperature for, in the format 'City, Country'"
+                    }
+                },
+                "required": [
+                    "location"
+                ]
+            },
+            "return": {
+                "type": "string",
+                "description": "The current temperature at the specified location in the specified units, as a float."
+            }
+        }
+      }]
