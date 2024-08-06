@@ -1,20 +1,35 @@
-import requests
 import yaml
 from sel_search import *
 from huggingface_hub import InferenceClient
 import os
+import re
+import ast
 
-# temorary function to test the model on tool use 
-def get_current_temperature(location: str) -> float:
+def extract_function_call(llm_output: str) -> str:
     """
-    Get the current temperature at a location.
+    Extracts the function call from the LLM's output if present, 
+    handling mixed usage of single and double quotes.
     
     Args:
-        location: The location to get the temperature for, in the format "City, Country"
+        llm_output (str): The output string from the LLM.
+    
     Returns:
-        The current temperature at the specified location in the specified units, as a float.
+        str: The extracted function call string if present, otherwise an empty string.
     """
-    return 22
+    # Define the flexible pattern to search for the function call
+    pattern = r"(\{['\"]name['\"]: *['\"]google_search['\"], *['\"]parameters['\"]: *(\{.*\})\})|" + \
+              r'(\{[\'"]name[\'"]: *[\'"]google_search[\'"], *[\'"]parameters[\'"]: *(\{.*\})\})'
+    
+    # Search for the pattern in the LLM output
+    match = re.search(pattern, llm_output)
+    
+    if match:
+        # Extract the matched group (2 or 4, depending on the quote style)
+        function_call_str = match.group(1) if match.group(1) else match.group(3)
+        return function_call_str
+    
+    # If no match is found, return an empty string
+    return ""
 
 def load_config(filename='config.yaml'):
     with open(filename, 'r') as f:
@@ -29,10 +44,13 @@ tools = config['tools']
 
 standard_system_prompt = config['standard_system_prompt_1']
 if max_searches == 1:
-    standard_system_prompt += "you can use the function only once. "
+    standard_system_prompt += "you must use the function only once. "
 else:
-    standard_system_prompt += "you can use the function up to "+str(max_searches)+" times. "
+    standard_system_prompt += "you can use the function from one up to "+str(max_searches)+" times. "
 standard_system_prompt += config['standard_system_prompt_2']
+standard_system_prompt += "\n"+str(tools[0])
+
+print(standard_system_prompt)   
 
 try:
     API_TOKEN = os.getenv("HF_TOKEN")
@@ -53,46 +71,24 @@ def load_model_and_generate_output(user_input):
          {"role": "system", "content": standard_system_prompt},
          {"role": "user", "content": "Claim: "+user_input["claim"]+". Date:"+user_input["date"]}
     ]
-
+    num_searches = 0
     # Load the model from the Hugging Face Hub
     client = InferenceClient(model=model_id, token=API_TOKEN)
-    response = client.chat_completion(messages=messages,tools=tools,tool_choice="auto",max_tokens=1000)
-    response = response.choices[0].message
+    response = client.chat_completion(messages=messages, max_tokens=1000).choices[0].message.content
+    print(response)
 
-    # while the model asks for a tool, get the tool result and continue
-    while response.tool_calls != None: 
-        query = response.tool_calls[0].function.arguments["query"]
+    fc = extract_function_call(response)
+    while fc!="": 
+        num_searches += 1
+        tool_call = ast.literal_eval(fc)
+        query = tool_call["parameters"]["query"]
         search_results = google_search(query, date=user_input["date"])
-        tool_call = {"name": "google_search", "parameters": {"query": query}}
-        print("Search Results:", search_results)
-        messages.append({"role": "assistant", "tool_calls": [{"type": "function", "function": tool_call}]})
-        messages.append({"role": "tool", "name": "google_search", "content": search_results})
-        response = client.chat_completion(messages=messages,tools=tools,tool_choice="auto",max_tokens=1000)
- 
-    return response
-
-def load_model_and_generate_output(user_input):
-    '''query = "Bernie Sanders Nevada primary 2020 vote count"
-    tool_call = {"name": "google_search", "parameters": {"query": query}}
-    messages = [
-         {"role": "system", "content": standard_system_prompt},
-         {"role": "user", "content": "Claim: "+user_input["claim"]+". Date:"+user_input["date"]},
-         {"role": "assistant", "tool_calls": [{"type": "function", "function": tool_call}]},
-         {"role": "tool", "name": "google_search", "content": google_search(query)}
-         #{"role": "assistant", "content": google_search(query)}
-    ]'''
-    messages = [
-        {"role": "system", "content": "You are a bot that responds to weather queries."},
-        {"role": "user", "content": "Hey, what's the temperature in Paris right now?"}
-    ]
-    tool_call = {"name": "get_current_temperature", "arguments": {"location": "Paris, France"}}
-    #messages.append({"role": "assistant", "tool_calls": [{"type": "function", "function": tool_call}]})
-    #messages.append({"role": "tool", "name": "get_current_temperature", "content": str(get_current_temperature("Paris, France"))})
-
-    # Load the model from the Hugging Face Hub
-    client = InferenceClient(model=model_id, token=API_TOKEN)
-    response = client.chat_completion(messages=messages,tools=tools,tool_choice="auto",max_tokens=1000)
-    #response = response.choices[0].message
+        search_results = "Search number " + str(num_searches) + ":\n" + search_results
+        print(search_results)
+        messages.append({"role": "user", "content": search_results})
+        response = client.chat_completion(messages=messages,max_tokens=1000).choices[0].message.content
+        print(response)
+        fc = extract_function_call(response)
     return response
 
 
@@ -105,7 +101,7 @@ def main():
     # Generate output from the model
     output = load_model_and_generate_output(user_input)
     # Print the model's output
-    print("Model Output:\n" + output)
+    #print("Model Output:\n" + str(output))
 
 if __name__ == "__main__":
     main()

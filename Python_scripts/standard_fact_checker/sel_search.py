@@ -32,6 +32,7 @@ max_sentences = config['max_sentences']
 language = config['language']
 url_blacklist = config['url_blacklist']
 tag_blacklist = config['tag_blacklist']
+type_blacklist = config['type_blacklist']
 windowed = config['windowed']
 window_size = config['window_size']
 
@@ -82,29 +83,23 @@ def google_search(query: str, date: str) -> str:
     if date != "":
         date = pd.to_datetime(date).date()
         query += " before:" + str(date)
+        print("Query with date:", query)
 
     search_results = get_search_results(query)
     n_good_results = 0
     for result in search_results:
-        #print("GETTING page:", result)
+        print("GETTING page:", result)
         if result!="NULL":
             try:
                 text = get_all_text(result)
-                #print("----------------------------------------------------------------")
-                top_s, _, _ = extract_relevant_sentences(text, query)
-                #print("\n".join([f"{top_i[i]}, {top_simil[i]}: {top_s[i]}" for i in range(len(top_i))]))
-                #if everything is fine, we add the result to the formatted_results
+                top_s, _, _ = extract_relevant_sentences(text, query)#, top_n=5, windowed=windowed, window_size=window_size)
                 n_good_results += 1
-                formatted_results += str(n_good_results) + ". " + get_domain(result) +": " + "\n".join(top_s)
+                formatted_results += str(n_good_results) + ". " + get_domain(result) +": " + "\n".join(top_s) +"\n"
                 #if we have reached the maximum number of results, we stop
                 if n_good_results==max_results:
                     break
             except Exception as e:
-                #print(f"An error occurred: {e}")
                 continue
-        #else:
-        #    print("NULL result\n")
-    #print("NUMBER OF GOOD RETRIEVED RESULTS:", n_good_results)
     return formatted_results
         
 def kill_process_and_children(pid):
@@ -149,7 +144,7 @@ def filter_urls(urls):
     def is_valid_url(url):
         try:
             result = urlparse(url)
-            return all([result.scheme, result.netloc])
+            return all([result.scheme, result.netloc]) and not url.endswith(".pdf")
         except ValueError:
             return False
         
@@ -158,9 +153,12 @@ def filter_urls(urls):
         domain = parsed_url.netloc.lower()
         return not any(excluded in domain for excluded in url_blacklist)
     
+    def is_allowed_type(url):
+        return not any(url.endswith(excluded) for excluded in type_blacklist)
+    
     filtered_urls = [
         url for url in urls
-        if is_valid_url(url) and is_allowed_domain(url)
+        if is_valid_url(url) and is_allowed_domain(url) and is_allowed_type(url)
     ]
     return filtered_urls
 
