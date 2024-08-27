@@ -27,6 +27,7 @@ def load_config(filename='config.yaml'):
 
 config = load_config()
 driver_path = config['chromedriver_path']
+chromium_path = config['chromium_path']
 max_results = config['max_results']
 max_sentences = config['max_sentences']
 language = config['language']
@@ -37,14 +38,15 @@ windowed = config['windowed']
 window_size = config['window_size']
 
 #loading the spacy model based on the language - this is used for sentence tokenization
-if language == "en":
-    nlp = spacy.load("en_core_web_sm")
-elif language == "it":
-    nlp = spacy.load("it_core_news_sm") 
-elif language == "es":
-    nlp = spacy.load("es_core_news_sm")
-else:
-    raise Exception("ERROR: LANGUAGE NOT CORRECT - should be set as either 'en', 'it' or 'es'")
+if __name__ == "__main__":
+    if language == "en":
+        nlp = spacy.load("en_core_web_sm")
+    elif language == "it":
+        nlp = spacy.load("it_core_news_sm") 
+    elif language == "es":
+        nlp = spacy.load("es_core_news_sm")
+    else:
+        raise Exception("ERROR: LANGUAGE NOT CORRECT - should be set as either 'en', 'it' or 'es'")
 
 # Load transformer model for sentence similarity
 similarity_model = pipeline("feature-extraction", model="sentence-transformers/all-MiniLM-L6-v2")   
@@ -69,7 +71,7 @@ similarity_model = pipeline("feature-extraction", model="sentence-transformers/a
             "9. politico.com: Iowa Election Results 2020 | Live Map Updates | Voting by County\n"+\
             "10. tufts.edu: (2020-Feb): Exclusive Analysis: In Nevada, young people once again force\n"'''
 
-def google_search(query: str, date: str) -> str:
+def google_search(query: str, date: str = "") -> str:
     """
     Get the google search results given a query and a date (date is optional)
     
@@ -202,7 +204,7 @@ def get_search_results(query, keep_browser_open=False):
     """
     chrome_options = Options()
     chrome_options.add_argument('--disable-blink-features=AutomationControlled')
-    chrome_options.add_argument("--headless")
+    # chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-search-engine-choice-screen")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
@@ -227,7 +229,9 @@ def get_search_results(query, keep_browser_open=False):
         
         wait = WebDriverWait(driver, 10)
         try:
-            accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accetta tutto"]')))
+            # accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accetta tutto"]')))
+            accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accept all"]')))
+            
             accept_cookies_button.click()
         except Exception as e:
             print("Cookie consent dialog not found or already accepted.")

@@ -14,3 +14,9 @@ venv/
 
 # Ignore miscellaneous files
 .DS_Store
+
+tokens.py
+
+chromium/
+
+*.exe
