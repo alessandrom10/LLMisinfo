@@ -19,9 +19,9 @@ def kill_process_and_children(pid):
     except psutil.NoSuchProcess:
         pass
 
-def google_search(query, keep_browser_open=False):
+def google_search(query, keep_browser_open=False, path_to_driver = 'C:\\Users\\flash\\Documents\\UNI\\MAG-ANNOII\\MDP\\chromedriver-win64\\chromedriver.exe'):
     # Path to the ChromeDriver executable
-    driver_path = 'C:\\Users\\flash\\Documents\\UNI\\MAG-ANNOII\\MDP\\chromedriver-win64\\chromedriver.exe'  # Sostituisci con il percorso effettivo
+    driver_path =  path_to_driver # Sostituisci con il percorso effettivo
 
     # Configure Chrome options
     chrome_options = Options()
