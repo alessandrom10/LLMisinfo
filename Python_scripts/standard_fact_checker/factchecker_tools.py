@@ -1,5 +1,5 @@
 import yaml
-from sel_search import *
+from Python_scripts.standard_fact_checker.sel_search import *
 from huggingface_hub import InferenceClient
 import os
 

@@ -1,8 +1,5 @@
 import yaml
-
-# import the content of the py file sel_search.py in the folder Python_scripts
-from sel_search import *
-#from Python_scripts.sel_search import *
+from Python_scripts.standard_fact_checker.sel_search import *
 from huggingface_hub import InferenceClient
 import os
 import re
@@ -10,12 +7,13 @@ import ast
 
 def extract_function_call(llm_output: str) -> str:
     # define a pattern that matches strings that starts with "Query: <query>"  and ends with a period
-    pattern = r"[Qq]uery: *['\"]*(.*)['\"]*"
+    pattern = r"[Qq]uery: *['\"](.*)['\"]\."
     # search for the pattern in the LLM output
     match = re.search(pattern, llm_output)
     if match:
         # extract <query> from the matched string
         query = match.group(1)
+        print("Query: " + query)
         return query
     # if no match is found, return an empty string
     return ""
@@ -72,6 +70,7 @@ print(standard_system_prompt)
 
 try:
     API_TOKEN = os.getenv("HF_TOKEN")
+    print(API_TOKEN)
 except:
     print("Please set the HF_TOKEN environment variable to your Hugging Face API token.")
     exit(1)
@@ -109,7 +108,7 @@ def load_model_and_generate_output(user_input):
         fc = extract_function_call(response)'''
     
     query = extract_function_call(response)
-    while query!="": 
+    while fc!="": 
         num_searches += 1
         search_results = google_search(query, date=user_input["date"])
         search_results = "Search number " + str(num_searches) + ":\n" + search_results
