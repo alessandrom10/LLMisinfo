@@ -1,11 +1,10 @@
-# chromedriver_path: 'C:\\Users\\flash\\Documents\\UNI\\MAG-ANNOII\\MDP\\chromedriver-win64\\chromedriver.exe'
-
-
-
-chromedriver_path: 'C:\\Users\\migue\\OneDrive - UNIVERSIDAD DE SEVILLA\\Escritorio\\Universidad\\Master Polimi\\MDP\\LLMisinfo-MDP\\chromium\\chromedriver.exe'
-
+ chromedriver_path: 'C:\\Users\\flash\\Documents\\UNI\\MAG-ANNOII\\MDP\\chromedriver-win64\\chromedriver.exe'
 dataset_path: 'C:\\Users\\flash\\Documents\\UNI\\MAG-ANNOII\\MDP\\dataset'
-chromium_path: 'C:\\Users\\migue\\OneDrive - UNIVERSIDAD DE SEVILLA\\Escritorio\\Universidad\\Master Polimi\\MDP\\LLMisinfo-MDP\\chromium\\chrome-win\\chrome.exe'
+chromium_path: 'C:\\Users\\flash\\AppData\\Local\\Chromium\\Application\\chrome.exe'
+
+#chromedriver_path: 'C:\\Users\\migue\\OneDrive - UNIVERSIDAD DE SEVILLA\\Escritorio\\Universidad\\Master Polimi\\MDP\\LLMisinfo-MDP\\chromium\\chromedriver.exe'
+#dataset_path: 'C:\\Users\\flash\\Documents\\UNI\\MAG-ANNOII\\MDP\\dataset'
+#chromium_path: 'C:\\Users\\migue\\OneDrive - UNIVERSIDAD DE SEVILLA\\Escritorio\\Universidad\\Master Polimi\\MDP\\LLMisinfo-MDP\\chromium\\chrome-win\\chrome.exe'
 
 #max number of results
 max_results: 5
