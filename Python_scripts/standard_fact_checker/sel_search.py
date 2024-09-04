@@ -20,7 +20,7 @@ from transformers import pipeline
 from urllib.parse import urlparse
 
 #loading the configuration variables from the config.yaml file
-def load_config(filename='config.yaml'):
+def load_config(filename='my_config.yaml'):
     with open(filename, 'r') as f:
         config = yaml.safe_load(f)
     return config
@@ -38,15 +38,14 @@ windowed = config['windowed']
 window_size = config['window_size']
 
 #loading the spacy model based on the language - this is used for sentence tokenization
-if __name__ == "__main__":
-    if language == "en":
-        nlp = spacy.load("en_core_web_sm")
-    elif language == "it":
-        nlp = spacy.load("it_core_news_sm") 
-    elif language == "es":
-        nlp = spacy.load("es_core_news_sm")
-    else:
-        raise Exception("ERROR: LANGUAGE NOT CORRECT - should be set as either 'en', 'it' or 'es'")
+if language == "en":
+    nlp = spacy.load("en_core_web_sm")
+elif language == "it":
+    nlp = spacy.load("it_core_news_sm") 
+elif language == "es":
+    nlp = spacy.load("es_core_news_sm")
+else:
+    raise Exception("ERROR: LANGUAGE NOT CORRECT - should be set as either 'en', 'it' or 'es'")
 
 # Load transformer model for sentence similarity
 similarity_model = pipeline("feature-extraction", model="sentence-transformers/all-MiniLM-L6-v2")   
@@ -81,7 +80,7 @@ def google_search(query: str, date: str = "") -> str:
     Returns:
         A sting containing the list of website given by the search results along with a snippet of their content.
     """
-    formatted_results = "Google: "+query+"\n"
+    formatted_results = "Google: "+query+" \n "
     if date != "":
         date = pd.to_datetime(date).date()
         query += " before:" + str(date)
@@ -96,11 +95,13 @@ def google_search(query: str, date: str = "") -> str:
                 text = get_all_text(result)
                 top_s, _, _ = extract_relevant_sentences(text, query)#, top_n=5, windowed=windowed, window_size=window_size)
                 n_good_results += 1
-                formatted_results += str(n_good_results) + ". " + get_domain(result) +": " + "\n".join(top_s) +"\n"
+                formatted_results += str(n_good_results) + ". " + get_domain(result) +": " + " \n ".join(top_s) +" \n"
                 #if we have reached the maximum number of results, we stop
                 if n_good_results==max_results:
                     break
             except Exception as e:
+                print("Failed to fetch page:", result)
+                print(e)
                 continue
     return formatted_results
         

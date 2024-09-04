@@ -20,3 +20,5 @@ tokens.py
 chromium/
 
 *.exe
+
+my_config.py
