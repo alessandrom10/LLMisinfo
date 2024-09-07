@@ -26,8 +26,8 @@ def search_custom(search):
     return search_info  
 
 # Load the tokenizer and the model
-model_name = "microsoft/Phi-3-mini-128k-instruct"
-model_name = "mistralai/Mistral-7B-Instruct-v0.3"
+# model_name = "meta-llama/Meta-Llama-3.1-8B"
+# model_name = "mistralai/Mistral-7B-Instruct-v0.3"
 model_name = "mistralai/Mistral-7B-v0.1"
 # for llama 8b
 # {
@@ -55,12 +55,13 @@ api_token = "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" # get yours at hf.co/setting
 # model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True).to("cuda")
 
 # Load react prompt from txt file
-with open("Prompts/ReAct_prompts.txt", "r") as file:
+# with open("Prompts/ReAct_prompts.txt", "r") as file:
+with open("Prompts/Question_answer.txt", "r") as file:
     react_shots = file.read()
 
 # question to be answered
 # text = react_shots + "<|user|> Question: Which is the strongest animal? <|end|>"
-text = react_shots + "Question: Which is the strongest animal? \n\n"
+text = react_shots + "Question: Which is the faster pokemon and the one with higher physical attack?. \n\n"
 
 
 # Tokenize the input
@@ -124,11 +125,8 @@ for i in range(n_shots):
 
     print("Question: " + text.split("Question:")[-1])
 
-    if "Final Answer" in text:
-        print(text)
-        break
 
-pre = "Final Answer: "  
+pre = " Final Answer: "  
 # pre_tok = tokenizer.encode(pre, add_special_tokens=False, return_tensors="pt").to("cuda")
 
 final_text = query_hf(
@@ -138,7 +136,19 @@ final_text = query_hf(
     max_tokens=100,
     top_k=10,
     temperature=1.,
-)
+)[0]["generated_text"]
+
+final_answer = final_text[len(text):]
+
+if "Question: " in final_answer:
+    final_answer = final_answer.split("Question: ")[0]
+
+final_text = text + final_answer
 
 # generated_text = tokenizer.decode(tokens.tolist()[0][prompt_len:])
-print("Question: " + final_text[0]["generated_text"].split("Question: ")[-1])
+print("Question: " + final_text.split("Question: ")[-1])
+
+# save final text to file
+file_path = "Results/ReAct_results_faster_stronger_pokemon.txt"
+with open(file_path, "w", encoding="utf-8") as file:
+    file.write("Question: " + final_text.split("Question: ")[-1])

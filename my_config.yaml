@@ -8,7 +8,7 @@ chromium_path: 'C:\\Users\\migue\\OneDrive - UNIVERSIDAD DE SEVILLA\\Escritorio\
 
 #max number of results
 max_results: 5
-max_sentences: 3
+max_sentences: 2
 max_searches: 3
 windowed: False
 window_size: 5
@@ -23,10 +23,7 @@ model_id: "meta-llama/Meta-Llama-3.1-70B-Instruct"
 #model_id: "meta-llama/Meta-Llama-3.1-405B-Instruct"
 #model_id: "google/gemma-2-9b-it"
 
-temperature: 0
-max_tokens: 1000
-
-url_blacklist: ['facebook.com', 'google.com', 'youtube.com','politifact.com','quora.com','reddit.com']
+url_blacklist: ['facebook.com', 'google.com', 'youtube.com','politifact.com', "quora.com"]
 tag_blacklist: ['header', 'footer', 'nav', 'aside', 'script', 'style', 'meta', 'head', 'h1', 'h2', 'h3']
 type_blacklist: [".pdf"]
 
@@ -37,9 +34,9 @@ type_blacklist: [".pdf"]
 
 standard_system_prompt_1: >
   You are a fact-checking expert. Evaluate the truthfulness of a statement given by the user.
-  Always reply either in the format 'Query: {query}' and terminate generation to tell the user to perform a google search with the query of your choice,
-  or you can reply in the format '{reasoning} Final answer: {verdict}'.
-
+  You have two options. You can either reply in the format 'Query: {query}' and terminate to perform a google search with a query of your choice,
+  or you can reply in the format 'Final answer: {verdict}, {reason}'.
+  
 #standard_system_prompt_2: >
 #  Consider your sources, context and date while assessing. to answer return 'Final answer: {verdict}, {reason}.'
 #  You must respond with a valid verdict ('false','mostly-false','half-true','mostly-true','true') or 'uncertain',
@@ -50,13 +47,10 @@ standard_system_prompt_1: >
 
 standard_system_prompt_2: >
   Consider your sources, context and date while assessing.
-  You must respond with a valid verdict ('false','mostly-false','mixture','mostly-true','true'),
+  You must respond with a valid verdict ('false','mostly-false','half-true','mostly-true','true') or 'uncertain',
   providing reasoning and citing sources by providing the domain of the pertinent search results.
-# or 'uncertain'  
-#The function will be executed by the system and you will receive the output to use in your response.
-#Do not use variables. 
-
-kshot_examples_path: "Prompts/standard_kshot.txt"
+  The function will be executed by the system and you will receive the output to use in your response.
+  Do not use variables. 
 
 tools: [{
         "type": "function",
