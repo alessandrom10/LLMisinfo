@@ -38,15 +38,15 @@ windowed = config['windowed']
 window_size = config['window_size']
 
 #loading the spacy model based on the language - this is used for sentence tokenization
-if __name__ == "__main__":
-    if language == "en":
-        nlp = spacy.load("en_core_web_sm")
-    elif language == "it":
-        nlp = spacy.load("it_core_news_sm") 
-    elif language == "es":
-        nlp = spacy.load("es_core_news_sm")
-    else:
-        raise Exception("ERROR: LANGUAGE NOT CORRECT - should be set as either 'en', 'it' or 'es'")
+#if __name__ == "__main__":
+if language == "en":
+    nlp = spacy.load("en_core_web_sm")
+elif language == "it":
+    nlp = spacy.load("it_core_news_sm") 
+elif language == "es":
+    nlp = spacy.load("es_core_news_sm")
+else:
+    raise Exception("ERROR: LANGUAGE NOT CORRECT - should be set as either 'en', 'it' or 'es'")
 
 # Load transformer model for sentence similarity
 similarity_model = pipeline("feature-extraction", model="sentence-transformers/all-MiniLM-L6-v2")   
@@ -85,7 +85,7 @@ def google_search(query: str, date: str = "") -> str:
     if date != "":
         date = pd.to_datetime(date).date()
         query += " before:" + str(date)
-        print("Query with date:", query)
+        #print("Query with date:", query)
 
     search_results = get_search_results(query)
     n_good_results = 0
@@ -101,6 +101,7 @@ def google_search(query: str, date: str = "") -> str:
                 if n_good_results==max_results:
                     break
             except Exception as e:
+                print(e)
                 continue
     return formatted_results
         
@@ -162,6 +163,13 @@ def filter_urls(urls):
         url for url in urls
         if is_valid_url(url) and is_allowed_domain(url) and is_allowed_type(url)
     ]
+    
+    # Remove duplicate results from the same domain
+    filtered_domains = [get_domain(url) for url in filtered_urls]
+    filtered_urls = [
+        filtered_urls[i] for i in range(len(filtered_urls))
+        if get_domain(filtered_urls[i]) not in filtered_domains[:i]
+    ]
     return filtered_urls
 
 def save_soup_to_file(soup, filename):
@@ -180,6 +188,11 @@ def get_all_text(url):
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
         raise Exception(f"Failed to fetch page, status code: {response.status_code}")
+    # Check the content type to determine if it's a webpage or a downloadable file
+    content_type = response.headers.get('Content-Type')
+    if 'text/html' not in content_type:
+        raise Exception(f"URL does not point to an HTML page, content type: {content_type}")
+
     
     soup = BeautifulSoup(response.text, 'html.parser')
     for element in soup(tag_blacklist):
@@ -204,7 +217,7 @@ def get_search_results(query, keep_browser_open=False):
     """
     chrome_options = Options()
     chrome_options.add_argument('--disable-blink-features=AutomationControlled')
-    # chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-search-engine-choice-screen")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
@@ -229,8 +242,8 @@ def get_search_results(query, keep_browser_open=False):
         
         wait = WebDriverWait(driver, 10)
         try:
-            # accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accetta tutto"]')))
-            accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accept all"]')))
+            accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accetta tutto"]')))
+            #accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accept all"]')))
             
             accept_cookies_button.click()
         except Exception as e:
@@ -329,3 +342,5 @@ def extract_relevant_sentences(content, query):#, top_n=5, windowed=False, windo
         top_sentences = ranked_sentences[:max_sentences]
         
     return top_sentences, top_indices, top_similarities
+
+#google_search("Bernie Sanders wins Nevada Democratic caucuses", date="2024-03-03")

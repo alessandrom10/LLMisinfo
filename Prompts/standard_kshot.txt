@@ -1,0 +1,97 @@
+<user>
+Claim: “The average commute time for people who drive to work in (New York City) is 43 minutes, the longest in the nation.”. Made by Carl Weisbrod. Date: 2024-03-03.
+<assistant>
+Query: average commute time for people driving to work in New York City
+<user>
+Search number 1:
+Google: average commute time for people driving to work in New York City
+1. bankrate.com: In 2021, 7.7 percent of American workers reported driving at least an hour each way for their daily commute, down from almost 10 percent in 2019.
+Although longer commutes became more common starting in 2010, the portion of workers who reported having at least a one-hour commute dropped from its peak of 9.8 percent in 2019 to 7.7 percent in 2021.
+New Yorkers have the longest commute, with an average travel time of 33.2 minutes.
+2. nytimes.com: The average commute distance changed much less, an indication that commuters are driving faster — but also, more people are driving.
+Source: Replica Note: Car commutes only include rides in privately owned cars, excludes taxis or rideshares.
+Average hours spent commuting per week by education level for all workers High school or less 0 1 2 3 4 hours ’12 ’22
+3. metro-manhattan.com: A commute is more than just a daily routine—it’s integral to you and your team’s overall satisfaction and productivity.
+The perfect property is just a click—and a shorter commute—away.
+The calculator then provides an accurate estimate of the daily commute, allowing you to objectively compare locations side-by-side and rank them based on your specific criteria.
+4. stacker.com: Stacker compiled statistics about the average commute in New York City using data from the U.S. Census Bureau .
+Skip to main content New York City, American commutes are getting longer, with a U.S. Census Bureau report released in 2021 revealing the average one-way commute in 2019 reached a record high of 27.6 minutes.
+Average commute: 37 minutes - Workers with a 1+ hour commute: 22% - Workers who drive to work: 54.7% - Workers who carpool to work: 6.3%
+5. jobera.com: New York City has the longest average commute time in the U.S. at 34.7 minutes.
+New York City has the longest commute time.
+New York has the longest commute time.
+<assistant>
+Query: highest average commute time by car New York over the years
+<user>
+Search number 2:
+Google: highest average commute time by car New York over the years
+1. metro-magazine.com: Additionally, only 28% of NYC commuters can access the city within 30 minutes by car, while just 6% of public transit users can access the city within 30 minutes.
+the U.S. city with the longest average commute was found to be New York City, with those commuting into the city spending 43 minutes travelling on average.
+Commuters in NYC also face the longest commute by transit (53 minutes) and the city was identified as America’s least reachable city
+2. metro-manhattan.com: Commute times in New York City are notoriously long.
+Consider using a tool like our commute calculator to help your search.
+However, this phrase takes on a whole new meaning when you’re one of the millions commuting to work in NYC daily.
+3. bankrate.com: New Yorkers have the longest commute, with an average travel time of 33.2 minutes.
+Although commute times peaked in 2019 at 27.6 minutes, they have since dropped back down to 25.6 minutes in 2021.
+Although longer commutes became more common starting in 2010, the portion of workers who reported having at least a one-hour commute dropped from its peak of 9.8 percent in 2019 to 7.7 percent in 2021.
+4. newgeography.com: As we can see the New York has the longest average commute time in the United State, a lot of people commutes everyday the government should find a way, anyway guys.
+New York's commutes improved a bit over the 2000s, however.
+Overall US commute times fell as well, but less than New York's: Source: Census 2000, American Community Survey 2010 1-yr
+5. tomtom.com: Travel times and speeds are based on worldwide trip data spanning 551 billion (10 9 ) km anonymously collected during the year.
+Calling all city planners, automakers and policy makers – let’s change the way the world moves.
+Travel times and speeds are based on trip data anonymously collected from drivers within the larger metropolitan area (“metro”) throughout the complete road network.
+<assistant>
+Reasoning: Based on the search results, there is different information about the average commute time, with metro-magazine.com being the only source reporting the same value stated by the claim, while the others are all less than what Carl Weisbrod states. However, it is true that the commute time in New York City is the longest in the nation (bankrate.com, jobera.com), which is the most relevant part of the claim.
+Final answer: mostly-true
+
+<user>
+Claim: "I was the deciding vote on abolishing the death penalty in the state of Illinois.". Made by Susana Mendoza. Date: 2018-11-19.
+<assistant>
+Query: Susana Mendoza death penalty Illinois vote
+<user>
+Google: Susana Mendoza death penalty Illinois vote
+1. factcheck.org: The bill’s sponsor is Illinois state Rep. Susana Mendoza of Chicago, who vainly attempted to get it enacted in 2001 after being elected the previous year on the strength of her anti-gang activism.
+Illinois state Rep. Susana Mendoza of Chicago said the ad makes her "sick to my stomach" and "completely mischaracterizes Senator Obama’s position against ruthless criminals."
+The debate over the Mendoza bill arose after Gov. Ryan had suspended all executions in January 2000 because 13 death-row inmates were found to have been wrongly convicted in the previous 23 years.
+2. governing.com: Comptroller Susana Mendoza warned that Illinois was dangerously close to not having enough cash to meet court orders to pay for essential services, which meant Illinois could be held in contempt of court in several cases.
+Illinois Commission on Government Forecasting and Accountability As the collateral damage grew, so did pressure on lawmakers to end the crisis.
+"Illinois government did work.
+3. chicago.suntimes.com: Illinois Comptroller Susana Mendoza demanded an apology from Gov. Bruce Rauner and his policy chief over an email seeking to blame U.S. Sen. Tammy Duckworth for a deadly Legionnaires’ outbreak in Quincy.      
+Pete Buttigieg, left, the mayor of South Bend, Ind., is greeted by J.B. Pritzker after Buttigieg delivered the keynote address at the Illinois Democratic County Chairs; Association brunch at the Crowne Plaza Thursday, Aug. 16, 2018, in Springfield, Ill., prior to Democrat Day at the Illinois State Fair.
+You can find all of the PolitiFact Illinois stories we’ve reported together here.
+4. nprillinois.org: Mendoza would lose by 30 votes, but she was hooked on the “thousands of people who voted for a 25-year-old.”
+Mendoza and her brothers decided it was best and safest for their mother to move in to a 55-and-older community in the southwest suburbs, where she remains today.
+Talk to those who have worked with and admire the 39-year-old Mendoza, who after a decade as a state representative was elected in 2011 as Chicago’s first female city clerk, and they’ll talk about how her sense of humor — and respect — balances her unyielding candor.
+5. taylorvilledailynews.com: In some good financial news, Illinois comptroller Susana Mendoza sent a categorical payment to districts across the state.
+Play Audio Illinois Comptroller Susana Mendoza recently issued an overdue categorical payment to school districts in the state.
+Illinois State Police officials and the FBI are seeking the public’s assistance for information regarding the kidnapping and murder of Tammy J. Zywicki.        
+<assistant>
+Query: Susana Mendoza role in abolishing death penalty
+<user>
+Google: Susana Mendoza role in abolishing death penalty
+1. hrw.org: Naomi Roht-Arriaza (comment): State Responsibility to Investigate and Prosecute Grave Human Rights Violations in International Law, California Law Review, No. 78 (1990); and José Zalaquett, "Confronting Human Rights Violations Committed by Former Governments: Principles Applicable and Political Constraints".
+Declaration of Basic Principles of Justice for Victims of Crime and Abuse of Power, November 29, 1985, adopted by the 96th plenary meeting of the United Nations General Assembly.
+Other measures to be implemented by all levels of government are, for example, measures to coordinate training programs to prevent crimes, provide reparations to the victims and their families in cases in which investigations were not carried out properly, provide results and other information on developments in investigations of homicides and "disappearances" of women. 
+2. refworld.org: Dr. Mendoza's case is discussed above, at Political Prosecutions .
+The same document referred to Dr. Mendoza as a "counterrevolutionary" for his activities with his medical colleagues and with human rights activists, but did not judge him guilty of illicit association.
+Due to these extremely restricted opportunities for visiting, Dr. Mendoza's children only saw him a handful of times after his arrest.
+<assistant>
+Query: Illinois death penalty abolition 2011 Susana Mendoza role
+<user>
+Search number 3:
+Google: Illinois death penalty abolition 2011 Susana Mendoza role
+1. academia.edu: These changes are generally referred to as a 'withdrawal' or 'retrenchment' of the state.
+This thesis argues that it is vital to understand the workings of the state and the wider historical legacies that helped to produce inequalities through material and symbolic violence, since it is this context which frames how austerity is lived and felt in the everyday.
+It is also possible, however, to argue that the state is actually extending its reach into the lives of disadvantaged or 'troubled' families.
+<assistant>
+Reasoning: The claim made by Susana Mendoza that she was the deciding vote on abolishing the death penalty in the state of Illinois cannot be verified with the provided search results. However, it is known that the death penalty was abolished in Illinois in 2011, when Governor Pat Quinn signed a bill abolishing the death penalty.
+Final answer: mostly-false
+
+<user>
+Claim: “People who took the jab are technically ‘non human species.’”. Made by Instagram posts. Date: 2023-09-16.
+<assistant>
+Reasoning: The claim that people who took the jab are technically 'non-human species' is likely based on misinformation about the COVID-19 vaccine and its effects on human biology.
+According to reputable sources such as the World Health Organization (WHO) and the Centers for Disease Control and Prevention (CDC), COVID-19 vaccines do not alter human DNA or change a person's species. The vaccines work by introducing a piece of genetic material called messenger RNA (mRNA) that instructs cells to produce a specific protein, which triggers an immune response to fight the virus.
+There is no scientific evidence to support the claim that COVID-19 vaccines can change a person's species or make them 'non-human.' This claim is likely a misinterpretation or exaggeration of the vaccine's mechanism of action.
+Final answer: false
+

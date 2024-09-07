@@ -19,6 +19,40 @@ def extract_function_call(llm_output: str) -> str:
         return query
     # if no match is found, return an empty string
     return ""
+
+def parse_kshot(filename = 'standard_kshot.txt'):
+    messages = []
+    snippet = ""
+    user = False
+    assistant = False
+    with open(filename, 'r', encoding='utf-8') as f:
+        for line in f:
+            #print(line)
+            if line.startswith("<user>"):
+                if assistant:
+                    messages.append({"role":"assistant", "content":snippet})
+                    snippet = ""
+                user = True
+                assistant = False
+            elif line.startswith("<assistant>"):
+                if user:
+                    messages.append({"role":"user", "content":snippet})
+                    snippet = ""
+                user = False
+                assistant = True
+            elif line=="\n":
+                if user:
+                    messages.append({"role":"user", "content":snippet})
+                elif assistant:
+                    messages.append({"role":"assistant", "content":snippet})
+                snippet = ""
+                user = False
+                assistant = False
+            else:
+                snippet += line
+    #for m in messages:
+    #    print(m)
+    return messages
     
 
 '''def extract_function_call(llm_output: str) -> str:
@@ -57,6 +91,9 @@ max_searches = config['max_searches']
 model_name = config['model_name']
 model_id = config['model_id']
 tools = config['tools']
+temperature = config['temperature']
+max_tokens = config['max_tokens']
+kshot_examples_path = config['kshot_examples_path']
 
 standard_system_prompt = config['standard_system_prompt_1']
 if max_searches == 1:
@@ -64,7 +101,7 @@ if max_searches == 1:
     standard_system_prompt += "you must make only one google search. "
 else:
     #standard_system_prompt += "you can use the function from one up to "+str(max_searches)+" times. "
-    standard_system_prompt += "you can make google searches from one up to "+str(max_searches)+" times. "
+    standard_system_prompt += "you can make up to "+str(max_searches)+" google searches. "
 standard_system_prompt += config['standard_system_prompt_2']
 #standard_system_prompt += "\n"+str(tools[0])
 
@@ -85,14 +122,20 @@ def load_model_and_generate_output(user_input):
     Returns:
         The model's final assessment of the claim as a string. The search results are also printed.
     """
-    messages = [
-         {"role": "system", "content": standard_system_prompt},
-         {"role": "user", "content": "Claim: "+user_input["claim"]+". Date:"+user_input["date"]}
-    ]
+    messages = [{"role": "system", "content": standard_system_prompt}]
+    messages += parse_kshot(kshot_examples_path)
+    formatted_claim = "Claim: "+user_input["claim"]+". " 
+    if user_input["author"]!="":
+        formatted_claim += "Made by "+user_input["author"]+". "
+    if user_input["date"]!="":
+        formatted_claim += "Date: "+user_input["date"]+". "
+    print("FORMATTED CLAIM: "+formatted_claim)
+    messages.append({"role": "user", "content": formatted_claim})  
+    
     num_searches = 0
     # Load the model from the Hugging Face Hub
     client = InferenceClient(model=model_id, token=API_TOKEN)
-    response = client.chat_completion(messages=messages, max_tokens=1000).choices[0].message.content
+    response = client.chat_completion(messages=messages, max_tokens=max_tokens, temperature=temperature).choices[0].message.content
     print(response)
 
     '''fc = extract_function_call(response)
@@ -115,7 +158,7 @@ def load_model_and_generate_output(user_input):
         search_results = "Search number " + str(num_searches) + ":\n" + search_results
         print(search_results)
         messages.append({"role": "user", "content": search_results})
-        response = client.chat_completion(messages=messages,max_tokens=1000).choices[0].message.content
+        response = client.chat_completion(messages=messages,max_tokens=max_tokens, temperature=temperature).choices[0].message.content
         print(response)
         query = extract_function_call(response)
     return response
@@ -126,7 +169,8 @@ def main():
     # Get input from the user
     claim = input("Enter the claim to fact-check: ")
     date = input("Enter the date of the claim (optional): ")
-    user_input = {"claim": claim, "date": date}
+    author = input("Enter the author of the claim (optional): ")
+    user_input = {"claim": claim, "date": date, "author": author}
     # Generate output from the model
     output = load_model_and_generate_output(user_input)
     # Print the model's output
