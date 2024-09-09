@@ -51,26 +51,6 @@ else:
 # Load transformer model for sentence similarity
 similarity_model = pipeline("feature-extraction", model="sentence-transformers/all-MiniLM-L6-v2")   
 
-'''def google_search(query: str) -> str:
-    """
-    Get the google search results given a query
-    
-    Args:
-        query: the query that will be used to perform the search
-    Returns:
-        A sting containing the list of website given by the search results along with a snippet of their content.
-    """
-    return "Google: "+query+"\n"+\
-            "1. nytimes.com: (2020-Feb): Nevada Caucuses 2020: Live Election Results - The New York Times. Feb 22, 2020 ...\n"+\
-            "2. nbcnews.com: Sanders wins Nevada Democratic caucuses with wave of young and ....\n"+\
-            "3. nytimes.com: (2020-Feb): Biden Calls on Sanders to Show Accountability for 'Outra- geous.. Feb 16, 2020\n"+\
-            "4. vox.com: (2020-Feb): Nevada caucus results: 3 winners and 2 losers - Vox. Feb 22, 2020\n"+\
-            "5. washingtonpost.com: 2020 Nevada Caucuses Live Election Results | The Washing- ton Post. Feb 24, 2020 ... 2020 Nevada Democratic presidential caucuses; Bernie Sanders, 6,788, 46.8; Joe Biden, 2,927, 20.2; Pete Buttigieg, 2,073 ....\n"+\
-            "6. theintercept.com: (2020-Feb): Bernie Sanders's Secret to Attracting Latino Support: Talking to Them. Feb 20, 2020\n"+\
-            "7. pbs.org: (2020-Feb): Bloomberg qualifies for debate, Sanders leads ahead of Nevada 8. wikipedia.org: 2020 Nevada Democratic presidential caucuses - Wikipedia.\n"+\
-            "9. politico.com: Iowa Election Results 2020 | Live Map Updates | Voting by County\n"+\
-            "10. tufts.edu: (2020-Feb): Exclusive Analysis: In Nevada, young people once again force\n"'''
-
 def google_search(query: str, date: str = "") -> str:
     """
     Get the google search results given a query and a date (date is optional)
