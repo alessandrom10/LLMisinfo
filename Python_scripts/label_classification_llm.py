@@ -1,14 +1,16 @@
-# This script performs the mapping of the raw truth labels from the dataset into the standard ones,
-# By givining to the model both the claim and its corresponding truth label, this script fully works
+# This script performs the mapping of the raw truth labels from the input dataset into the standard ones
+# This script fully works
 
-from datasets import Dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, pipeline
 import pandas as pd
 import torch
 
-df = pd.read_csv("Datasets/dataset_english_only.csv", encoding="utf-16", sep="\t", dtype={24: str})
-
+dataset_input_path = "claim_review_english.csv"
 model_name = "meta-llama/Meta-Llama-3-8B-Instruct"
+hf_token = "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"
+dataset_output_path = "dataset_english_llm_mapping.csv"
+
+df = pd.read_csv(dataset_input_path, encoding="utf-16", sep="\t", dtype={24: str})
 
 bnb_config = BitsAndBytesConfig(
     load_in_4bit = True,
@@ -21,11 +23,11 @@ model = AutoModelForCausalLM.from_pretrained(
     model_name,
     torch_dtype = "auto",
     trust_remote_code = True,
-    token = "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",
+    token = hf_token,
     quantization_config = bnb_config
 )
 
-tokenizer = AutoTokenizer.from_pretrained(model_name, device = "cuda", token = "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")
+tokenizer = AutoTokenizer.from_pretrained(model_name, device = "cuda", token = hf_token)
 tokenizer.pad_token_id = tokenizer.eos_token_id
 
 pipe = pipeline(
@@ -40,32 +42,34 @@ generation_args = {
     "do_sample": False 
 }
 
-a = 0
-b = 100
+first_index = 0
+last_index = len(df) - 1
 standard_labels = [ "False", "Mostly False", "Mixture", "Mostly True", "True" ]
+current_label_column_name = "reviewRating.alternateName"
 
-system_prompt = """You are an assistant that helps fact-checking claims. Given a claim and the label telling its veracity, you need to normalize the label to a standart format, so to one of these labels: True, Mostly True, Mixture, Mostly False or False. Answer only with the mapped label that you have chosen. 
+system_prompt = """You are an assistant that helps converting some veracity labels to a standard set of labels. Given a label telling the veracity of a certain claim, you need to normalize such label to a standart format, so to one of these labels: True, Mostly True, Mixture, Mostly False or False. Answer only with the mapped label that you have chosen. 
 For example:
-Claim: The Eiffel Tower is located in Germany
-Label: Totally False
-Your answer should be just the word: False
-Claim: One plus one equals two
+Label: Missing Context
+Your answer should be just the word: Mixture
 Label: True
 Your answer should be just the word: True
+Label: Staged
+Your answer should be just the word: False
+Label: Edited, Missing Context
+Your answer should be just the word: False
 """
 
 inputs = []
 mapped_labels = 0
-for i in range(a, b):
-    claim = df["claimReviewed"].iloc[i]
-    label = df["reviewRating.alternateName"].iloc[i]
-    if(label not in standard_labels):
+for i in range(first_index, last_index):
+    current_label = df[current_label_column_name].iloc[i]
+    if(current_label not in standard_labels):
         mapped_labels += 1
-        claim_review = f"Claim: {claim}\nLabel: {label}"
+        label_query = f"Label: {current_label}"
 
         messages = [
-            {"role": "System", "content": system_prompt},
-            {"role": "user", "content": claim_review},
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": label_query},
         ]
 
         prompt = pipe.tokenizer.apply_chat_template(
@@ -76,20 +80,20 @@ for i in range(a, b):
 
         inputs.append(prompt)
 
-outputs = pipe(inputs, **generation_args, batch_size=4)
+outputs = pipe(inputs, **generation_args, batch_size = 4)
 
-mapped_labels = 0
-for i in range(a, b):
-    label = df["reviewRating.alternateName"].iloc[i]
-    if label not in standard_labels:
+mapped_labels_index = 0
+for i in range(first_index, last_index):
+    current_label = df[current_label_column_name].iloc[i]
+    if current_label not in standard_labels:
         input_string = "assistant"
-        actual_output = outputs[mapped_labels][0]['generated_text']
+        actual_output = outputs[mapped_labels_index][0]['generated_text']
         if actual_output.startswith(input_string):
             clean_output = actual_output.split("assistant", 1)[1].lstrip()
         else:
             clean_output = actual_output
 
-        df.loc[i, "reviewRating.alternateName"] = clean_output
-        mapped_labels += 1
+        df.loc[i, current_label_column_name] = clean_output
+        mapped_labels_index += 1
 
-df.to_csv("Datasets/dataset_english_llm_mapping.csv", index = False, encoding="utf-16", sep="\t")
+df.to_csv(dataset_output_path, index = False, encoding="utf-16", sep="\t")

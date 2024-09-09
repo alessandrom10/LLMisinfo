@@ -1,0 +1,12 @@
+This file wants to be a short and clear guide over the folder structure in this repository,
+if you add other directories, please update this file
+
+Datasets --> As the name suggests this folder will contain all the datasets used as input for our project
+
+Prompts --> As the name suggests this folder will contain all the prompts we'll use for our scripts
+
+Python_scripts --> This folder will contain all our python scripts that we'll make (not Google colabs files)
+    hiss_fact_checking --> (NEEDS EXPLANATION)
+    standard_fact_checker --> (NEEDS EXPLANATION)
+
+Results --> This folder will contain the expected outputs that we want from our LLMs (that we expect it to produce)
