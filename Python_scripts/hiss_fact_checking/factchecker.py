@@ -71,9 +71,10 @@ def load_model_and_generate_output(user_input):
     messages.append({"role": "user", "content": formatted_claim}) 
     # Load the model from the Hugging Face Hub
     client = InferenceClient(model=model_id, token=API_TOKEN)
+    print("Loaded the model from the Hugging Face Hub.")
     response = client.chat_completion(messages=messages, max_tokens=1000, temperature=temperature).choices[0].message.content
-    question = extract_question(response)
     print("LLM RESPONSE:"+response)
+    question = extract_question(response)
     while question != "":
         messages.append({"role": "assistant", "content": response})
         messages.append(confident_message)

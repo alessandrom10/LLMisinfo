@@ -21,4 +21,4 @@ chromium/
 
 *.exe
 
-my_config.py
+my_config.yaml

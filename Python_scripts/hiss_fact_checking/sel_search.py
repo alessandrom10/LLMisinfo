@@ -25,9 +25,10 @@ def load_config(filename='config.yaml'):
         config = yaml.safe_load(f)
     return config
 
-config = load_config()
+config = load_config("my_config.yaml")
 driver_path = config['chromedriver_path']
 chromium_path = config['chromium_path']
+config = load_config()
 max_results = config['max_results']
 max_sentences = config['max_sentences']
 language = config['language']
@@ -324,4 +325,4 @@ def extract_relevant_sentences(content, query):#, top_n=5, windowed=False, windo
         
     return top_sentences, top_indices, top_similarities
 
-#google_search("Bernie Sanders wins Nevada Democratic caucuses", date="2024-03-03")
+print(google_search("New york city commute time by car", date="2024-03-03"))
