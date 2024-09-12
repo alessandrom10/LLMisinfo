@@ -10,12 +10,13 @@ from IPython.utils import io
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, pipeline
 from huggingface_hub import login
 from serpapi import GoogleSearch
+import os
 import pandas as pd
 import torch
 
 serpapi_key = "" # get one from https://serpapi.com , first few requests are free!
 
-huggingface_token = "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"
+hf_token = os.getenv("HF_TOKEN")
 model_name = "meta-llama/Meta-Llama-3-8B-Instruct"
 dataset_path = "./Datasets/claim_review_english_mapped.csv"
 
@@ -102,7 +103,7 @@ Based on the answers to these questions, it is clear that among False, Mostly Fa
 Claim: ''', '''A fact checker will''',
 ]
 
-login(token = huggingface_token)
+login(token = hf_token)
 
 bnb_config = BitsAndBytesConfig(
   load_in_4bit = True,
@@ -121,18 +122,18 @@ model = AutoModelForCausalLM.from_pretrained(
 tokenizer = AutoTokenizer.from_pretrained(model_name, device = "cuda")
 generator = pipeline("text-generation", model = model, tokenizer = tokenizer)
 
-def promptf(question, prompt, intermediate = "\nAnswer:", followup = "Intermediate Question", finalans= 'Based on'):
+def promptf(claim, prompt, intermediate = "\nAnswer:", followup = "Intermediate Question", finalans= 'Based on'):
   '''
   parameters:
-  question - the claim
-  prompt - a weird list of two strings, the first element is the few shots needed as prompt to the llm, while the second is the string "A fact checker will"
-  intermediate - a string "\nAnswer:" to be put after the response of the llm when asked if it has the confidence to answer the sub-claim question
-  followup - a string "intermediate question" not used it seems
+  claim - the claim to be fact-checked
+  prompt - a list of two strings, the first one are the few shots for the HiSS prompting, while the second is the string "A fact checker will"
+  intermediate - a string "\nAnswer:" to be put after the response of the llm when it answer no to the question if it has the confidence to answer the given question
+  followup - a string "Intermediate question", that is actually never used it seems
   finalans - the string introducing the final predction
   '''
 
   system_prompt = prompt[0]
-  current_user_prompt = question + "\n" + prompt[1]
+  current_user_prompt = claim + "\n" + prompt[1]
 
   ret_text = call_llama(system_prompt, current_user_prompt, stop = ' No.')
 
