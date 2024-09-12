@@ -1,13 +1,23 @@
-# This script has been downloaded from here (https://github.com/jadeCurl/HiSS), it deals with the HiSS (Hierarchical Step-by-Step) prompting method to separate each claim
-# Into the subclaims that compose it, i'm still trying to understand what parts of it work
+# This original version of this script has been downloaded from here (https://github.com/jadeCurl/HiSS), but has since then been heavily modified
+# It deals with the HiSS (Hierarchical Step-by-Step) prompting method to separate each claim into the subclaims that compose it,
+# and for each of them it asks the llm if it is confident into proving its veracity,
+# If the answer is "no", then a fake call to the internet to search for the answer is performed, while actually the answer
+# returned is allways "No, this is completely false", at the very end it is asked to the llm to perform a final evaluation
+# over the veracity of the whole statement considering the veracity of all of its subclaims
+# This script fully works, only the part about retrieving the answer from the internet doesn't, since that part has not been developed yet
 
 from IPython.utils import io
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, pipeline
 from huggingface_hub import login
 from serpapi import GoogleSearch
-import json
+import pandas as pd
+import torch
 
 serpapi_key = "" # get one from https://serpapi.com , first few requests are free!
+
+huggingface_token = "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"
+model_name = "meta-llama/Meta-Llama-3-8B-Instruct"
+dataset_path = "./Datasets/claim_review_english_mapped.csv"
 
 prompt = ['''
 Claim: "Emerson Moser, who was Crayola’s top crayon molder for almost 40 years, was colorblind."
@@ -35,7 +45,7 @@ Answer: Yes.
 Question: Was Emerson Moser's colorblindness only confusing for certain colors?
 Tell me if you are confident to answer the question or not. Answer me ‘yes’ or ‘no’: No.
 Answer: Moser has had tritanomaly, a type of colorblindness that makes it difficult to distinguish between blue and green and between yellow and red.
-Based on the answers to these questions, it is clear that among pants-fire, false, barely-true, half-true, mostly-true, and true, the claim can be classified as mostly-true.
+Based on the answers to these questions, it is clear that among False, Mostly False, Mixture, Mostly True and True the claim can be classified as Mostly True.
 
 Claim: "Bernie Sanders said 85 million Americans have no health insurance."
 A fact checker will not split the claim since the original claim is easier to verify.
@@ -52,7 +62,7 @@ Answer: The Commonwealth Fund survey found that 43% of working-age adults 19 to 
 Question: Is the statement "we have 85 million Americans who have no health insurance" partially accurate according to the information in the passage?
 Tell me if you are confident to answer the question or not. Answer me ‘yes’ or ‘no’: No.
 Answer: Bernie Sanders omitted that his figure included people who either have no health insurance or are under-insured.
-Based on the answers to these questions, it is clear that among pants-fire, false, barely-true, half-true, mostly-true, and true, the claim is classified as half-true.
+Based on the answers to these questions, it is clear that among False, Mostly False, Mixture, Mostly True and True the claim is classified as Mostly True.
 
 Claim: "JAG charges Nancy Pelosi with treason and seditious conspiracy."
 A fact checker will decompose the claim into 2 subclaims that are easier to verify:
@@ -69,7 +79,7 @@ Answer: There is no evidence to support this claim.
 Question: Where is the source of the claim?
 Tell me if you are confident to answer the question or not. Answer me ‘yes’ or ‘no’: No.
 Answer: Real Raw News, a disclaimer stating that it contains "humor, parody and satire" and has a history of publishing fictitious stories.
-Based on the answers to these questions, it is clear that among pants-fire, false, barely-true, half-true, mostly-true, and true, the claim is classified as pants-fire.
+Based on the answers to these questions, it is clear that among False, Mostly False, Mixture, Mostly True and True the claim is classified as False.
 
 Claim: "Cheri Beasley “backs tax hikes — even on families making under $75,000."
 A fact checker will decompose the claim into 2 subclaims that are easier to verify:
@@ -86,80 +96,95 @@ Answer: The ad makes a misleading connection between the two issues and does not
 Question: Has Cheri Beasley ever advocated for tax hikes specifically on families making under $75,000?
 Tell me if you are confident to answer the question or not. Answer me ‘yes’ or ‘no’: No.
 Answer: No evidence found that Cheri Beasley has explicitly advocated for such a tax hike.
-Based on the answers to these questions, it is clear that among pants-fire, false, barely-true, half-true, mostly-true, and true, the claim can be classified as barely-true.
+Based on the answers to these questions, it is clear that among False, Mostly False, Mixture, Mostly True and True the claim can be classified as Mostly True.
 
 
 Claim: ''', '''A fact checker will''',
 ]
 
-huggingface_token = "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"
 login(token = huggingface_token)
 
-model_name = "meta-llama/Meta-Llama-3-8B"
-model = AutoModelForCausalLM.from_pretrained(model_name)
-tokenizer = AutoTokenizer.from_pretrained(model_name)
+bnb_config = BitsAndBytesConfig(
+  load_in_4bit = True,
+  bnb_4bit_use_double_quant = True,
+  bnb_4bit_quant_type = "nf4",
+  bnb_4bit_compute_dtype = torch.bfloat16
+)
 
+model = AutoModelForCausalLM.from_pretrained(
+  model_name,
+  torch_dtype = "auto",
+  trust_remote_code = True,
+  quantization_config = bnb_config
+)
+
+tokenizer = AutoTokenizer.from_pretrained(model_name, device = "cuda")
 generator = pipeline("text-generation", model = model, tokenizer = tokenizer)
 
-def promptf(question, prompt, intermediate = "\nAnswer:", followup = "Intermediate Question", finalans= '\nBased on the answers to these questions, it is clear that among among pants-fire, false, barely-true, half-true, mostly-true, and true, the claim '):
-    '''
-    parameters:
-    question - the claim
-    prompt - 
-    intermediate - a string "Answer:" to be put after the response of the llm when asked if it has the confidence to answer the sub-claim question
-    followup - a string "intermediate question" not used it seems
-    finalans - the string introducing the final predction
-    '''
-    cur_prompt = prompt[0] +  question + prompt[1]
+def promptf(question, prompt, intermediate = "\nAnswer:", followup = "Intermediate Question", finalans= 'Based on'):
+  '''
+  parameters:
+  question - the claim
+  prompt - a weird list of two strings, the first element is the few shots needed as prompt to the llm, while the second is the string "A fact checker will"
+  intermediate - a string "\nAnswer:" to be put after the response of the llm when asked if it has the confidence to answer the sub-claim question
+  followup - a string "intermediate question" not used it seems
+  finalans - the string introducing the final predction
+  '''
 
-    print(question, end ='')
+  system_prompt = prompt[0]
+  current_user_prompt = question + "\n" + prompt[1]
 
-    ret_text = call_gpt(cur_prompt,stop='Answer me ‘yes’ or ‘no’: No.')
-    while 'Based on' not in ret_text:
-      cur_prompt += ret_text +'Answer me ‘yes’ or ‘no’: No.'
-      question = ret_text.split('\nTell me')[0].split('\n')[-1]
-      question = extract_question(ret_text)
-      print('question')
-      print(question)
-      print('Answer:')
-      external_answer = get_answer(question)
-      print('external_answer')
-      print(external_answer)
-      cur_prompt += intermediate + ' ' + external_answer + '.\n' 
-      ret_text = call_gpt(cur_prompt, 'Answer me ‘yes’ or ‘no’: No.')
+  ret_text = call_llama(system_prompt, current_user_prompt, stop = ' No.')
 
-    cur_prompt += finalans
-    cur_prompt += claim
-    cur_prompt += 'can be classified as'
-    ret_text = call_gpt(cur_prompt, '\n')
+  while 'Based on' not in ret_text and 'I would classify the claim as' not in ret_text: # Do this until you don't have the final answer (it has obtained all the answer to all the subqueries)
+    question = extract_question(ret_text)
+    print('Question:')
+    print(question)
+    print('External answer is:')
+    external_answer = get_answer(question) # This function should retrieve the answer from the internet
+    print(external_answer)
+    current_user_prompt += ' ' + ret_text + intermediate + ' ' + external_answer + '.\n'
+    ret_text = call_llama(system_prompt, current_user_prompt, stop = ' No.')
 
-    return cur_prompt + ret_text
+  returned_text = current_user_prompt + ret_text
+  start_index = returned_text.index(finalans)
+  end_of_phrase = returned_text.find('.', start_index) + 1
+  returned_text = returned_text[:end_of_phrase]
 
-# This function asks the current model to generate a response to the prompt received as input
-def call_gpt(cur_prompt, stop=["\n"]):
-  response = generator(cur_prompt, max_length = 500, num_return_sequences = 1, stop_sequence = stop)
-  returned = response[0]['generated_text']
-  print(returned)
-  return returned
+  return returned_text
 
-"""# This function asks gpt-3.5-turbo to generate a response to the prompt received as input
-def call_gpt(cur_prompt, stop=["\n"]):
-  reasoner_messages = [{"role": "user", "content": cur_prompt}]
-  completion = openai.ChatCompletion.create(
-    model = "gpt-3.5-turbo", 
-    messages = reasoner_messages,
-    stop = stop
+# This function that was added by me to the original script asks the current model to generate a response to the prompt received as input
+def call_llama(system_message, user_message, stop=["\n"]):
+
+  reasoner_messages = [
+    {"role": "system", "content": system_message},
+    {"role": "user", "content": user_message}
+  ]
+
+  prompt = generator.tokenizer.apply_chat_template(
+    reasoner_messages, 
+    tokenize = False, 
+    add_generation_prompt = True
   )
-  returned = completion['choices'][0]["message"]["content"]
-  print(returned)
-  return returned"""
+
+  response = generator(
+    prompt,
+    num_return_sequences = 1,
+    stop_sequence = stop,
+    return_full_text = False,
+    max_new_tokens = 2000
+  )
+
+  returned = response[0]['generated_text']
+  return returned
 
 # This function extracts the last sentence (and only that, not its answer) from the provided input
 def extract_question(generated):
-    generated = generated.split('Question: ')[-1].split('Answer')[0]
-    return generated
+  generated = generated.split('Question: ')[-1].split('\nTell me if you are')[0]
+  return generated
 
 def get_answer(question):
+  """
   params = {
     "api_key": serpapi_key,
     "engine": "google",
@@ -183,28 +208,21 @@ def get_answer(question):
   else:
     toret = None
   return toret
+  """
+  toret = "No, this is completely false"
+  return toret
 
+df = pd.read_csv(dataset_path, encoding="utf-16", sep="\t", dtype={24: str})
 
-#dataset_path = './Datasets/LIAR-RAW/test.json'
-dataset_path = 'C:\\Users\\alema\\OneDrive - Politecnico di Milano\\Appunti\\MP\\Python_scripts\\Datasets\\LIAR-RAW\\test.json'
-with open(dataset_path, 'r') as json_file:
-    json_list = json.load(json_file)
+for index, row in df.iterrows():
+  idx = row["id"]
+  claim = row["claimReviewed"]
+  label = row["reviewRating.alternateName"]
+  
+  print("Current id is: " + str(idx))
+  ans = promptf(claim, prompt)
 
-
-for json_str in json_list:
-    result = json_str
-    label = result["label"]
-    #claim = result["claim"]
-    claim = result["statement"]
-    #idx = result["event_id"]
-    idx = result["id"]
-
-    print(str(idx)+'\n')
-    question = claim 
-    ans = promptf(question, prompt)
-
-
-    print('\nresult')
-    print(ans)
-    print('label')
-    print(label)
+  print('\nOutput of the model is:\n')
+  print(ans)
+  print('\nThe label from the dataset is:')
+  print(label)
