@@ -54,33 +54,6 @@ def parse_kshot(filename = 'standard_kshot.txt'):
     #    print(m)
     return messages
     
-
-'''def extract_function_call(llm_output: str) -> str:
-    """
-    Extracts the function call from the LLM's output if present, 
-    handling mixed usage of single and double quotes.
-    
-    Args:
-        llm_output (str): The output string from the LLM.
-    
-    Returns:
-        str: The extracted function call string if present, otherwise an empty string.
-    """
-    # Define the flexible pattern to search for the function call
-    pattern = r"(\{['\"]name['\"]: *['\"]google_search['\"], *['\"]parameters['\"]: *(\{.*\})\})|" + \
-              r'(\{[\'"]name[\'"]: *[\'"]google_search[\'"], *[\'"]parameters[\'"]: *(\{.*\})\})'
-    
-    # Search for the pattern in the LLM output
-    match = re.search(pattern, llm_output)
-    
-    if match:
-        # Extract the matched group (2 or 4, depending on the quote style)
-        function_call_str = match.group(1) if match.group(1) else match.group(3)
-        return function_call_str
-    
-    # If no match is found, return an empty string
-    return ""'''
-
 def load_config(filename='config.yaml'):
     with open(filename, 'r') as f:
         config = yaml.safe_load(f)
@@ -113,7 +86,10 @@ except:
     print("Please set the HF_TOKEN environment variable to your Hugging Face API token.")
     exit(1)
 
-def load_model_and_generate_output(user_input):
+# Load the model from the Hugging Face Hub
+client = InferenceClient(model=model_id, token=API_TOKEN)
+
+def generate_output(user_input):
     """
     Uses the huggingface API to load the model and make it assess the claim.
     
@@ -133,23 +109,8 @@ def load_model_and_generate_output(user_input):
     messages.append({"role": "user", "content": formatted_claim})  
     
     num_searches = 0
-    # Load the model from the Hugging Face Hub
-    client = InferenceClient(model=model_id, token=API_TOKEN)
     response = client.chat_completion(messages=messages, max_tokens=max_tokens, temperature=temperature).choices[0].message.content
     print(response)
-
-    '''fc = extract_function_call(response)
-    while fc!="": 
-        num_searches += 1
-        tool_call = ast.literal_eval(fc)
-        query = tool_call["parameters"]["query"]
-        search_results = google_search(query, date=user_input["date"])
-        search_results = "Search number " + str(num_searches) + ":\n" + search_results
-        print(search_results)
-        messages.append({"role": "user", "content": search_results})
-        response = client.chat_completion(messages=messages,max_tokens=1000).choices[0].message.content
-        print(response)
-        fc = extract_function_call(response)'''
     
     query = extract_function_call(response)
     while query!="": 
