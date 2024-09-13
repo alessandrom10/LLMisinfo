@@ -1,20 +1,26 @@
-chromedriver_path: 'C:\\Users\\flash\\Documents\\UNI\\MAG-ANNOII\\MDP\\chromedriver-win64\\chromedriver.exe'
-dataset_path: 'C:\\Users\\flash\\Documents\\UNI\\MAG-ANNOII\\MDP\\dataset'
-chromium_path: 'C:\\Users\\flash\\AppData\\Local\\Chromium\\Application\\chrome.exe'
+## Path related configurations:
+chromedriver_path: ''
+chromium_path: ''
 dataset_path: ''
+kshot_examples_path: "Prompts/standard_kshot.txt"
+
+## Column names:
 label_column_name: 'reviewRating.alternateName'
 claim_column_name: 'claimReviewed'
 author_column_name: 'itemReviewed.author.name'
 date_column_name: 'itemReviewed.datePublished'
 
-#max number of results
+## Search related configurations:
 max_results: 5
 max_sentences: 3
 max_searches: 3
+
+## Window related configurations:
 windowed: False
 window_size: 5
 overlap_rate: 0.3
 
+## Model related configurations:
 language: "en"
 #model_name: "Llama 3.1 8B"
 model_name: "Llama 3.1 70B"
@@ -24,14 +30,15 @@ model_name: "Llama 3.1 70B"
 model_id: "meta-llama/Meta-Llama-3.1-70B-Instruct"
 #model_id: "meta-llama/Meta-Llama-3.1-405B-Instruct"
 #model_id: "google/gemma-2-9b-it"
-
 temperature: 0
 max_tokens: 1000
 
+## Blacklists:
 url_blacklist: ['facebook.com', 'google.com', 'youtube.com','politifact.com','quora.com','reddit.com']
 tag_blacklist: ['header', 'footer', 'nav', 'aside', 'script', 'style', 'meta', 'head', 'h1', 'h2', 'h3']
 type_blacklist: [".pdf"]
 
+## System prompts:
 #standard_system_prompt_1: >
 #  You are a fact-checking expert. Evaluate the truthfulness of a statement given by the user.
 #  Use the given function to make a google search, and give it as parameter the query that you think will help you find relevant information.
@@ -58,8 +65,7 @@ standard_system_prompt_2: >
 #The function will be executed by the system and you will receive the output to use in your response.
 #Do not use variables. 
 
-kshot_examples_path: "Prompts/standard_kshot.txt"
-
+## Tools:
 tools: [{
         "type": "function",
         "function": {

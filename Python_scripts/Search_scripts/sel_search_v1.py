@@ -1,4 +1,6 @@
-# sel_search.py
+# This script performs research over the internet, mainly for HiSS prompting
+# I don't fully know what parts of it works
+
 import os
 import re
 import numpy as np
@@ -19,7 +21,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from transformers import pipeline
 from urllib.parse import urlparse
 
-#loading the configuration variables from the config.yaml file
+# Load the configuration variables from the configuration file
 def load_config(filename='my_config.yaml'):
     with open(filename, 'r') as f:
         config = yaml.safe_load(f)
@@ -37,8 +39,7 @@ type_blacklist = config['type_blacklist']
 windowed = config['windowed']
 window_size = config['window_size']
 
-#loading the spacy model based on the language - this is used for sentence tokenization
-#if __name__ == "__main__":
+# Load the spacy model corresponding to our language - this is used for sentence tokenization
 if language == "en":
     nlp = spacy.load("en_core_web_sm")
 elif language == "it":
@@ -48,7 +49,7 @@ elif language == "es":
 else:
     raise Exception("ERROR: LANGUAGE NOT CORRECT - should be set as either 'en', 'it' or 'es'")
 
-# Load transformer model for sentence similarity
+# Load the transformer model for sentence similarity
 similarity_model = pipeline("feature-extraction", model="sentence-transformers/all-MiniLM-L6-v2")   
 
 '''def google_search(query: str) -> str:
@@ -77,11 +78,11 @@ def google_search(query: str, date: str = "") -> str:
     
     Args:
         query: the query that will be used to perform the search
-        date: optional, results after this date will be excluded
+        date: results after this date will be excluded (optional)
     Returns:
-        A sting containing the list of website given by the search results along with a snippet of their content.
+        formatted_results: A string containing the list of websites given by the search results along with a snippet of their content.
     """
-    formatted_results = "Google: "+query+" \n "
+    formatted_results = "Google: " + query + " \n"
     if date != "":
         date = pd.to_datetime(date).date()
         query += " before:" + str(date)
@@ -236,15 +237,15 @@ def get_search_results(query, keep_browser_open=False):
 
     service = Service(driver_path)
     
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+    driver = webdriver.Chrome(service = service, options = chrome_options)
     
     try:
         driver.get('https://www.google.com')
         
         wait = WebDriverWait(driver, 10)
         try:
-            accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accetta tutto"]')))
-            #accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accept all"]')))
+            #accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accetta tutto"]')))
+            accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accept all"]')))
             
             accept_cookies_button.click()
         except Exception as e:
