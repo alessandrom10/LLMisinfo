@@ -1,7 +1,6 @@
 # Description: This script is the main script for the standard fact checker. It uses the Hugging Face API to load the model and make it assess the claim. 
 # The user's input is a claim, a date and an author. The model's output is the final assessment of the claim. The search results are also printed.
 # Up to now, supported languages are English and Italian. (Spanish TODO)
-# importing sys
 import sys
 sys.path.insert(0, './Python_scripts/search_scripts')
 from sel_search_v2 import *
