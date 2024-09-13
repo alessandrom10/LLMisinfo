@@ -20,15 +20,14 @@ from transformers import pipeline
 from urllib.parse import urlparse
 
 #loading the configuration variables from the config.yaml file
-def load_config(filename='config.yaml'):
+def load_config(filename='my_config.yaml'):
     with open(filename, 'r') as f:
         config = yaml.safe_load(f)
     return config
 
-config = load_config("my_config.yaml")
+config = load_config()
 driver_path = config['chromedriver_path']
 chromium_path = config['chromium_path']
-config = load_config()
 max_results = config['max_results']
 max_sentences = config['max_sentences']
 language = config['language']
@@ -51,6 +50,26 @@ else:
 
 # Load transformer model for sentence similarity
 similarity_model = pipeline("feature-extraction", model="sentence-transformers/all-MiniLM-L6-v2")   
+
+'''def google_search(query: str) -> str:
+    """
+    Get the google search results given a query
+    
+    Args:
+        query: the query that will be used to perform the search
+    Returns:
+        A sting containing the list of website given by the search results along with a snippet of their content.
+    """
+    return "Google: "+query+"\n"+\
+            "1. nytimes.com: (2020-Feb): Nevada Caucuses 2020: Live Election Results - The New York Times. Feb 22, 2020 ...\n"+\
+            "2. nbcnews.com: Sanders wins Nevada Democratic caucuses with wave of young and ....\n"+\
+            "3. nytimes.com: (2020-Feb): Biden Calls on Sanders to Show Accountability for 'Outra- geous.. Feb 16, 2020\n"+\
+            "4. vox.com: (2020-Feb): Nevada caucus results: 3 winners and 2 losers - Vox. Feb 22, 2020\n"+\
+            "5. washingtonpost.com: 2020 Nevada Caucuses Live Election Results | The Washing- ton Post. Feb 24, 2020 ... 2020 Nevada Democratic presidential caucuses; Bernie Sanders, 6,788, 46.8; Joe Biden, 2,927, 20.2; Pete Buttigieg, 2,073 ....\n"+\
+            "6. theintercept.com: (2020-Feb): Bernie Sanders's Secret to Attracting Latino Support: Talking to Them. Feb 20, 2020\n"+\
+            "7. pbs.org: (2020-Feb): Bloomberg qualifies for debate, Sanders leads ahead of Nevada 8. wikipedia.org: 2020 Nevada Democratic presidential caucuses - Wikipedia.\n"+\
+            "9. politico.com: Iowa Election Results 2020 | Live Map Updates | Voting by County\n"+\
+            "10. tufts.edu: (2020-Feb): Exclusive Analysis: In Nevada, young people once again force\n"'''
 
 def google_search(query: str, date: str = "") -> str:
     """
@@ -325,4 +344,4 @@ def extract_relevant_sentences(content, query):#, top_n=5, windowed=False, windo
         
     return top_sentences, top_indices, top_similarities
 
-print(google_search("New york city commute time by car", date="2024-03-03"))
+#google_search("Bernie Sanders wins Nevada Democratic caucuses", date="2024-03-03")

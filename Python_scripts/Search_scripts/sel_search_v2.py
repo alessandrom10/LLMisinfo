@@ -1,4 +1,8 @@
-# sel_search.py
+# Description: This script is used to perform a google search and extract the most relevant sentences from the search results based on a query.
+# The script uses Selenium to scrape the search results from Google and extract the text from the search results.
+# The script then uses an encoder model to compute embeddings and calculate the similarity between the query and the sentences extracted from the search results.
+# The most relevant sentences are then returned as the output of the script.
+# Version 2 improves reliability of the http requests, adds timeout and retries, and improves the handling of exceptions. It also computes the similarity scores for the top sentences in a unique funcion call on the whole list of sentences.
 import os
 import re
 import numpy as np
@@ -7,6 +11,9 @@ import psutil
 import requests
 import yaml
 import spacy
+import random
+import time
+import torch
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -16,19 +23,19 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from sklearn.metrics.pairwise import cosine_similarity
-from transformers import pipeline
+from transformers import pipeline, AutoTokenizer, AutoModel
 from urllib.parse import urlparse
 
 #loading the configuration variables from the config.yaml file
-def load_config(filename='config.yaml'):
+def load_config(filename="my_config.yaml"):
     with open(filename, 'r') as f:
         config = yaml.safe_load(f)
     return config
 
-config = load_config("my_config.yaml")
+#loading the configuration variables from the config.yaml file
+config = load_config()
 driver_path = config['chromedriver_path']
 chromium_path = config['chromium_path']
-config = load_config()
 max_results = config['max_results']
 max_sentences = config['max_sentences']
 language = config['language']
@@ -37,6 +44,7 @@ tag_blacklist = config['tag_blacklist']
 type_blacklist = config['type_blacklist']
 windowed = config['windowed']
 window_size = config['window_size']
+overlap_rate = config['overlap_rate']
 
 #loading the spacy model based on the language - this is used for sentence tokenization
 #if __name__ == "__main__":
@@ -50,27 +58,20 @@ else:
     raise Exception("ERROR: LANGUAGE NOT CORRECT - should be set as either 'en', 'it' or 'es'")
 
 # Load transformer model for sentence similarity
-similarity_model = pipeline("feature-extraction", model="sentence-transformers/all-MiniLM-L6-v2")   
+#similarity_model = pipeline("feature-extraction", model="sentence-transformers/all-MiniLM-L6-v2") 
+tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
+similarity_model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
 
-'''def google_search(query: str) -> str:
-    """
-    Get the google search results given a query
-    
-    Args:
-        query: the query that will be used to perform the search
-    Returns:
-        A sting containing the list of website given by the search results along with a snippet of their content.
-    """
-    return "Google: "+query+"\n"+\
-            "1. nytimes.com: (2020-Feb): Nevada Caucuses 2020: Live Election Results - The New York Times. Feb 22, 2020 ...\n"+\
-            "2. nbcnews.com: Sanders wins Nevada Democratic caucuses with wave of young and ....\n"+\
-            "3. nytimes.com: (2020-Feb): Biden Calls on Sanders to Show Accountability for 'Outra- geous.. Feb 16, 2020\n"+\
-            "4. vox.com: (2020-Feb): Nevada caucus results: 3 winners and 2 losers - Vox. Feb 22, 2020\n"+\
-            "5. washingtonpost.com: 2020 Nevada Caucuses Live Election Results | The Washing- ton Post. Feb 24, 2020 ... 2020 Nevada Democratic presidential caucuses; Bernie Sanders, 6,788, 46.8; Joe Biden, 2,927, 20.2; Pete Buttigieg, 2,073 ....\n"+\
-            "6. theintercept.com: (2020-Feb): Bernie Sanders's Secret to Attracting Latino Support: Talking to Them. Feb 20, 2020\n"+\
-            "7. pbs.org: (2020-Feb): Bloomberg qualifies for debate, Sanders leads ahead of Nevada 8. wikipedia.org: 2020 Nevada Democratic presidential caucuses - Wikipedia.\n"+\
-            "9. politico.com: Iowa Election Results 2020 | Live Map Updates | Voting by County\n"+\
-            "10. tufts.edu: (2020-Feb): Exclusive Analysis: In Nevada, young people once again force\n"'''
+# List of common user agents, used to avoid detection by websites
+user_agents = [
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15',
+]
+
+def get_random_user_agent():
+    return random.choice(user_agents)
 
 def google_search(query: str, date: str = "") -> str:
     """
@@ -80,7 +81,7 @@ def google_search(query: str, date: str = "") -> str:
         query: the query that will be used to perform the search
         date: optional, results after this date will be excluded
     Returns:
-        A sting containing the list of website given by the search results along with a snippet of their content.
+        A sting containing the list of websites given by the google search results page along with a snippet of their content.
     """
     formatted_results = "Google: "+query+" \n "
     if date != "":
@@ -119,10 +120,8 @@ def kill_process_and_children(pid):
 def get_domain(url: str) -> str:
     """
     Extracts the domain name from a given URL.
-    
     Args:
         url (str): The URL from which to extract the domain.
-    
     Returns:
         str: The domain name.
     """
@@ -138,10 +137,8 @@ def get_domain(url: str) -> str:
 def filter_urls(urls):
     """
     Filters a list of URLs based on validity and allowed domains.
-
     Args:
         urls : A list of URLs to be filtered.
-
     Returns:
         list: A filtered list of URLs that are valid and belong to allowed domains.
     """
@@ -185,35 +182,60 @@ def save_soup_to_file(soup, filename):
     with open(filename, 'w', encoding='utf-8') as file:
         file.write(str(soup))
 
-def get_all_text(url):
-    headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36'}
-    response = requests.get(url, headers=headers)
-    if response.status_code != 200:
-        raise Exception(f"Failed to fetch page, status code: {response.status_code}")
-    # Check the content type to determine if it's a webpage or a downloadable file
-    content_type = response.headers.get('Content-Type')
-    if 'text/html' not in content_type:
-        raise Exception(f"URL does not point to an HTML page, content type: {content_type}")
+def get_all_text(url, max_retries=3, delay=1):
+    """
+    Retrieve all the text from a webpage by scraping the HTML content.
+    Args:
+        url : The URL of the webpage to scrape.
+        max_retries : The maximum number of times to retry fetching the page.
+        delay : The delay between retry attempts.
+    Returns:
+        str: The text content of the webpage.
+    """
+    headers = {
+        'User-Agent': get_random_user_agent(),
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Referer': 'https://www.google.com/',
+        'DNT': '1',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+    }
+    session = requests.Session()
+    for attempt in range(max_retries):
+        try:
+            response = session.get(url, headers=headers, timeout=10)
+            response.raise_for_status()  # Raise an exception for bad status codes
 
-    
-    soup = BeautifulSoup(response.text, 'html.parser')
-    for element in soup(tag_blacklist):
-        element.decompose()
+            # Check the content type to determine if it's a webpage or a downloadable file
+            content_type = response.headers.get('Content-Type')
+            if 'text/html' not in content_type:
+                raise Exception(f"URL does not point to an HTML page, content type: {content_type}")
 
-    text = soup.get_text(separator=' ')
-    text = text.replace('\xa0', ' ')
-    text = re.sub(r'\s+', ' ', text)
-    text = text.strip()
-    return text
+            soup = BeautifulSoup(response.text, 'html.parser')
+            for element in soup(tag_blacklist):
+                element.decompose()
+            text = soup.get_text(separator=' ')
+            text = text.replace('\xa0', ' ')
+            text = re.sub(r'\s+', ' ', text)
+            text = text.strip()
+
+            return text
+        except requests.RequestException as e:
+            print(f"Attempt {attempt + 1} failed: {str(e)}")
+            if attempt < max_retries - 1:
+                time.sleep(delay * (attempt + 1))  # Exponential backoff
+            else:
+                print("Max retries reached. Could not scrape the website.")
+                raise Exception("Failed to fetch page")
+
 
 def get_search_results(query, keep_browser_open=False):
     """
-    Get the search results for a given query. Uses Selenium to scrape the search results from Google.
-    
+    Get the search results for a given query. Uses Selenium to scrape the urls of the search results from Google.
     Args:
         query: The query to search for.
         keep_browser_open: Whether to keep the browser open after scraping the search results.
-    
     Returns:
         list: The URLs of the search results.
     """
@@ -274,27 +296,52 @@ def get_search_results(query, keep_browser_open=False):
             driver.quit()
             kill_process_and_children(service.process.pid)
 
-def get_embeddings(sentences, model):
-    return [model(sentence)[0][0] for sentence in sentences]
+def get_embeddings(sentences):
+    """
+    Compute embeddings for a list of sentences using the sentence transformer model.
+    Args:
+        sentences: The list of sentences for which to compute embeddings.
+    Returns:
+        torch.Tensor: The embeddings for the input sentences.
+    """
+    inputs = tokenizer(sentences, padding=True, truncation=True, return_tensors="pt", max_length=512)
+    with torch.no_grad():
+        outputs = similarity_model(**inputs)
+    return outputs.last_hidden_state.mean(dim=1)
+    
 
 def remove_questions(sentences):
+    """
+    Sometimes questions get on their way as the most relevant sentences, but they are never informative.
+    The funcion removes all the sentences that contain a question mark.
+    Args:
+        sentences: The list of sentences to filter.
+    Returns:
+        list: The list of sentences without questions.
+    """
     return [sentence for sentence in sentences if "?" not in sentence]
 
-def cosine_similarity_score(query_embedding, sentence_embeddings):
+def calculate_relevance_score(query_embedding, sentence_embedding, query_tokens, sentence_tokens):
     """
-    Calculate the cosine similarity between a query embedding and a list of sentence embeddings.
-    
+    Calculate the relevance score between a query and a sentence based on cosine similarity and token overlap.
     Args:
-        query_embedding: The query embedding.
-        sentence_embeddings: The list of sentence embeddings.
-    
+        query_embedding: The embedding of the query.
+        sentence_embedding: The embedding of the sentence.
+        query_tokens: The tokens of the query.
+        sentence_tokens: The tokens of the sentence.
     Returns:
-        list: The cosine similarity scores between the query and the sentences.
+        float: The relevance score between the query and the sentence.
     """
-    query_embedding = np.array(query_embedding).reshape(1, -1)
-    sentence_embeddings = np.array(sentence_embeddings)
-    similarities = cosine_similarity(query_embedding, sentence_embeddings)
-    return similarities[0]
+    cos_sim = cosine_similarity(query_embedding, sentence_embedding)[0][0]
+    
+    # Calculate token overlap
+    query_set = set(query_tokens)
+    sentence_set = set(sentence_tokens)
+    overlap = len(query_set.intersection(sentence_set)) / len(query_set)
+    
+    # Combine cosine similarity and token overlap
+    relevance_score = (1-overlap_rate) * cos_sim + overlap_rate * overlap
+    return relevance_score
 
 def extract_relevant_sentences(content, query):#, top_n=5, windowed=False, window_size=5):
     """
@@ -312,25 +359,26 @@ def extract_relevant_sentences(content, query):#, top_n=5, windowed=False, windo
     doc = nlp(content)
     sentences = [sent.text for sent in doc.sents]
     sentences = remove_questions(sentences)
-
-    query_embedding = get_embeddings([query], similarity_model)[0]
-
-    filtered_sentences = []
-    sentence_embeddings = []
-    for sentence in sentences:
-        try:
-            embedding = get_embeddings([sentence], similarity_model)[0]
-            filtered_sentences.append(sentence)
-            sentence_embeddings.append(embedding)
-        except Exception as e:
-            continue        
-    if not filtered_sentences:
-        return [], [], []
+    #query_embedding = get_embeddings([query], similarity_model)[0]
+    query_embedding = get_embeddings([query])
+    sentence_embeddings = get_embeddings(sentences)
     
-    similarities = cosine_similarity_score(query_embedding, sentence_embeddings)
-    ranked_indices = np.argsort(similarities)[::-1]
-    ranked_sentences = [filtered_sentences[idx] for idx in ranked_indices]
-    ranked_similarities = [similarities[idx] for idx in ranked_indices]
+    # Calculate relevance scores
+    query_tokens = query.lower().split()
+    relevance_scores = []
+    for i, sentence in enumerate(sentences):
+        sentence_tokens = sentence.lower().split()
+        score = calculate_relevance_score(
+            query_embedding, 
+            sentence_embeddings[i].unsqueeze(0), 
+            query_tokens, 
+            sentence_tokens
+        )
+        relevance_scores.append(score)
+    
+    ranked_indices = np.argsort(relevance_scores)[::-1]
+    ranked_sentences = [sentences[idx] for idx in ranked_indices]
+    ranked_similarities = [relevance_scores[idx] for idx in ranked_indices]
 
     top_indices = ranked_indices[:max_sentences]
     top_similarities = ranked_similarities[:max_sentences]
@@ -345,4 +393,4 @@ def extract_relevant_sentences(content, query):#, top_n=5, windowed=False, windo
         
     return top_sentences, top_indices, top_similarities
 
-#google_search("Bernie Sanders wins Nevada Democratic caucuses", date="2024-03-03")
+#print(google_search("New york city commute time by car", date="2024-03-03"))

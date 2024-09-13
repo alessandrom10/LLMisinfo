@@ -1,5 +1,7 @@
+import sys
+sys.path.insert(0, './Python_scripts/search_scripts')
+from sel_search_v2 import *
 import yaml
-from sel_search import *
 from huggingface_hub import InferenceClient
 import os
 import re
@@ -31,7 +33,7 @@ def extract_yes_no(llm_output: str) -> str:
     # if no match is found, return an empty string
     return ""
     
-def load_config(filename='config.yaml'):
+def load_config(filename='my_config.yaml'):
     with open(filename, 'r') as f:
         config = yaml.safe_load(f)
     return config
@@ -51,7 +53,11 @@ except:
     print("Please set the HF_TOKEN environment variable to your Hugging Face API token.")
     exit(1)
 
-def load_model_and_generate_output(user_input):
+# Load the model from the Hugging Face Hub
+print("Loading model "+model_id+"...\n")
+client = InferenceClient(model=model_id, token=API_TOKEN)
+
+def generate_output(user_input):
     """
     Uses the huggingface API to load the model and make it assess the claim.
     
@@ -63,33 +69,33 @@ def load_model_and_generate_output(user_input):
     confident_message = {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"}
     hiss_config = load_config("Prompts/hiss_kshot.yaml")
     messages = hiss_config["hiss_messages"]
-    print("Loaded HISS messages, including the system prompt and few-shot examples.")
+    print("<"+messages[0]['role']+"> "+messages[0]['content'])
+    print("<user and assistant> Loaded few-shot examples.")
     formatted_claim = "Claim: "+user_input["claim"]+". " 
     if user_input["author"]!="":
         formatted_claim += "Made by "+user_input["author"]+"."
-    print("FORMATTED CLAIM: "+formatted_claim)
-    messages.append({"role": "user", "content": formatted_claim}) 
-    # Load the model from the Hugging Face Hub
-    client = InferenceClient(model=model_id, token=API_TOKEN)
-    print("Loaded the model from the Hugging Face Hub.")
+    messages.append({"role": "user", "content": formatted_claim})
+    print("<user> "+formatted_claim) 
     response = client.chat_completion(messages=messages, max_tokens=1000, temperature=temperature).choices[0].message.content
-    print("LLM RESPONSE:"+response)
+    print("<assistant> "+response)
+    
     question = extract_question(response)
     while question != "":
         messages.append({"role": "assistant", "content": response})
         messages.append(confident_message)
+        print("<user> "+confident_message["content"])
         response = client.chat_completion(messages=messages, max_tokens=1000, temperature=temperature).choices[0].message.content
-        print("LLM RESPONSE:"+response)
+        print("<assistant> "+response)
         confidence = extract_yes_no(response)
         if confidence != "":
             if confidence == "YES": # If the model is confident, it will answer the question so
                 messages.append({"role": "assistant", "content": response}) 
             elif confidence == "NO":
                 search_results = google_search(question, date=user_input["date"])
-                print(search_results)
                 messages.append({"role": "user", "content": "Answer: "+search_results})
+                print("<user> "+messages[-1]["content"])
                 response = client.chat_completion(messages=messages, max_tokens=1000, temperature=temperature).choices[0].message.content
-                print("LLM RESPONSE:"+response)
+                print("<assistant> "+response)
         else:
             print("The model did not tell whether it is confident or not on answering the question.")
             break
@@ -105,7 +111,7 @@ def main():
     author = input("Enter the author of the claim (optional): ")
     user_input = {"claim": claim, "date": date, "author": author}
     # Generate output from the model
-    output = load_model_and_generate_output(user_input)
+    output = generate_output(user_input)
     # Print the model's output
     #print("Model Output:\n" + str(output))
 

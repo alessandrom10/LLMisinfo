@@ -1,3 +1,12 @@
+chromedriver_path: 'C:\\Users\\flash\\Documents\\UNI\\MAG-ANNOII\\MDP\\chromedriver-win64\\chromedriver.exe'
+dataset_path: 'C:\\Users\\flash\\Documents\\UNI\\MAG-ANNOII\\MDP\\dataset'
+chromium_path: 'C:\\Users\\flash\\AppData\\Local\\Chromium\\Application\\chrome.exe'
+dataset_path: ''
+label_column_name: 'reviewRating.alternateName'
+claim_column_name: 'claimReviewed'
+author_column_name: 'itemReviewed.author.name'
+date_column_name: 'itemReviewed.datePublished'
+
 #max number of results
 max_results: 5
 max_sentences: 3
