@@ -175,7 +175,6 @@ def get_all_text(url):
     content_type = response.headers.get('Content-Type')
     if 'text/html' not in content_type:
         raise Exception(f"URL does not point to an HTML page, content type: {content_type}")
-
     
     soup = BeautifulSoup(response.text, 'html.parser')
     for element in soup(tag_blacklist):
@@ -326,4 +325,6 @@ def extract_relevant_sentences(content, query):#, top_n=5, windowed=False, windo
         
     return top_sentences, top_indices, top_similarities
 
-print(google_search("New york city commute time by car", date="2024-03-03"))
+#print(google_search("New york city commute time by car", date="2024-03-03"))
+
+print(google_search("When did Juventus win its last champions league?"))

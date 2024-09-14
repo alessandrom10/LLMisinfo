@@ -2,12 +2,13 @@
 # This script fully works
 
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, pipeline
+import os
 import pandas as pd
 import torch
 
 dataset_input_path = "claim_review_english.csv"
 model_name = "meta-llama/Meta-Llama-3-8B-Instruct"
-hf_token = "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"
+hf_key = os.getenv("HF_KEY")
 dataset_output_path = "dataset_english_llm_mapping.csv"
 
 df = pd.read_csv(dataset_input_path, encoding="utf-16", sep="\t", dtype={24: str})
@@ -23,11 +24,11 @@ model = AutoModelForCausalLM.from_pretrained(
     model_name,
     torch_dtype = "auto",
     trust_remote_code = True,
-    token = hf_token,
+    token = hf_key,
     quantization_config = bnb_config
 )
 
-tokenizer = AutoTokenizer.from_pretrained(model_name, device = "cuda", token = hf_token)
+tokenizer = AutoTokenizer.from_pretrained(model_name, device = "cuda", token = hf_key)
 tokenizer.pad_token_id = tokenizer.eos_token_id
 
 pipe = pipeline(

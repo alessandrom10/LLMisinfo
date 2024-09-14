@@ -1,10 +1,10 @@
-# This original version of this script has been downloaded from here (https://github.com/jadeCurl/HiSS), but has since then been heavily modified
+# The original version of this script has been downloaded from here (https://github.com/jadeCurl/HiSS), but has since then been heavily modified
 # It deals with the HiSS (Hierarchical Step-by-Step) prompting method to separate each claim into the subclaims that compose it,
 # and for each of them it asks the llm if it is confident into proving its veracity,
-# If the answer is "no", then a fake call to the internet to search for the answer is performed, while actually the answer
-# returned is allways "No, this is completely false", at the very end it is asked to the llm to perform a final evaluation
+# If the answer is "no", then a search with Google for the answer is performed, collecting the snippets of the first 6 results
+# and then giving them to the model as an answer. At the very end it is asked to the llm to perform a final evaluation
 # over the veracity of the whole statement considering the veracity of all of its subclaims
-# This script fully works, only the part about retrieving the answer from the internet doesn't, since that part has not been developed yet
+# This script fully works, also the part about searching for the answer over the internet (unless the limit for the number of requests is reached)
 
 from IPython.utils import io
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, pipeline
@@ -14,9 +14,9 @@ import os
 import pandas as pd
 import torch
 
-serpapi_key = "" # get one from https://serpapi.com , first few requests are free!
+serpapi_key = os.getenv("SerpApi_KEY") # get one from https://serpapi.com , first few requests are free!
+hf_key = os.getenv("HF_KEY")
 
-hf_token = os.getenv("HF_TOKEN")
 model_name = "meta-llama/Meta-Llama-3-8B-Instruct"
 dataset_path = "./Datasets/claim_review_english_mapped.csv"
 
@@ -103,7 +103,7 @@ Based on the answers to these questions, it is clear that among False, Mostly Fa
 Claim: ''', '''A fact checker will''',
 ]
 
-login(token = hf_token)
+login(token = hf_key)
 
 bnb_config = BitsAndBytesConfig(
   load_in_4bit = True,
@@ -134,6 +134,7 @@ def promptf(claim, prompt, intermediate = "\nAnswer:", followup = "Intermediate 
 
   system_prompt = prompt[0]
   current_user_prompt = claim + "\n" + prompt[1]
+  separator = ", "
 
   ret_text = call_llama(system_prompt, current_user_prompt, stop = ' No.')
 
@@ -142,7 +143,7 @@ def promptf(claim, prompt, intermediate = "\nAnswer:", followup = "Intermediate 
     print('Question:')
     print(question)
     print('External answer is:')
-    external_answer = get_answer(question) # This function should retrieve the answer from the internet
+    external_answer = separator.join(get_answer(question)) # This function should retrieve the answer from the internet
     print(external_answer)
     current_user_prompt += ' ' + ret_text + intermediate + ' ' + external_answer + '.\n'
     ret_text = call_llama(system_prompt, current_user_prompt, stop = ' No.')
@@ -185,7 +186,7 @@ def extract_question(generated):
   return generated
 
 def get_answer(question):
-  """
+  # We set the parameters for our search
   params = {
     "api_key": serpapi_key,
     "engine": "google",
@@ -194,28 +195,31 @@ def get_answer(question):
     "gl": "us",
     "hl": "en"
   }
+
+  # We perform the actual search
   with io.capture_output() as captured: # disables prints from GoogleSearch
     search = GoogleSearch(params)
     res = search.get_dict()
 
+  toret = []
+  # We collect the results
   if "organic_results" in res.keys():
-    for idx in range(len(res["organic_results"])):
+    for idx in range(min(6, len(res["organic_results"]))):
         if 'snippet' in res["organic_results"][idx].keys():
             if 'fact' not in res["organic_results"][idx]['link']:
-              toret= res["organic_results"][idx]['snippet'] 
-              break
-        if (idx +1) == len(res["organic_results"]):
-            toret = None
+              toret.append(res["organic_results"][idx]['snippet'])
   else:
     toret = None
   return toret
-  """
-  toret = "No, this is completely false"
-  return toret
+
+  #toret = "No, this is completely false"
+  #return toret
 
 df = pd.read_csv(dataset_path, encoding="utf-16", sep="\t", dtype={24: str})
+start_row = 2 # This number refers to the claim's row in the excel file, so the claim in row 2 is actually the very first claim (of index 0)
+df_subset = df.iloc[start_row - 2:]
 
-for index, row in df.iterrows():
+for index, row in df_subset.iterrows():
   idx = row["id"]
   claim = row["claimReviewed"]
   label = row["reviewRating.alternateName"]
