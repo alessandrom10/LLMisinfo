@@ -9,7 +9,7 @@
 from IPython.utils import io
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, pipeline
 from huggingface_hub import login
-from serpapi import GoogleSearch
+#from serpapi import GoogleSearch
 import os
 import pandas as pd
 import torch

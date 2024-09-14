@@ -18,7 +18,9 @@ max_searches: 3
 ## Window related configurations:
 windowed: False
 window_size: 5
-overlap_rate: 0.3
+
+## Weight on token overlap related to the relevance score of the sentences
+overlap_rate: 0
 
 ## Model related configurations:
 language: "en"
@@ -32,6 +34,8 @@ model_id: "meta-llama/Meta-Llama-3.1-70B-Instruct"
 #model_id: "google/gemma-2-9b-it"
 temperature: 0
 max_tokens: 1000
+
+possible_labels: ['mostly false', 'mostly-false', 'mostly true', 'mostly-true', 'false', 'mixture', 'true']
 
 ## Blacklists:
 url_blacklist: ['facebook.com', 'google.com', 'youtube.com','politifact.com','quora.com','reddit.com']
@@ -49,6 +53,11 @@ standard_system_prompt_1: >
   Always reply either in the format 'Query: {query}' and terminate generation to tell the user to perform a google search with the query of your choice,
   or you can reply in the format '{reasoning} Final answer: {verdict}'.
 
+italian_system_prompt_1: >
+  Sei un esperto di fact-checking. Valuta la veridicità di un claim dato dall'utente.
+  Rispondi sempre nel formato 'Query: {query}' e termina la generazione per dire all'utente di fare una ricerca su google con la query da te scelta,
+  oppure rispondere nel formato 'Ragionamento: {ragionamento} Verdetto finale: {verdetto}'.
+
 #standard_system_prompt_2: >
 #  Consider your sources, context and date while assessing. to answer return 'Final answer: {verdict}, {reason}.'
 #  You must respond with a valid verdict ('false','mostly-false','half-true','mostly-true','true') or 'uncertain',
@@ -61,9 +70,15 @@ standard_system_prompt_2: >
   Consider your sources, context and date while assessing.
   You must respond with a valid verdict ('false','mostly-false','mixture','mostly-true','true'),
   providing reasoning and citing sources by providing the domain of the pertinent search results.
-# or 'uncertain'  
-#The function will be executed by the system and you will receive the output to use in your response.
-#Do not use variables. 
+
+italian_system_prompt_2: >
+    Considera le tue fonti, il contesto e la data mentre valuti.
+    Devi rispondere con un verdetto valido ['false','mostly-false','mixture','mostly-true','true'],
+    fornendo ragionamento e citando le fonti fornendo il dominio dei risultati di ricerca pertinenti.
+
+## few-shot examples related configurations:
+kshot_examples_path: "Prompts/standard_kshot.txt"
+italian_kshot_examples_path: "Prompts/standard_kshot_it.txt"
 
 ## Tools:
 tools: [{

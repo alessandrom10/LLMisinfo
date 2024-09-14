@@ -23,7 +23,7 @@ from transformers import pipeline, AutoTokenizer, AutoModel
 from urllib.parse import urlparse
 
 #loading the configuration variables from the config.yaml file
-def load_config(filename='config.yaml'):
+def load_config(filename='my_config.yaml'):
     with open(filename, 'r') as f:
         config = yaml.safe_load(f)
     return config
@@ -31,7 +31,6 @@ def load_config(filename='config.yaml'):
 config = load_config("my_config.yaml")
 driver_path = config['chromedriver_path']
 chromium_path = config['chromium_path']
-config = load_config()
 max_results = config['max_results']
 max_sentences = config['max_sentences']
 language = config['language']
