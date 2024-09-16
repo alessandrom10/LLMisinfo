@@ -14,6 +14,7 @@ import spacy
 import random
 import time
 import torch
+import gc
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -45,6 +46,7 @@ type_blacklist = config['type_blacklist']
 windowed = config['windowed']
 window_size = config['window_size']
 overlap_rate = config['overlap_rate']
+max_scraped_sentences = config['max_scraped_sentences']
 
 #loading the spacy model based on the language - this is used for sentence tokenization
 #if __name__ == "__main__":
@@ -304,7 +306,7 @@ def get_embeddings(sentences):
     Returns:
         torch.Tensor: The embeddings for the input sentences.
     """
-    inputs = tokenizer(sentences, padding=True, truncation=True, return_tensors="pt", max_length=512)
+    inputs = tokenizer(sentences, padding=True, truncation=True, return_tensors="pt", max_length=256)
     with torch.no_grad():
         outputs = similarity_model(**inputs)
     return outputs.last_hidden_state.mean(dim=1)
@@ -359,6 +361,11 @@ def extract_relevant_sentences(content, query):#, top_n=5, windowed=False, windo
     doc = nlp(content)
     sentences = [sent.text for sent in doc.sents]
     sentences = remove_questions(sentences)
+    print("Number of sentences:", len(sentences))
+    if len(sentences)>max_scraped_sentences:
+        print("Too many sentences, truncating to", max_scraped_sentences)
+        sentences = sentences[:max_scraped_sentences]
+        gc.collect()
     #query_embedding = get_embeddings([query], similarity_model)[0]
     query_embedding = get_embeddings([query])
     sentence_embeddings = get_embeddings(sentences)

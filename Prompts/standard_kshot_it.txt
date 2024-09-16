@@ -1,0 +1,39 @@
+<user> 
+Claim: Olanda. Gigantesco supermercato di Bill Gates che produceva carne sintetica (fatta in laboratorio) va a fuoco. Data: 2022-07-11. 
+<assistant> 
+Query: incendio supermercato Bill Gates carne sintetica Olanda
+<user> 
+Search number 1:
+Google: incendio supermercato Bill Gates carne sintetica Olanda
+1. coldiretti.it: Gli investimenti nel campo della biologia sintetica stanno crescendo molto negli ultimi anni e i nomi più impegnati sono soprattutto noti per essere protagonisti del settore hitech e della nuova finanza mondiale, da Bill Gates (fondatore di Microsoft) ad Eric Schmidt (cofondatore di Google), da Peter Thiel (co-fondatore di PayPal) a Marc Andreessen (fondatore di Netscape).
+Queste iniziative private hanno incassato anche sostegni pubblici come nel caso dello stanziamento di 2 milioni di euro di fondi per la ripresa dal Covid concessi dall’Unione Europea a due aziende olandesi impegnate nella produzione di “carne” in laboratorio da cellule in vitro, la Nutreco e la Mosa Meat dove ha investito anche il famoso attore americano Leonardo DiCaprio che non ha certo bisogno dei soldi dei cittadini europei.
+2. facta.news: [informazioni su Bill Gates ma non rilevanti al fatto]
+3. ilblogdellestelle.it: [informazioni non rilevanti]
+4. issuu.com: [informazioni non rilevanti]
+5. architetturaecosostenibile.it: [informazioni non rilevanti]
+<assistant> 
+Ragionamento: Dalla prima ricerca si trovano informazioni su investimenti di Bill Gates nella biologia sintetica e la produzione di carne in laboratorio. Tuttavia, nessuna fonte menziona né l'esistenza di un supermercato di Bill Gates in Olanda, tanto meno un incendio in cui è conivolto.
+Verdetto finale: false
+
+<user> 
+Claim: «Nel silenzio generale, la Francia ha spostato i confini di Stato con l’Italia: hanno fatto rientrare in territorio francese la vetta del Monte Bianco». Di Giorgia Meloni. Data: 2020-10-19.
+<assistant> 
+Query: Francia Italia confini Monte Bianco
+<user> 
+Search number 1:
+Google: Francia Italia confini Monte Bianco 2020
+1. ilgiornale.it: Nel documento, in particolare, è stato chiesto al presidente del consiglio e al ministro degli Esteri in che modo si stava affrontando la vicende “per conoscere quali iniziative intendessero intraprendere per tutelare l'interesse nazionale e la sovranità dello Stato italiano nelle aree del Monte Bianco – si legge nell'interrogazione – per supportare le istituzioni territoriali coinvolte nella gestione dei problemi amministrativi ed economici relativi alle attività turistiche, sportive ed alpinistiche che si svolgono in quelle zone nevralgiche per l'accesso al massiccio e alla vetta del Monte Bianco;
+L'attenzione su quanto è avvenuto nei pressi del Monte Bianco è arrivata in parlamento soltanto dopo un'interrogazione presentata dal deputato di Fratelli d'Italia, Francesco Lollobrigida.
+per giungere alla definitiva risoluzione di un contenzioso diplomatico che si trascina ormai da oltre 70 anni, durante i quali l'Italia ha sempre subito le iniziative unilaterali ed arbitrarie delle autorità francesi”.
+2. montagna.tv: Allo stesso tempo l’Italia ha rinnovato alla Francia la sua disponibilità al dialogo, ribadendo anche che in gioco non c’è un interesse solo economico, ma anche un simbolo da tutelare, visto che le pretese di Parigi consegnerebbero alla Francia l’intera cima della vetta più alta d’Europa e il rifugio Torino ”. 
+Foto Gian Luca Gasca Una grafica, creata da La Stampa, mostra con chiarezza quali sono i confini contesi Il Monte Bianco dal versante francese (foto @ ANSA) Foto FB Rifugio Torino Skip ADV Secondo l’Italia, la cima è divisa a metà tra i due Paesi per il Trattato fra Regno di Sardegna e Impero francese del 1860;
+Entro la fine dell estate la val d aosta sarà francese Rispondi Se vendiamo fregate all’Egitto dopo il caso Regeni…non capisco come potremmo farci valere sui confini con la Francia… Rispondi Ennesima prova che l’ Unione Europea è un fallimento!
+3. affaritaliani.it: L'Esecutivo spiega che l'accordo sui confini che risale al Trattato di Torino del 1860 e che lascia il celebre Rifugio Torino in suolo italiano, “l'Italia ha inviato una nota alle Autorità francesi” che hanno replicato “facendo presente che il provvedimento verte su una zona geografica che costituisce da svariati decenni l'oggetto di un contenzioso tra Francia e Italia e che le Autorità si sono dimostrate disponibili ad affrontare la questione nella Commissione mista per la manutenzione del tracciato dei confini”.
+Dunque, l'annessione motu proprio della vetta d'Europa da parte di due comuni francesi non solo è reale, ma è da considerarsi un incidente diplomatico per il quale il ministero degli Esteri, “tramite l'ambasciata a Parigi ha subito proceduto a rappresentare con formalmente e con fermezza alle autorità francesi, la tradizionale posizione italiana riguardo ai confini”.
+colle del gigante confini farnesina francesco lollobrigida italia-francia luigi di maio ministero esteri monte bianco rifugio torino skyway Meteo Roma 14-16 settembre:
+4. geomagazine.it: [informazioni storiche riguardanti il confine ma non rilevanti]
+5. corriere.it: [informazioni non rilevanti]
+<assistant> 
+Ragionamento: Dalla prima ricerca si evince che la disputa sui confini tra Italia e Francia sul Monte Bianco è un tema ricorrente e che ci sono state tensioni tra i due paesi su questo argomento. Tuttavia, non si trova alcuna conferma che la Francia abbia spostato i confini di Stato con l'Italia e che abbia annesso la vetta del Monte Bianco. La maggior parte delle fonti riporta che la disputa è ancora in corso e che le autorità italiane e francesi stanno cercando di risolvere la questione attraverso la diplomazia.
+Verdetto finale: mixture
+

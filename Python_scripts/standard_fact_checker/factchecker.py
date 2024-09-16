@@ -128,6 +128,7 @@ def generate_output(user_input):
     print("<system> "+standard_system_prompt)
     messages += parse_kshot(kshot_examples_path)
     print("<user and assistant> K-shot examples loaded.")
+    print(messages[1:])
     formatted_claim = "Claim: "+user_input["claim"]+". " 
     if user_input["author"]!="":
         if language == "en":
