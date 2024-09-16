@@ -14,6 +14,8 @@ date_column_name: 'itemReviewed.datePublished'
 max_results: 5
 max_sentences: 3
 max_searches: 3
+max_scraped_sentences: 250 #limit the number of sentences scraped from the web page for performance reasons
+
 
 ## Window related configurations:
 windowed: False
