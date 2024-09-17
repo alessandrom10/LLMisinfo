@@ -1,6 +1,7 @@
 hiss_messages: [
     {"role": "system", "content": "You are a fact-checking expert classifying claims to one of the following labels: ['false', 'mostly-false', 'mixture', 'mostly-true', 'true']. reply with the next step in the fact verification process following the provided examples."},
-    # example 1
+    
+    # Example 1
     {"role": "user", "content": "Claim: \"Emerson Moser, who was Crayola's top crayon molder for almost 40 years, was colorblind.\""},
     {"role": "assistant", "content": "A fact checker will decompose the claim into 4 subclaims that are easier to verify:\n1. Emerson Moser was a crayon molder at Crayola.\n2. Moser worked at Crayola for almost 40 years.\n3. Moser was Crayola’s top crayon molder.\n4. Moser was colorblind.\nTo verify subclaim 1, a fact-checker will go through a step-by-step process to ask and answer a series of questions relevant to its factuality. Here are the specific steps he/she raise each question and look for an answer:\nQuestion: Is there any official record or documentation indicating that Emerson Moser worked as a crayon molder at Crayola?"},
     {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"},
@@ -17,7 +18,8 @@ hiss_messages: [
     {"role": "assistant", "content": "No."},
     {"role": "user", "content": "Answer: Moser has had tritanomaly, a type of colorblindness that makes it difficult to distinguish between blue and green and between yellow and red."},
     {"role": "assistant", "content": "Based on the answers to these questions, it is clear that among false, mostly-false, mixture, mostly-true, and true the claim can be classified as mostly-true."},
-    # example 2
+    
+    # Example 2
     {"role": "user", "content": "Claim: \"Bernie Sanders said 85 million Americans have no health insurance.\""},
     {"role": "assistant", "content": "A fact checker will not split the claim since the original claim is easier to verify.\nTo verify the claim, a fact-checker will go through a step-by-step process to ask and answer a series of questions relevant to its factuality. Here are the specific steps he/she raise each question and look for an answer:\nQuestion: How many Americans did Bernie Sanders claim had no health insurance?"},
     {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"},
@@ -36,7 +38,8 @@ hiss_messages: [
     {"role": "assistant", "content": "No."},
     {"role": "user", "content": "Answer: Bernie Sanders omitted that his figure included people who either have no health insurance or are under-insured."},
     {"role": "assistant", "content": "Based on the answers to these questions, it is clear that among false, mostly-false, mixture, mostly-true, and true, the claim is classified as mixture."},
-    # example 3
+    
+    # Example 3
     {"role": "user", "content": "Claim: \"JAG charges Nancy Pelosi with treason and seditious conspiracy.\""},
     {"role": "assistant", "content": "A fact checker will decompose the claim into 2 subclaims that are easier to verify:\n1. JAG has made a claim or accusation against Nancy Pelosi.\n2. The specific charges or allegations made against Nancy Pelosi are treason and seditious conspiracy.\nTo verify subclaim 1, a fact-checker will go through a step-by-step process to ask and answer a series of questions relevant to its factuality. Here are the specific steps he/she raise each question and look for an answer:\nQuestion: Is it true that JAG has made a claim or accusation against Nancy Pelosi?"},
     {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"},
@@ -51,7 +54,8 @@ hiss_messages: [
     {"role": "assistant", "content": "No."},
     {"role": "user", "content": "Answer: Real Raw News, a disclaimer stating that it contains 'humor, parody and satire' and has a history of publishing fictitious stories."},
     {"role": "assistant", "content": "Based on the answers to these questions, it is clear that among false, mostly-false, mixture, mostly-true, and true, the claim is classified as false."},
-    # example 4
+    
+    # Example 4
     {"role": "user", "content": "Claim: \"Cheri Beasley 'backs tax hikes— even on families making under $75,000.'\""},
     {"role": "assistant", "content": "A fact checker will decompose the claim into 2 subclaims that are easier to verify:\n1. Cheri Beasley supports tax increases.\n2. Cheri Beasley supports tax increases for families with an income under $75,000.\nTo verify subclaim 1, a fact-checker will go through a step-by-step process to ask and answer a series of questions relevant to its factuality. Here are the specific steps he/she raise each question and look for an answer:\nQuestion: Does Cheri Beasley supports tax increases?"},
     {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"},

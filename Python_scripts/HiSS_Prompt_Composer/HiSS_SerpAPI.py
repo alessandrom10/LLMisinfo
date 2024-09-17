@@ -1,4 +1,4 @@
-# The original version of this script has been downloaded from here (https://github.com/jadeCurl/HiSS), but has since then been heavily modified
+# Description: The original version of this script has been downloaded from here (https://github.com/jadeCurl/HiSS), but has since then been heavily modified
 # It deals with the HiSS (Hierarchical Step-by-Step) prompting method to separate each claim into the subclaims that compose it,
 # and for each of them it asks the llm if it is confident into proving its veracity,
 # If the answer is "no", then a search with Google for the answer is performed, collecting the snippets of the first 6 results
@@ -211,9 +211,6 @@ def get_answer(question):
   else:
     toret = None
   return toret
-
-  #toret = "No, this is completely false"
-  #return toret
 
 df = pd.read_csv(dataset_path, encoding="utf-16", sep="\t", dtype={24: str})
 start_row = 2 # This number refers to the claim's row in the excel file, so the claim in row 2 is actually the very first claim (of index 0)
