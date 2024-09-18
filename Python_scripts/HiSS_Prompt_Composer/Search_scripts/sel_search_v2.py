@@ -3,6 +3,7 @@
 # The script then uses an encoder model to compute embeddings and calculate the similarity between the query and the sentences extracted from the search results.
 # The most relevant sentences are then returned as the output of the script.
 # Version 2 improves reliability of the http requests, adds timeout and retries, and improves the handling of exceptions. It also computes the similarity scores for the top sentences in a unique funcion call on the whole list of sentences.
+
 import os
 import re
 import numpy as np

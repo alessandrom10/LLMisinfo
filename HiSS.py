@@ -57,16 +57,16 @@ def promptf(claim, prompt, intermediate = "\nAnswer:", followup = "Intermediate 
   '''
 
   system_prompt = generator.tokenizer.apply_chat_template(
-    [prompt[0]], # Now it is a dictionary 
+    prompt[0], # Now it is an array of dictionaries 
     tokenize = False, 
     add_generation_prompt = True
   )
 
   current_user_prompt = generator.tokenizer.apply_chat_template(
-    [{
+    {
       "role" : "user",
       "content" : claim
-    }],
+    },
     tokenize = False, 
     add_generation_prompt = True
   )
@@ -74,7 +74,6 @@ def promptf(claim, prompt, intermediate = "\nAnswer:", followup = "Intermediate 
   separator = ", "
 
   ret_text = call_llama(system_prompt, current_user_prompt, stop = ' No.')
-  print(f"Ret text is: {ret_text}")
 
   while 'Based on' not in ret_text and 'I would classify the claim as' not in ret_text: # Do this until you don't have the final answer (it has obtained all the answer to all the subqueries)
     question = extract_question(ret_text)

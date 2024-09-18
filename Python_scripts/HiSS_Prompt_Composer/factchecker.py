@@ -3,7 +3,7 @@
 # Up to now, supported languages are English and Italian. (Spanish TODO)
 import sys
 sys.path.insert(0, './Python_scripts/search_scripts')
-from sel_search_v2 import *
+from Search_scripts.sel_search_v2 import *
 import yaml
 from huggingface_hub import InferenceClient
 import os
@@ -136,6 +136,7 @@ def generate_output(user_input):
                 messages.append({"role": "assistant", "content": response}) 
             elif confidence == "NO":
                 search_results = google_search(question, date=user_input["date"])
+                #search_results = "This is an example"
                 if language == "en":
                     messages.append({"role": "user", "content": "Answer: "+search_results})
                 elif language == "it":
