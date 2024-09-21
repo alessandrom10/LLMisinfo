@@ -2,7 +2,7 @@
 # The user's input is a claim, a date and an author. The model's output is the final assessment of the claim. The search results are also printed.
 # Up to now, supported languages are English and Italian. (Spanish TODO)
 
-from Search_scripts.sel_search_v2 import *
+from Python_scripts.Search_scripts.sel_search_v2 import *
 import yaml
 from huggingface_hub import InferenceClient
 import os
@@ -30,7 +30,6 @@ start_messages = hiss_config["hiss_messages"]
 # Load the Hugging Face API token from the environment variables
 try:
     API_TOKEN = os.getenv("HF_TOKEN")
-    print(API_TOKEN)
 except:
     print("Please set the HF_TOKEN environment variable to your Hugging Face API token.")
     exit(1)
