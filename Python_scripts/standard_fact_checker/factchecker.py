@@ -1,7 +1,7 @@
 # Description: This script is the main script for the standard fact checker. It uses the Hugging Face API to load the model and make it assess the claim. 
 # The user's input is a claim, a date and an author. The model's output is the final assessment of the claim. The search results are also printed.
 # Up to now, supported languages are English and Italian. (Spanish TODO)
-import sys
+import sys 
 sys.path.insert(0, './Python_scripts/search_scripts')
 from sel_search_v2 import *
 import yaml
@@ -125,10 +125,9 @@ def generate_output(user_input):
         The model's final assessment of the claim as a string. The search results are also printed.
     """
     messages = [{"role": "system", "content": standard_system_prompt}]
-    print("<system> "+standard_system_prompt)
+    #print("<system> "+standard_system_prompt)
     messages += parse_kshot(kshot_examples_path)
     print("<user and assistant> K-shot examples loaded.")
-    print(messages[1:])
     formatted_claim = "Claim: "+user_input["claim"]+". " 
     if user_input["author"]!="":
         if language == "en":

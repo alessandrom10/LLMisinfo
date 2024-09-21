@@ -1,4 +1,6 @@
-# sel_search.py
+# this script is used to perform a google search and extract the relevant information from the search results based on a 
+# distillbert question ansering model. 
+# (not used in the final version of the project since the model was not able to reply with accurate answes)
 import os
 import re
 import numpy as np

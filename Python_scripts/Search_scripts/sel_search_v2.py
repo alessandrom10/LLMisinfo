@@ -269,8 +269,8 @@ def get_search_results(query, keep_browser_open=False):
         
         wait = WebDriverWait(driver, 10)
         try:
-            #accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accetta tutto"]')))
-            accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accept all"]')))
+            accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accetta tutto"]')))
+            #accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accept all"]')))
             
             accept_cookies_button.click()
         except Exception as e:

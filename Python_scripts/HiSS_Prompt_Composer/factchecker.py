@@ -121,12 +121,7 @@ def generate_output(user_input):
     messages.append({"role": "user", "content": formatted_claim}) # We add the fact that user has said this formatted claim to the messages array of dictionaries
     print("<user> " + formatted_claim) # We print it to show it's working 
     # Get the answer from the llm, it should stop when it thinks it's the user that needs to add information
-    try:
-        response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
-    except Exception as e:
-        print("Exception detected, now sleeping")
-        time.sleep(30)
-        response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
+    response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
     print("<assistant> " + response)
     
     question = extract_question(response)
@@ -135,12 +130,7 @@ def generate_output(user_input):
         messages.append(confident_message) # We add to messages both what the assistant has given as output as well as the request if it's confident by user
         print("<user> " + confident_message["content"])
         # We ask the llm for an answer
-        try:
-            response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
-        except Exception as e:
-            print("Exception detected, now sleeping")
-            time.sleep(30)
-            response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
+        response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
         print("<assistant> " + response)
         confidence = extract_yes_no(response)
         if confidence != "":
@@ -153,12 +143,7 @@ def generate_output(user_input):
                 elif language == "it":
                     messages.append({"role": "user", "content": "Risposta: " + search_results})
                 print("<user> " + messages[-1]["content"])
-                try:
-                    response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
-                except Exception as e:
-                    print("Exception detected, now sleeping")
-                    time.sleep(30)
-                    response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
+                response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
                 print("<assistant> " + response)
         else:
             print("The model did not tell whether it is confident or not on answering the question.")
@@ -166,45 +151,20 @@ def generate_output(user_input):
         question = extract_question(response) # And we repeat this for every question the llm has dealt with (so until question == "")
     return response
 
-def extract_final_answer(output):
-    if 'Based on' in output or 'I would classify the claim as' in output:
-        pattern = r"\b(false|mostly-false|mixture|mostly-true|true)[,.]?\b"
-        matches = re.findall(pattern, output, re.IGNORECASE)
-        final_label = matches[-1].lower()
-        return final_label
-    else:
-        print("Error, no answer has been found in the output")
-        return ""
-
-
 def main():
     """
     Main function for testing the script on a single claim inputed from the terminal.
     """
-
-    print("Welcome to the Fact Checker! The language model " + model_name + " will verify your claim with the help of google search results.")
-
-    df = pd.read_csv(dataset_input_path, encoding="utf-16", sep="\t", dtype={24: str})
-    claim_column_name = "claimReviewed"
-    current_label_column_name = "reviewRating.alternateName"
-    start_index = 0
-    end_index = 3
-    #end_index = df.size - 1
-    df_subset = df.iloc[start_index : end_index]
-    output_df = df_subset.copy()
-
-    for index, row in df_subset.iterrows():
-        claim = row[claim_column_name]
-        date = ""
-        author = ""
-        user_input = {"claim": claim, "date": date, "author": author}
-
-        # Generate output from the model
-        output = generate_output(user_input)
-        new_label = extract_final_answer(output)
-
-        output_df.loc[index, current_label_column_name] = new_label
-        output_df.to_csv(dataset_output_path, index = False, encoding="utf-16", sep="\t")
+    print("Welcome to the Fact Checker! The language model "+model_name+" will verify your claim with the help of google search results.")
+    # Get input from the user
+    claim = input("Enter the claim to fact-check: ")
+    date = input("Enter the date of the claim (optional): ")
+    author = input("Enter the author of the claim (optional): ")
+    user_input = {"claim": claim, "date": date, "author": author}
+    # Generate output from the model
+    output = generate_output(user_input)
+    # Print the model's output
+    #print("Model Output:\n" + str(output))
 
 if __name__ == "__main__":
     main()

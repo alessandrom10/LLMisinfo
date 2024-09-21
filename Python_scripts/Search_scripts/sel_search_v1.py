@@ -1,6 +1,3 @@
-# This script performs research over the internet, mainly for HiSS prompting
-# I don't fully know what parts of it works
-
 import os
 import re
 import numpy as np
