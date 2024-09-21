@@ -125,7 +125,7 @@ def generate_output(user_input):
         response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
     except Exception as e:
         print("Exception detected, now sleeping")
-        time.sleep(20)
+        time.sleep(30)
         response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
     print("<assistant> " + response)
     
@@ -139,7 +139,7 @@ def generate_output(user_input):
             response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
         except Exception as e:
             print("Exception detected, now sleeping")
-            time.sleep(20)
+            time.sleep(30)
             response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
         print("<assistant> " + response)
         confidence = extract_yes_no(response)
@@ -153,7 +153,12 @@ def generate_output(user_input):
                 elif language == "it":
                     messages.append({"role": "user", "content": "Risposta: " + search_results})
                 print("<user> " + messages[-1]["content"])
-                response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
+                try:
+                    response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
+                except Exception as e:
+                    print("Exception detected, now sleeping")
+                    time.sleep(30)
+                    response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
                 print("<assistant> " + response)
         else:
             print("The model did not tell whether it is confident or not on answering the question.")
