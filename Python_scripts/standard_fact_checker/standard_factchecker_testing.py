@@ -54,10 +54,9 @@ def find_label(model_output, label_list, language):
     return "ERR"
 
 def main():
-    # print everything both on terminal and on a log file
-    
     # Load the configuration file
     my_config = load_config("my_config.yaml")
+    already_predicted_claims = my_config['already_predicted_claims']
     language = my_config['language']
     dataset_path = my_config['dataset_path']
     label_column_name = my_config['label_column_name']
@@ -65,12 +64,18 @@ def main():
     date_column_name = my_config['date_column_name']
     author_column_name = my_config['author_column_name']
     possible_labels = my_config['possible_labels']
+    prediction_column_name = my_config['prediction_column_name']
     # Load the dataset using pandas
     dataset = pd.read_csv(dataset_path)
-    dataset["predicted_label"] = "ERR"
+    if prediction_column_name not in dataset.columns:
+        dataset[prediction_column_name] = "ERR"
     # iterate over the rows of the dataset
-    with LoggingPrinter("Logs/standard_factchecker_testing_log.txt"):
+    with LoggingPrinter("Logs/standard_factchecker_testing_70B_it_log.txt"):
         for index, row in dataset.iterrows():
+            print("Tuple",index)
+            if index < already_predicted_claims:
+                print("Skipping tuple",index,":",row[claim_column_name])
+                continue
             claim = row[claim_column_name]
             date = row[date_column_name]
             author = row[author_column_name]
@@ -89,14 +94,14 @@ def main():
                 except Exception as e:
                     print("Error: ", e)
                     print("Pausing for a while and Retrying...")
-                    # wait for a minute and retry
-                    time.sleep(60)
+                    # wait for 10 minutes and retry
+                    time.sleep(60*10)
             # Print the messages
             l = find_label(response, possible_labels, language)
             print("Label extracted: ", l,". True label: ", label+"\n")
-            dataset.at[index, "predicted_label"] = l
+            dataset.at[index, prediction_column_name] = l
     # Save the dataset
-    dataset.to_csv("Datasets/standard_predictions.csv", index=False)
+    dataset.to_csv("Datasets/politifact_150.csv", index=False)
 
 if __name__ == "__main__":
     main()

@@ -307,7 +307,7 @@ def get_embeddings(sentences):
     Returns:
         torch.Tensor: The embeddings for the input sentences.
     """
-    inputs = tokenizer(sentences, padding=True, truncation=True, return_tensors="pt", max_length=256)
+    inputs = tokenizer(sentences, padding=True, truncation=True, return_tensors="pt", max_length=128)
     with torch.no_grad():
         outputs = similarity_model(**inputs)
     return outputs.last_hidden_state.mean(dim=1)
