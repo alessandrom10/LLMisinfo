@@ -2,7 +2,7 @@
 # The user's input is a claim, a date and an author. The model's output is the final assessment of the claim. The search results are also printed.
 # Up to now, supported languages are English and Italian. (Spanish TODO)
 
-from Python_scripts.Search_scripts.sel_search_v2 import *
+from Python_scripts.Search_scripts.sel_search import *
 import yaml
 from huggingface_hub import InferenceClient
 import os
@@ -12,16 +12,16 @@ import re
 import time
 
 # Load the configuration variables
-config = load_config()
-dataset_input_path = config['dataset_input_path']
-dataset_output_path = config['dataset_output_path']
-max_searches = config['max_searches']
-model_name = config['model_name']
-model_id = config['model_id']
-tools = config['tools']
-temperature = config['temperature']
-max_tokens = config['max_tokens']
-language = config['language']
+my_config = load_config()
+dataset_input_path = my_config['dataset_input_path']
+dataset_output_path = my_config['dataset_output_path']
+#max_searches = my_config['max_searches']
+model_name = my_config['model_name']
+model_id = my_config['model_id']
+#tools = my_config['tools']
+temperature = my_config['temperature']
+max_tokens = my_config['max_tokens']
+language = my_config['language']
 
 if language == "en":
     confident_message = {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"}
@@ -171,33 +171,21 @@ def generate_output(user_input):
 
     return response
 
-def extract_final_answer(output):
-    if 'Based on' in output or 'I would classify the claim as' in output:
-        pattern = r"\b(false|mostly-false|mixture|mostly-true|true)[,.]?\b"
-        matches = re.findall(pattern, output, re.IGNORECASE)
-        if matches:
-            final_label = matches[-1].lower()
-            return final_label
-        else:
-            print("The model seems to answer the question, but not to provide any veracity label")
-            return ""
-    else:
-        print("Error, no answer has been found in the output")
-        return ""
-
-
 def main():
     """
     Main function for testing the script on a single claim inputed from the terminal.
     """
-    print("Welcome to the Fact Checker! The language model "+model_name+" will verify your claim with the help of google search results.")
+    print("Welcome to the Fact Checker! The language model " + model_name + " will verify your claim with the help of google search results.")
+
     # Get input from the user
     claim = input("Enter the claim to fact-check: ")
     date = input("Enter the date of the claim (optional): ")
     author = input("Enter the author of the claim (optional): ")
     user_input = {"claim": claim, "date": date, "author": author}
+
     # Generate output from the model
     output = generate_output(user_input)
+
     # Print the model's output
     #print("Model Output:\n" + str(output))
 

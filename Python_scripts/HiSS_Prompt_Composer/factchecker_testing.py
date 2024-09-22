@@ -1,0 +1,113 @@
+from Python_scripts.HiSS_Prompt_Composer.factchecker import *
+import sys
+import os
+import re
+import pandas as pd
+
+# The class to keep the logs of our operations
+class LoggingPrinter:
+    def __init__(self, filename):
+        self.out_file = open(filename, "w", encoding="utf-8")
+        self.old_stdout = sys.stdout
+        # This object will take over `stdout`'s job
+        sys.stdout = self
+
+    # Executed when the user does a `print`, print both on the screen as well as on the screen
+    def write(self, text): 
+        self.old_stdout.write(text)
+        self.out_file.write(text)
+
+    # Executed when a `with` block begins (necessary for LoggingPrinter to be used in a with block)
+    def __enter__(self): 
+        return self
+    
+    # Executed when a `with` block ends
+    def __exit__(self, type, value, traceback): 
+        # We don't want to log anymore. Restore the original stdout object.
+        sys.stdout = self.old_stdout
+
+# This function extracts the final veracity label given by the model
+def extract_final_answer(output, possible_labels):
+    if 'Based on' in output or 'I would classify the claim as' in output:
+        pattern = r"\b(" + "|".join(map(re.escape, possible_labels)) + r")[,.]?\b"
+        matches = re.findall(pattern, output, re.IGNORECASE)
+        if matches:
+            final_label = matches[-1].lower()
+            return final_label
+        else:
+            print("The model seems to answer the question, but not to provide any veracity label")
+            return "ERR"
+    else:
+        print("Error, no answer has been found in the output")
+        return "ERR"
+
+def find_label(model_output, label_list):
+    model_output = model_output.lower()
+    #take only the last 20 characters
+    model_output = model_output[-20:]
+    for label in label_list:
+        if label in model_output:
+            if label == "mostly-true":
+                return "mostly true"
+            elif label == "mostly-false":
+                return "mostly false"
+            return label
+    return "ERR"
+
+def main():
+
+    my_config = load_config("my_config.yaml")
+    dataset_input_path = my_config['dataset_input_path']
+    dataset_output_path = my_config['dataset_output_path']
+    log_file_path = my_config['log_file_path']
+    label_column_name = my_config['label_column_name']
+    claim_column_name = my_config['claim_column_name']
+    date_column_name = my_config['date_column_name']
+    author_column_name = my_config['author_column_name']
+    possible_labels = my_config['possible_labels']
+
+    # Load the dataset using pandas
+    dataset = pd.read_csv(dataset_input_path, encoding="utf-16", sep="\t", dtype={24: str})
+    start_index = 0
+    end_index = 3
+    #end_index = df.size - 1
+    dataset = dataset.iloc[start_index : end_index]
+    dataset["predicted_label"] = "ERR"
+
+    # Iterate over the rows of the dataset
+    with LoggingPrinter(log_file_path):
+        for index, row in dataset.iterrows():
+            claim = row[claim_column_name]
+            #date = row[date_column_name]
+            #author = row[author_column_name]
+            date = ""
+            author = ""
+            true_label = row[label_column_name]
+            
+            # Call the fact checker function
+            if pd.isna(date):
+                date = ""
+            if pd.isna(author):
+                author = ""
+            user_input = {"claim": claim, "date": date, "author": author}
+
+            for i in range(100):
+                try:
+                    response = generate_output(user_input)
+                    break
+                except Exception as e:
+                    print(f"User_input is: \n{user_input}\n End of user input")
+                    print(f"Error is: \n {e}\n End of error")
+                    print("Pausing for a while and retrying...")
+                    time.sleep(60)
+
+            # Print the predicted label
+            predicted_label = extract_final_answer(response, possible_labels)
+            print(f"Predicted label: {predicted_label}. True label: {true_label}")
+            dataset.at[index, "predicted_label"] = predicted_label
+
+            # Save the dataset
+            dataset.to_csv(dataset_output_path, index = False, encoding = "utf-16", sep = "\t")
+
+if __name__ == "__main__":
+    main()

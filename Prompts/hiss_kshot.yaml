@@ -1,5 +1,5 @@
 hiss_messages: [
-    {"role": "system", "content": "You are a fact-checking expert classifying claims to one of the following labels: ['false', 'mostly-false', 'mixture', 'mostly-true', 'true']. reply with the next step in the fact verification process following the provided examples."},
+    {"role": "system", "content": "You are a fact-checking expert classifying claims to one of the following labels: ['False', 'Mostly-False', 'Mixture', 'Mostly-True', 'True']. reply with the next step in the fact verification process following the provided examples."},
     
     # Example 1
     {"role": "user", "content": "Claim: \"Emerson Moser, who was Crayola's top crayon molder for almost 40 years, was colorblind.\""},
@@ -17,7 +17,7 @@ hiss_messages: [
     {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"},
     {"role": "assistant", "content": "No."},
     {"role": "user", "content": "Answer: Moser has had tritanomaly, a type of colorblindness that makes it difficult to distinguish between blue and green and between yellow and red."},
-    {"role": "assistant", "content": "Based on the answers to these questions, it is clear that among false, mostly-false, mixture, mostly-true, and true the claim can be classified as mostly-true."},
+    {"role": "assistant", "content": "Based on the answers to these questions, it is clear that among False, Mostly-False, Mixture, Mostly-True and True the claim can be classified as Mostly-True."},
     
     # Example 2
     {"role": "user", "content": "Claim: \"Bernie Sanders said 85 million Americans have no health insurance.\""},
@@ -37,7 +37,7 @@ hiss_messages: [
     {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"},
     {"role": "assistant", "content": "No."},
     {"role": "user", "content": "Answer: Bernie Sanders omitted that his figure included people who either have no health insurance or are under-insured."},
-    {"role": "assistant", "content": "Based on the answers to these questions, it is clear that among false, mostly-false, mixture, mostly-true, and true, the claim is classified as mixture."},
+    {"role": "assistant", "content": "Based on the answers to these questions, it is clear that among False, Mostly-False, Mixture, Mostly-True and True, the claim is classified as Mixture."},
     
     # Example 3
     {"role": "user", "content": "Claim: \"JAG charges Nancy Pelosi with treason and seditious conspiracy.\""},
@@ -53,7 +53,7 @@ hiss_messages: [
     {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"},
     {"role": "assistant", "content": "No."},
     {"role": "user", "content": "Answer: Real Raw News, a disclaimer stating that it contains 'humor, parody and satire' and has a history of publishing fictitious stories."},
-    {"role": "assistant", "content": "Based on the answers to these questions, it is clear that among false, mostly-false, mixture, mostly-true, and true, the claim is classified as false."},
+    {"role": "assistant", "content": "Based on the answers to these questions, it is clear that among False, Mostly-False, Mixture, Mostly-True and True, the claim is classified as False."},
     
     # Example 4
     {"role": "user", "content": "Claim: \"Cheri Beasley 'backs tax hikes— even on families making under $75,000.'\""},
@@ -63,7 +63,7 @@ hiss_messages: [
     {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"},
     {"role": "assistant", "content": "No."},
     {"role": "user", "content": "Answer: The ad makes a misleading connection between the two issues and does not accurately represent Beasley's position on tax hikes for families making under $75,000 per year."},
-    {"role": "assistant", "content": "Based on the answers to these questions, it is clear that among false, mostly-false, mixture, mostly-true, and true, the claim is classified as mostly-false."}
+    {"role": "assistant", "content": "Based on the answers to these questions, it is clear that among False, Mostly-False, Mixture, Mostly-True and True, the claim is classified as Mostly-False."}
 ]
 
 test_hiss_prompt: [
@@ -82,5 +82,5 @@ test_hiss_prompt: [
     {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"},
     {"role": "assistant", "content": "No."},
     {"role": "user", "content": "Answer:[...] Trump suggested that Japan might need to acquire nuclear weapons to defend against neighboring North Korea [...]"},
-    {"role": "assistant", "content": "Based on the answers to these questions, it is clear that among false, mostly-false, mixture, mostly-true, and true, the claim is classified as mixture."},
+    {"role": "assistant", "content": "Based on the answers to these questions, it is clear that among False, Mostly-False, Mixture, Mostly-True and True, the claim is classified as Mixture."},
 ]
