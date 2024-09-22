@@ -7,6 +7,7 @@ import yaml
 from huggingface_hub import InferenceClient
 import os
 import pandas as pd
+import pprint
 import re
 import time
 
@@ -104,7 +105,7 @@ def generate_output(user_input):
     Returns:
         The model's final assessment of the claim as a string. The search results are also printed.
     """
-    messages = start_messages #  We set it to the few shot shamples
+    messages = list(start_messages) #  We set it to the few shot shamples
     print("<" + messages[0]['role'] + "> " + messages[0]['content']) # We check if the file has been correctly loaded
     print("<user and assistant> Loaded few-shot examples.")
     formatted_claim = "Claim: " + user_input["claim"] + ". " # We create a string with "Claim: <claim>"
@@ -121,7 +122,13 @@ def generate_output(user_input):
     messages.append({"role": "user", "content": formatted_claim}) # We add the fact that user has said this formatted claim to the messages array of dictionaries
     print("<user> " + formatted_claim) # We print it to show it's working 
     # Get the answer from the llm, it should stop when it thinks it's the user that needs to add information
-    response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
+    try:
+        response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
+    except Exception as e:
+        print(f"Exception detected\n {e}\n, now sleeping")
+        print(f"Messages is:\n {messages}\nEnd messages")
+        time.sleep(60)
+        response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
     print("<assistant> " + response)
     
     question = extract_question(response)
@@ -130,7 +137,13 @@ def generate_output(user_input):
         messages.append(confident_message) # We add to messages both what the assistant has given as output as well as the request if it's confident by user
         print("<user> " + confident_message["content"])
         # We ask the llm for an answer
-        response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
+        try:
+            response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
+        except Exception as e:
+            print(f"Exception detected\n {e}\n, now sleeping")
+            print(f"Messages is:\n {messages}\nEnd messages")
+            time.sleep(60)
+            response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
         print("<assistant> " + response)
         confidence = extract_yes_no(response)
         if confidence != "":
@@ -143,13 +156,35 @@ def generate_output(user_input):
                 elif language == "it":
                     messages.append({"role": "user", "content": "Risposta: " + search_results})
                 print("<user> " + messages[-1]["content"])
-                response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
+                try:
+                    response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
+                except Exception as e:
+                    print(f"Exception detected\n {e}\n, now sleeping")
+                    print(f"Messages is:\n {messages}\nEnd messages")
+                    time.sleep(60)
+                    response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
                 print("<assistant> " + response)
         else:
             print("The model did not tell whether it is confident or not on answering the question.")
             break
         question = extract_question(response) # And we repeat this for every question the llm has dealt with (so until question == "")
+
     return response
+
+def extract_final_answer(output):
+    if 'Based on' in output or 'I would classify the claim as' in output:
+        pattern = r"\b(false|mostly-false|mixture|mostly-true|true)[,.]?\b"
+        matches = re.findall(pattern, output, re.IGNORECASE)
+        if matches:
+            final_label = matches[-1].lower()
+            return final_label
+        else:
+            print("The model seems to answer the question, but not to provide any veracity label")
+            return ""
+    else:
+        print("Error, no answer has been found in the output")
+        return ""
+
 
 def main():
     """
