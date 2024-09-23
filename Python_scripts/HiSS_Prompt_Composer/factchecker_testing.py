@@ -72,7 +72,7 @@ def find_label(model_output, label_list):
             return label
     return "ERR"
 
-# This function tells us if the two received labels can be considered as having a similar veracity value
+# This function tells us if the two received labels can be considered as having a similar veracity values
 def is_similar(predicted_label, true_label):
     if(true_label == "mostly false"):
         true_label = "mostly-false"
