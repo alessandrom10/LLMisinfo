@@ -16,18 +16,15 @@ import time
 
 # Load the configuration variables
 my_config = load_config()
-#max_searches = my_config['max_searches']
 model_name = my_config['model_name']
 model_id = my_config['model_id']
-#tools = my_config['tools']
 temperature = my_config['temperature']
 max_tokens = my_config['max_tokens']
 language = my_config['language']
 
 if language == "en":
     confident_message = {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"}
-    #hiss_config = load_config("Prompts/hiss_kshot.yaml")
-    hiss_config = load_config("Prompts/hiss_kshot_fixed.yaml")
+    hiss_config = load_config("Prompts/hiss_kshot.yaml")
 elif language == "it":
     confident_message = {"role": "user", "content": "Dimmi se sei sicuro di poter rispondere alla domanda o no. Rispondi con 'sì' o 'no':"}
     hiss_config = load_config("Prompts/hiss_kshot_it.yaml")

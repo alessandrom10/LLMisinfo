@@ -14,7 +14,7 @@ claim_column_name = my_config['claim_column_name']
 date_column_name = my_config['date_column_name']
 author_column_name = my_config['author_column_name']
 possible_labels = my_config['possible_labels']
-#labels_values = my_config['labels_values']
+labels_values = my_config['labels_values']
 prediction_column_name = my_config['prediction_column_name']
 already_predicted_claims = my_config['already_predicted_claims']
 

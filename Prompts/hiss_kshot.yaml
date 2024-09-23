@@ -1,5 +1,5 @@
 hiss_messages: [
-    {"role": "system", "content": "You are a fact-checking expert classifying claims to one of the following labels: ['False', 'Mostly-False', 'Mixture', 'Mostly-True', 'True']. reply with the next step in the fact verification process following the provided examples."},
+    {"role": "system", "content": "You are a fact-checking expert classifying claims to one of the following labels: 'False', 'Mostly-False', 'Mixture', 'Mostly-True' or 'True'. Reply with the next step in the fact verification process and at the very end provide your final answer starting with 'Based on' and providing one of those veracity label. Follow the provided examples below:"},
     
     # Example 1
     {"role": "user", "content": "Claim: \"Emerson Moser, who was Crayola's top crayon molder for almost 40 years, was colorblind.\""},
@@ -15,9 +15,7 @@ hiss_messages: [
     {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"},
     {"role": "assistant", "content": "Yes. Question: Was Emerson Moser's colorblindness only confusing for certain colors?"},
     {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"},
-    {"role": "assistant", "content": "No."},
-    {"role": "user", "content": "Answer: Moser has had tritanomaly, a type of colorblindness that makes it difficult to distinguish between blue and green and between yellow and red."},
-    {"role": "assistant", "content": "Based on the answers to these questions, it is clear that among False, Mostly-False, Mixture, Mostly-True and True the claim can be classified as Mostly-True."},
+    {"role": "assistant", "content": "Yes.\nAnswer: Moser has had tritanomaly, a type of colorblindness that makes it difficult to distinguish between blue and green and between yellow and red.\nBased on the answers to these questions, it is clear that among False, Mostly-False, Mixture, Mostly-True and True the claim can be classified as Mostly-True."},
     
     # Example 2
     {"role": "user", "content": "Claim: \"Bernie Sanders said 85 million Americans have no health insurance.\""},
