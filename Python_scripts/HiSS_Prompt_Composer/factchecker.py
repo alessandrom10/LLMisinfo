@@ -2,25 +2,27 @@
 # The user's input is a claim, a date and an author. The model's output is the final assessment of the claim. The search results are also printed.
 # Up to now, supported languages are English and Italian. (Spanish TODO)
 
-from Python_scripts.Search_scripts.sel_search_v2 import *
+#from Python_scripts.Search_scripts.sel_search import *
+import sys
+sys.path.insert(0,"Python_scripts/Search_scripts")
+from sel_search import *
 import yaml
 from huggingface_hub import InferenceClient
 import os
 import pandas as pd
+import pprint
 import re
 import time
 
 # Load the configuration variables
-config = load_config()
-dataset_input_path = config['dataset_input_path']
-dataset_output_path = config['dataset_output_path']
-max_searches = config['max_searches']
-model_name = config['model_name']
-model_id = config['model_id']
-tools = config['tools']
-temperature = config['temperature']
-max_tokens = config['max_tokens']
-language = config['language']
+my_config = load_config()
+#max_searches = my_config['max_searches']
+model_name = my_config['model_name']
+model_id = my_config['model_id']
+#tools = my_config['tools']
+temperature = my_config['temperature']
+max_tokens = my_config['max_tokens']
+language = my_config['language']
 
 if language == "en":
     confident_message = {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"}
@@ -95,6 +97,19 @@ def load_config(filename = 'my_config.yaml'):
         config = yaml.safe_load(f)
     return config
 
+def chat_completion(messages):
+    """
+    Defines the chat completion such that it waits in case the api is busy or overloaded.
+    """
+    while True:
+        try:
+            response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature)
+            return response.choices[0].message.content
+        except Exception as e:
+            print("API is busy or overloaded. Waiting and retrying...")
+            time.sleep(10*60)
+
+
 def generate_output(user_input):
     """
     Uses the huggingface API to load the model and make it assess the claim.
@@ -104,7 +119,7 @@ def generate_output(user_input):
     Returns:
         The model's final assessment of the claim as a string. The search results are also printed.
     """
-    messages = start_messages #  We set it to the few shot shamples
+    messages = list(start_messages) #  We set it to the few shot shamples
     print("<" + messages[0]['role'] + "> " + messages[0]['content']) # We check if the file has been correctly loaded
     print("<user and assistant> Loaded few-shot examples.")
     formatted_claim = "Claim: " + user_input["claim"] + ". " # We create a string with "Claim: <claim>"
@@ -121,7 +136,7 @@ def generate_output(user_input):
     messages.append({"role": "user", "content": formatted_claim}) # We add the fact that user has said this formatted claim to the messages array of dictionaries
     print("<user> " + formatted_claim) # We print it to show it's working 
     # Get the answer from the llm, it should stop when it thinks it's the user that needs to add information
-    response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
+    response = chat_completion(messages = messages)
     print("<assistant> " + response)
     
     question = extract_question(response)
@@ -130,7 +145,7 @@ def generate_output(user_input):
         messages.append(confident_message) # We add to messages both what the assistant has given as output as well as the request if it's confident by user
         print("<user> " + confident_message["content"])
         # We ask the llm for an answer
-        response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
+        response = chat_completion(messages = messages)
         print("<assistant> " + response)
         confidence = extract_yes_no(response)
         if confidence != "":
@@ -143,26 +158,30 @@ def generate_output(user_input):
                 elif language == "it":
                     messages.append({"role": "user", "content": "Risposta: " + search_results})
                 print("<user> " + messages[-1]["content"])
-                response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature).choices[0].message.content
+                response = chat_completion(messages = messages)
                 print("<assistant> " + response)
         else:
             print("The model did not tell whether it is confident or not on answering the question.")
             break
         question = extract_question(response) # And we repeat this for every question the llm has dealt with (so until question == "")
+
     return response
 
 def main():
     """
     Main function for testing the script on a single claim inputed from the terminal.
     """
-    print("Welcome to the Fact Checker! The language model "+model_name+" will verify your claim with the help of google search results.")
+    print("Welcome to the Fact Checker! The language model " + model_name + " will verify your claim with the help of google search results.")
+
     # Get input from the user
     claim = input("Enter the claim to fact-check: ")
     date = input("Enter the date of the claim (optional): ")
     author = input("Enter the author of the claim (optional): ")
     user_input = {"claim": claim, "date": date, "author": author}
+
     # Generate output from the model
     output = generate_output(user_input)
+
     # Print the model's output
     #print("Model Output:\n" + str(output))
 

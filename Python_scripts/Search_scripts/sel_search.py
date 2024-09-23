@@ -35,19 +35,20 @@ def load_config(filename="my_config.yaml"):
     return config
 
 #loading the configuration variables from the config.yaml file
-config = load_config()
-driver_path = config['chromedriver_path']
-chromium_path = config['chromium_path']
-max_results = config['max_results']
-max_sentences = config['max_sentences']
-language = config['language']
-url_blacklist = config['url_blacklist']
-tag_blacklist = config['tag_blacklist']
-type_blacklist = config['type_blacklist']
-windowed = config['windowed']
-window_size = config['window_size']
-overlap_rate = config['overlap_rate']
-max_scraped_sentences = config['max_scraped_sentences']
+my_config = load_config()
+driver_path = my_config['chromedriver_path']
+chromium_path = my_config['chromium_path']
+max_results = my_config['max_results']
+max_sentences = my_config['max_sentences']
+max_sentence_length = my_config['max_sentence_length']
+language = my_config['language']
+url_blacklist = my_config['url_blacklist']
+tag_blacklist = my_config['tag_blacklist']
+type_blacklist = my_config['type_blacklist']
+windowed = my_config['windowed']
+window_size = my_config['window_size']
+overlap_rate = my_config['overlap_rate']
+max_scraped_sentences = my_config['max_scraped_sentences']
 
 #loading the spacy model based on the language - this is used for sentence tokenization
 #if __name__ == "__main__":
@@ -267,7 +268,7 @@ def get_search_results(query, keep_browser_open=False):
     try:
         driver.get('https://www.google.com')
         
-        wait = WebDriverWait(driver, 10)
+        wait = WebDriverWait(driver, 60)
         try:
             accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accetta tutto"]')))
             #accept_cookies_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[text()="Accept all"]')))
@@ -398,6 +399,11 @@ def extract_relevant_sentences(content, query):#, top_n=5, windowed=False, windo
             top_sentences.append(" ".join(filtered_sentences[start:end]))
     else:
         top_sentences = ranked_sentences[:max_sentences]
+
+    for i in range(len(top_sentences)):
+        if(len(top_sentences[i])) > max_sentence_length:
+            print(f"Sentence of length {len(top_sentences[i])}, truncating it to {max_sentence_length}")
+            top_sentences[i] = top_sentences[i][:max_sentence_length]
         
     return top_sentences, top_indices, top_similarities
 

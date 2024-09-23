@@ -65,17 +65,19 @@ def main():
     author_column_name = my_config['author_column_name']
     possible_labels = my_config['possible_labels']
     prediction_column_name = my_config['prediction_column_name']
+    log_file_path = my_config['log_file_path']
     # Load the dataset using pandas
     dataset = pd.read_csv(dataset_path)
     if prediction_column_name not in dataset.columns:
         dataset[prediction_column_name] = "ERR"
     # iterate over the rows of the dataset
-    with LoggingPrinter("Logs/standard_factchecker_testing_70B_it_log.txt"):
+    with LoggingPrinter(log_file_path):
         for index, row in dataset.iterrows():
-            print("Tuple",index)
             if index < already_predicted_claims:
                 print("Skipping tuple",index,":",row[claim_column_name])
                 continue
+
+            print("Tuple",index)
             claim = row[claim_column_name]
             date = row[date_column_name]
             author = row[author_column_name]
