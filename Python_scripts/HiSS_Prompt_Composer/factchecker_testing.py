@@ -23,8 +23,8 @@ def main():
     # Load the dataset using pandas
     dataset = pd.read_csv(dataset_input_path, encoding="utf-16", sep="\t", dtype={24: str})
     start_index = 0
-    #end_index = 15
-    end_index = dataset.size - 1
+    end_index = 20
+    #end_index = dataset.size - 1
     correct_predictions = 0
     number_of_claims = 0
     dataset = dataset.iloc[start_index : end_index]
@@ -68,7 +68,9 @@ def main():
             elif is_similar(predicted_label, true_label.lower()):
                 correct_predictions += 1
             number_of_claims += 1
-            print(f"Current accurancy is: {correct_predictions / number_of_claims:.3f}")
+
+            if number_of_claims > 0:
+                print(f"Current accurancy is: {correct_predictions / number_of_claims:.3f}")
 
             # Save the dataset
             dataset.to_csv(dataset_output_path, index = False, encoding = "utf-16", sep = "\t")
@@ -123,7 +125,7 @@ def find_label(model_output, label_list):
             return label
     return "ERR"
 
-# This function tells us if the two received labels can be considered as having a similar veracity value
+# This function tells us if the two received labels can be considered as having a similar veracity values
 def is_similar(predicted_label, true_label):
     if(true_label == "mostly false"):
         true_label = "mostly-false"

@@ -25,7 +25,8 @@ language = my_config['language']
 
 if language == "en":
     confident_message = {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"}
-    hiss_config = load_config("Prompts/hiss_kshot.yaml")
+    #hiss_config = load_config("Prompts/hiss_kshot.yaml")
+    hiss_config = load_config("Prompts/hiss_kshot_fixed.yaml")
 elif language == "it":
     confident_message = {"role": "user", "content": "Dimmi se sei sicuro di poter rispondere alla domanda o no. Rispondi con 'sì' o 'no':"}
     hiss_config = load_config("Prompts/hiss_kshot_it.yaml")
