@@ -28,7 +28,6 @@ if language == "en":
 elif language == "it":
     confident_message = {"role": "user", "content": "Dimmi se sei sicuro di poter rispondere alla domanda o no. Rispondi con 'sì' o 'no':"}
     hiss_config = load_config("Prompts/hiss_kshot_it.yaml")
-
 start_messages = hiss_config["hiss_messages"]
 
 # Load the Hugging Face API token from the environment variables
