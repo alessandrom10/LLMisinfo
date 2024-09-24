@@ -29,7 +29,7 @@ from transformers import pipeline, AutoTokenizer, AutoModel
 from urllib.parse import urlparse
 
 #loading the configuration variables from the config.yaml file
-def load_config(filename="my_config.yaml"):
+def load_config(filename="config.yaml"):
     with open(filename, 'r') as f:
         config = yaml.safe_load(f)
     return config

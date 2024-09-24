@@ -1,6 +1,6 @@
 ## Path related configurations:
-chromedriver_path: ''
-chromium_path: ''
+chromedriver_path: 'C:\Users\migue\OneDrive - UNIVERSIDAD DE SEVILLA\Escritorio\Universidad\Master Polimi\MDP\LLMisinfo-MDP\chromium\chromedriver.exe'
+chromium_path: 'C:\Users\migue\OneDrive - UNIVERSIDAD DE SEVILLA\Escritorio\Universidad\Master Polimi\MDP\LLMisinfo-MDP\chromium\chrome-win'
 dataset_path: ''
 kshot_examples_path: "Prompts/standard_kshot.txt"
 
@@ -15,7 +15,7 @@ max_results: 5
 max_sentences: 3
 max_searches: 3
 max_scraped_sentences: 250 #limit the number of sentences scraped from the web page for performance reasons
-
+max_sentence_length: 1000
 
 ## Window related configurations:
 windowed: False
