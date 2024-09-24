@@ -4,26 +4,28 @@ from wiki_api_utils import search_wikipedia_short, search_wikipedia
 from huggingface_hub import InferenceClient
 import requests
 
-from Search_scripts.sel_search_v2 import google_search
+import pandas as pd
+import random
 
-def summarization_query(search_q, text, model, tokenizer):
-    input = "<|user|> Summarize this text, putting emphasis on " + search_q + ", do not summarize too much otherwise a lot of info will be lost. Text : " + text + "<|end|> \n<|assistant|> Summary: "
-    inputs = tokenizer.encode(input, add_special_tokens=False, return_tensors="pt").to("cuda")
-    prompt_len = len(inputs[0])
-    model.eval()
-    outputs = model.generate(
-        inputs,
-        max_new_tokens=200,
-        do_sample=True,
-        top_k=10,
-        temperature=1.,
-    )
-    del input, inputs
-    return outputs[:, prompt_len:]
+from Search_scripts.sel_search import google_search
 
 def search_custom(search):
     search_info = google_search(search)
     return search_info  
+
+def load_random_claim(path):
+    # load a random claim from the csv, print it and return it
+    df = pd.read_csv(path)
+    claim = df.iloc[random.randint(0, len(df)-1)]
+    result = claim["reviewRating.alternateName"]
+    # result = claim["converted_label"]
+    claim = "\"" + str(claim["claimReviewed"]) + "\"" + " Made by: " + str(claim["itemReviewed.author.name"]) + ". Date " + str(claim["itemReviewed.datePublished"])
+
+    print(claim)
+    print(result)
+
+    return claim, result
+
 
 # Load the tokenizer and the model
 # model_name = "meta-llama/Meta-Llama-3.1-8B"
@@ -51,27 +53,24 @@ api_token = "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" # get yours at hf.co/setting
 
 temp = 1.5
 
-# print(data[0]["generated_text"])
-
-# tokenizer = AutoTokenizer.from_pretrained(model_name, token = api_token)
-# model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True).to("cuda")
-
 # Load react prompt from txt file
-# with open("Prompts/ReAct_prompts.txt", "r") as file:
-with open("Prompts/Question_answer.txt", "r") as file:
-    react_shots = file.read()
+n_shots = 3
+react_shots = ""
+for n in range(n_shots):
+    with open(f"Prompts/fact_checking_react_{n+1}.txt", "r", encoding='utf-8') as file:
+        react_shots += file.read()
 
 # question to be answered
 # text = react_shots + "<|user|> Question: Which is the strongest animal? <|end|>"
-text = react_shots + "Question: Which is the faster pokemon and the one with higher physical attack?. \n\n"
-
+claim, result = load_random_claim("Datasets/english_150_before_2024_sample.csv")
 
 # Tokenize the input
 # tokens = tokenizer.encode(react_shots + text, add_special_tokens=False, return_tensors="pt").to("cuda")
 # prompt_len = len(tokens[0])
 
-n_shots = 3
 max_iters = 3
+
+text = react_shots + "Claim 1: " + claim + ". You can choose between the options false, mostly false, mixture, mostly true and true. \n\n"
 
 # Perform the question answering
 # if we did things right, we would be generating token by token, stopping generation when the end token is generated.
@@ -85,7 +84,7 @@ for i in range(n_shots):
                             text + pre,
                             model_id=model_name,
                             api_token=api_token,
-                            max_tokens=50,
+                            max_tokens=100,
                             top_k=10,
                             temperature=temp,
                          )
@@ -104,7 +103,7 @@ for i in range(n_shots):
         generated_text + pre,
         model_id=model_name,
         api_token=api_token,
-        max_tokens=10,
+        max_tokens=15,
         top_k=10,
         temperature=temp,
     )
@@ -135,7 +134,7 @@ final_text = query_hf(
     text + pre,
     model_id=model_name,
     api_token=api_token,
-    max_tokens=100,
+    max_tokens=10,
     top_k=10,
     temperature=temp,
 )[0]["generated_text"]
@@ -150,7 +149,7 @@ final_text = text + final_answer
 # generated_text = tokenizer.decode(tokens.tolist()[0][prompt_len:])
 print("Question: " + final_text.split("Question: ")[-1])
 
-# save final text to file
-file_path = "Results/ReAct_results_faster_stronger_pokemon.txt"
-with open(file_path, "w", encoding="utf-8") as file:
-    file.write("Question: " + final_text.split("Question: ")[-1])
+# # save final text to file
+# file_path = "Results/ReAct_results_faster_stronger_pokemon.txt"
+# with open(file_path, "w", encoding="utf-8") as file:
+#     file.write("Question: " + final_text.split("Question: ")[-1])
