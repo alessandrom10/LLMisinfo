@@ -13,22 +13,22 @@ def save_log_result(log_file_path: str, csv_file_path: str):
     dataset = pd.read_csv(csv_file_path)
     #print name of the columns
     print(dataset.columns)
-    dataset["predicted_label_8B"] = "ERR"
+    dataset["predicted_label_hiss_70B"] = "ERR"
     # iterate over the lines of the log file that contain the the lines in the format: "Label extracted:  [label name] . True label:  [label name]"
     for line in log_lines:
         # extract the claim, that can include any character, not just letters so include ALL characters, [a-z] is not enough
         if re.search(r"Claim: .+", line):
             re_out = re.search(r"Claim: (.+)", line)
             claim = re_out.group(1)
-        if re.search(r"Label extracted:  [a-z ]+ . True label:  [a-z ]+", line):
+        if re.search(r"Label extracted:  [a-za-zA-Z ]+ . True label:  [a-za-zA-Z ]+", line):
             print("\nLogged claim: ", claim)
             print("Corresponding claim in the dataset: ", dataset.at[i, "claimReviewed"])
             # extract the predicted label and the true label
-            re_out = re.search(r"Label extracted:  ([a-z ]+) . True label:  [a-z ]+", line)
+            re_out = re.search(r"Label extracted:  ([a-zA-Z ]+) . True label:  [a-zA-Z ]+", line)
             predicted_label = re_out.group(1)
-            print("Predicted label:",predicted_label,". True label:", dataset.at[i, "reviewRating.alternateName"])
+            print("Predicted label:",predicted_label,". True label:", dataset.at[i, "converted_label"])
             # write the predicted label in the column "predicted_label" of the dataset
-            dataset.at[i,"predicted_label_8B"] = predicted_label
+            dataset.at[i,"predicted_label_hiss_70B"] = predicted_label
             i += 1
     #save the dataset
     print("Total number of claims: ", i)
@@ -36,8 +36,8 @@ def save_log_result(log_file_path: str, csv_file_path: str):
 
 # DO THIS ONLY WHEN THE DATASET ITERATION PROCESS STOPS BEFORE THE END BUT YOU HAVE THE LOG FILE WITH THE PREDICTED LABELS
 # IDEALLY, THE DATASET ITERATION PROCESS SHOULD HANDLE THE SAVING OF THE PREDICTED LABELS AND THIS IS NOT NEEDED
-#save_log_result("Logs/standard_factchecker_testing_8B_log.txt", "Datasets/politifact_150.csv")
-ds = pd.read_csv("Datasets/politifact_150.csv")
+#save_log_result("Logs/en_hiss_70B_log.txt", "Datasets/english_150_before_2024_sample.csv")
+ds = pd.read_csv("Datasets/english_150_before_2024_sample.csv")
 print(ds.columns)
 print(ds.head())
-print(ds["predicted_label_8B"].value_counts())
+print(ds["predicted_label_hiss_70B"].value_counts())

@@ -14,9 +14,10 @@ claim_column_name = my_config['claim_column_name']
 date_column_name = my_config['date_column_name']
 author_column_name = my_config['author_column_name']
 possible_labels = my_config['possible_labels']
-labels_values = my_config['labels_values']
+#labels_values = my_config['labels_values']
 prediction_column_name = my_config['prediction_column_name']
 already_predicted_claims = my_config['already_predicted_claims']
+model_id = my_config['model_id']
 
 # The class to keep the logs of our operations
 class LoggingPrinter:
@@ -90,6 +91,10 @@ def is_similar(predicted_label, true_label):
         return False
 
 def main():
+    print("Starting testing on the dataset", dataset_input_path)
+    print("Output predictions will be saved in", dataset_output_path)
+    print("Log file will be saved in", log_file_path)
+    print("The model in use is", model_id)
     # Load the dataset using pandas
     dataset = pd.read_csv(dataset_input_path)
     start_index = 0
@@ -99,7 +104,10 @@ def main():
     number_of_claims = 0
     #dataset = dataset.iloc[start_index : end_index]
     if prediction_column_name not in dataset.columns:
+        print("Column for predictions not found. Creating a new one.")
         dataset[prediction_column_name] = "ERR"
+    else:
+        print("Column for predictions found. Using it.")
 
     # Iterate over the rows of the dataset
     with LoggingPrinter(log_file_path):
@@ -123,7 +131,7 @@ def main():
                 author = ""
             user_input = {"claim": claim, "date": date, "author": author}
 
-            for i in range(100):
+            while True:
                 try:
                     response = generate_output(user_input)
                     break
@@ -139,8 +147,7 @@ def main():
             print("Label extracted: ", predicted_label,". True label: ",true_label+"\n")
             dataset.at[index, prediction_column_name] = predicted_label
 
-            # Calculate the current accurancy
-            ''' 
+            '''# Calculate the current accurancy 
             if predicted_label == "ERR":
                 number_of_claims -= 1
             elif is_similar(predicted_label, true_label.lower()):
