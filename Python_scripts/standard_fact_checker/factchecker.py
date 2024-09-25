@@ -3,7 +3,7 @@
 # Up to now, supported languages are English and Italian. (Spanish TODO)
 import sys 
 sys.path.insert(0, './Python_scripts/search_scripts')
-from sel_search_v2 import *
+from sel_search import *
 import yaml
 from huggingface_hub import InferenceClient
 import os
@@ -102,10 +102,13 @@ elif language == "it":
     else:
         standard_system_prompt += "puoi fare fino a "+str(max_searches)+" ricerche su google. "
     standard_system_prompt += config['italian_system_prompt_2']
+    print("Italian language selected:"+standard_system_prompt)
+
 
 # Load the Hugging Face API token from the environment variables
 try:
     API_TOKEN = os.getenv("HF_TOKEN")
+    print("API token loaded: "+API_TOKEN)
 except:
     print("Please set the HF_TOKEN environment variable to your Hugging Face API token.")
     exit(1)
@@ -113,6 +116,17 @@ except:
 # Load the model from the Hugging Face Hub
 print("Loading model "+model_name+"...\n")
 client = InferenceClient(model=model_id, token=API_TOKEN)
+
+def chat_completion(messages):
+    while True:
+        try:
+            response = client.chat_completion(messages=messages, max_tokens=max_tokens, temperature=temperature).choices[0].message.content
+            return response
+        except Exception as e:
+            print("Error: ", e)
+            print("Retrying in 10 minutes...")
+            time.sleep(60*10)
+
 
 def generate_output(user_input):
     """
@@ -142,17 +156,17 @@ def generate_output(user_input):
     messages.append({"role": "user", "content": formatted_claim})  
     print("<user> "+formatted_claim)    
     num_searches = 0
-    response = client.chat_completion(messages=messages, max_tokens=max_tokens, temperature=temperature).choices[0].message.content
+    response = chat_completion(messages=messages)
     print("<assistant> "+response)
     
     query = extract_query(response)
     while query!="": 
         num_searches += 1
-        search_results = google_search(query, date=user_input["date"])
+        search_results = google_search(query, date=user_input["date"], claim_domain=user_input["domain"])
         search_results = "Search number " + str(num_searches) + ":\n" + search_results
         messages.append({"role": "user", "content": search_results})
         print("<user> "+search_results)
-        response = client.chat_completion(messages=messages,max_tokens=max_tokens, temperature=temperature).choices[0].message.content
+        response = chat_completion(messages=messages)
         print("<assistant> "+response)
         query = extract_query(response)
     return response
@@ -167,7 +181,7 @@ def main():
     claim = input("Enter the claim to fact-check: ")
     date = input("Enter the date of the claim (optional): ")
     author = input("Enter the author of the claim (optional): ")
-    user_input = {"claim": claim, "date": date, "author": author}
+    user_input = {"claim": claim, "date": date, "author": author, "domain": ""}
     # Generate output from the model
     output = generate_output(user_input)
     # Print the model's output

@@ -9,6 +9,20 @@ import re
 import pandas as pd
 import time
 
+my_config = load_config("my_config.yaml")
+already_predicted_claims = my_config['already_predicted_claims']
+language = my_config['language']
+label_column_name = my_config['label_column_name']
+claim_column_name = my_config['claim_column_name']
+date_column_name = my_config['date_column_name']
+author_column_name = my_config['author_column_name']
+possible_labels = my_config['possible_labels']
+prediction_column_name = my_config['prediction_column_name']
+domain_column_name = my_config['domain_column_name']
+log_file_path = my_config['log_file_path']
+dataset_input_path = my_config['dataset_input_path']
+dataset_output_path = my_config['dataset_output_path']
+
 class LoggingPrinter:
     def __init__(self, filename):
         self.out_file = open(filename, "w", encoding="utf-8")
@@ -38,12 +52,12 @@ def find_label(model_output, label_list, language):
     Returns:
         the predicted label if it is found in the model output, "ERR" otherwise
     """
-    model_output = model_output.lower()
+    model_output = model_output.lower()[-20:]
     #take only the part after "final answer:"
-    if language == "en":
+    '''if language == "en":
         model_output = model_output.split("final answer:")[1]
     elif language == "it":
-        model_output = model_output.split("verdetto finale:")[1]
+        model_output = model_output.split("verdetto finale:")[1]'''
     for label in label_list:
         if label in model_output:
             if label == "mostly-true":
@@ -54,21 +68,15 @@ def find_label(model_output, label_list, language):
     return "ERR"
 
 def main():
+    print("Starting testing on the dataset", dataset_input_path)
+    print("Output predictions will be saved in", dataset_output_path)
+    print("Log file will be saved in", log_file_path)
+    print("The model in use is", model_id)
     # Load the configuration file
-    my_config = load_config("my_config.yaml")
-    already_predicted_claims = my_config['already_predicted_claims']
-    language = my_config['language']
-    dataset_path = my_config['dataset_path']
-    label_column_name = my_config['label_column_name']
-    claim_column_name = my_config['claim_column_name']
-    date_column_name = my_config['date_column_name']
-    author_column_name = my_config['author_column_name']
-    possible_labels = my_config['possible_labels']
-    prediction_column_name = my_config['prediction_column_name']
-    log_file_path = my_config['log_file_path']
     # Load the dataset using pandas
-    dataset = pd.read_csv(dataset_path)
+    dataset = pd.read_csv(dataset_input_path)
     if prediction_column_name not in dataset.columns:
+        print(prediction_column_name, "not in the dataset. Adding it.")
         dataset[prediction_column_name] = "ERR"
     # iterate over the rows of the dataset
     with LoggingPrinter(log_file_path):
@@ -83,27 +91,31 @@ def main():
             author = row[author_column_name]
             # Extract the label from the row
             label = row[label_column_name]
+            domain = row[domain_column_name]
             # Call the fact checker function
+            if pd.isna(domain):
+                domain = ""
             if pd.isna(date):
                 date = ""
             if pd.isna(author):
                 author = ""
-            user_input = {"claim": claim, "date": date, "author": author}
+            user_input = {"claim": claim, "date": date, "author": author, "domain": domain}
             while True:
                 try:
                     response = generate_output(user_input)
                     break
                 except Exception as e:
                     print("Error: ", e)
-                    print("Pausing for a while and Retrying...")
-                    # wait for 10 minutes and retry
-                    time.sleep(60*10)
+                    print("Skipping tuple",index)
+                    response = "ERR"
+                    break
             # Print the messages
             l = find_label(response, possible_labels, language)
             print("Label extracted: ", l,". True label: ", label+"\n")
             dataset.at[index, prediction_column_name] = l
     # Save the dataset
-    dataset.to_csv("Datasets/politifact_150.csv", index=False)
+    print("Saving the dataset to", dataset_output_path)
+    dataset.to_csv(dataset_output_path, index=False)
 
 if __name__ == "__main__":
     main()
