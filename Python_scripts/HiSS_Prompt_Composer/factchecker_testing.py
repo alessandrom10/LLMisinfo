@@ -49,10 +49,6 @@ def extract_final_answer(output, possible_labels):
         matches = re.findall(pattern, output, re.IGNORECASE)
         if matches:
             final_label = matches[-1].lower()
-            if label == "mostly-true":
-                return "mostly true"
-            elif label == "mostly-false":
-                return "mostly false"
             return final_label
         else:
             print("The model seems to answer the question, but not to provide any veracity label")
@@ -96,6 +92,7 @@ def main():
     print("Output predictions will be saved in", dataset_output_path)
     print("Log file will be saved in", log_file_path)
     print("The model in use is", model_id)
+
     # Load the dataset using pandas
     dataset = pd.read_csv(dataset_input_path)
     start_index = 0
@@ -117,7 +114,7 @@ def main():
                 print(f"Skipping tuple {index}: {row[claim_column_name]}")
                 continue
 
-            print("Tuple",index)
+            print("Tuple", index)
             claim = row[claim_column_name]
             date = row[date_column_name]
             author = row[author_column_name]
@@ -133,23 +130,18 @@ def main():
                 domain = ""
             user_input = {"claim": claim, "date": date, "author": author, "domain": domain}
 
-            while True:
-                try:
-                    response = generate_output(user_input)
-                    break
-                except Exception as e:
-                    #print(f"User_input is: \n{user_input}\n End of user input")
-                    print(f"Error is: \n {e}\n End of error")
-                    print("Skipping this tuple")
-                    response = "ERR"
-                    break
-                    #print("Pausing for a while and retrying...")
-                    #time.sleep(60*10)
+            try:
+                response = generate_output(user_input)
+            except Exception as e:
+                #print(f"User_input is: \n{user_input}\n End of user input")
+                print(f"Error is: \n {e}\n End of error")
+                print("Skipping this tuple")
+                response = "ERR"
 
             # Print the predicted label
-            #predicted_label = extract_final_answer(response, possible_labels)
-            predicted_label = find_label(response, possible_labels)
-            print("Label extracted: ", predicted_label,". True label: ",true_label+"\n")
+            predicted_label = extract_final_answer(response, possible_labels)
+            #predicted_label = find_label(response, possible_labels)
+            print("Label extracted: ", predicted_label, ". True label: ", true_label + "\n")
             dataset.at[index, prediction_column_name] = predicted_label
 
             '''# Calculate the current accurancy 
@@ -158,7 +150,8 @@ def main():
             elif is_similar(predicted_label, true_label.lower()):
                 correct_predictions += 1
             number_of_claims += 1
-            print(f"Current accurancy is: {correct_predicctions / number_of_claims:.3f}")'''
+            print(f"Current accurancy is: {correct_predictions / number_of_claims:.3f}")'''
+
     # Save the dataset
     dataset.to_csv(dataset_output_path)
     print("The predictions have been saved in", dataset_output_path)

@@ -102,13 +102,13 @@ def chat_completion(messages):
     """
     Defines the chat completion such that it waits in case the api is busy or overloaded.
     """
-    while True:
+    for i in range(100):
         try:
             response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature)
             return response.choices[0].message.content
         except Exception as e:
             print("API is busy or overloaded. Waiting and retrying...")
-            time.sleep(10*60)
+            time.sleep(5*60)
 
 
 def generate_output(user_input):
