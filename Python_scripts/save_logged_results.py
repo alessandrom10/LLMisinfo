@@ -8,12 +8,12 @@ import pandas as pd
 def save_log_result(log_file_path: str, csv_file_path: str):
     with open(log_file_path, "r", encoding="utf-8") as log_file:
         log_lines = log_file.readlines()
-    i = 0
+    i = 14
     # open the csv file with pandas
     dataset = pd.read_csv(csv_file_path)
     #print name of the columns
     print(dataset.columns)
-    dataset["predicted_label_hiss_70B"] = "ERR"
+    #dataset["predicted_label_hiss_70B"] = "ERR"
     # iterate over the lines of the log file that contain the the lines in the format: "Label extracted:  [label name] . True label:  [label name]"
     for line in log_lines:
         # extract the claim, that can include any character, not just letters so include ALL characters, [a-z] is not enough
@@ -36,8 +36,8 @@ def save_log_result(log_file_path: str, csv_file_path: str):
 
 # DO THIS ONLY WHEN THE DATASET ITERATION PROCESS STOPS BEFORE THE END BUT YOU HAVE THE LOG FILE WITH THE PREDICTED LABELS
 # IDEALLY, THE DATASET ITERATION PROCESS SHOULD HANDLE THE SAVING OF THE PREDICTED LABELS AND THIS IS NOT NEEDED
-#save_log_result("Logs/en_hiss_70B_log.txt", "Datasets/english_150_before_2024_sample.csv")
-ds = pd.read_csv("Datasets/english_150_before_2024_sample.csv")
+#save_log_result("Logs/it_hiss_70B_log.txt", "Datasets/italian_150.csv")
+ds = pd.read_csv("Datasets/italian_150.csv")
 print(ds.columns)
 print(ds.head())
 print(ds["predicted_label_hiss_70B"].value_counts())

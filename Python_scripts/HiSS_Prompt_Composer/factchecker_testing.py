@@ -18,6 +18,7 @@ possible_labels = my_config['possible_labels']
 prediction_column_name = my_config['prediction_column_name']
 already_predicted_claims = my_config['already_predicted_claims']
 model_id = my_config['model_id']
+domain_column_name = my_config['domain_column_name']
 
 # The class to keep the logs of our operations
 class LoggingPrinter:
@@ -120,8 +121,7 @@ def main():
             claim = row[claim_column_name]
             date = row[date_column_name]
             author = row[author_column_name]
-            #date = ""
-            #author = ""
+            domain = row[domain_column_name]
             true_label = row[label_column_name]
             
             # Call the fact checker function
@@ -129,17 +129,22 @@ def main():
                 date = ""
             if pd.isna(author):
                 author = ""
-            user_input = {"claim": claim, "date": date, "author": author}
+            if pd.isna(domain):
+                domain = ""
+            user_input = {"claim": claim, "date": date, "author": author, "domain": domain}
 
             while True:
                 try:
                     response = generate_output(user_input)
                     break
                 except Exception as e:
-                    print(f"User_input is: \n{user_input}\n End of user input")
+                    #print(f"User_input is: \n{user_input}\n End of user input")
                     print(f"Error is: \n {e}\n End of error")
-                    print("Pausing for a while and retrying...")
-                    time.sleep(60*10)
+                    print("Skipping this tuple")
+                    response = "ERR"
+                    break
+                    #print("Pausing for a while and retrying...")
+                    #time.sleep(60*10)
 
             # Print the predicted label
             #predicted_label = extract_final_answer(response, possible_labels)
@@ -153,9 +158,10 @@ def main():
             elif is_similar(predicted_label, true_label.lower()):
                 correct_predictions += 1
             number_of_claims += 1
-            print(f"Current accurancy is: {correct_predictions / number_of_claims:.3f}")'''
+            print(f"Current accurancy is: {correct_predicctions / number_of_claims:.3f}")'''
     # Save the dataset
     dataset.to_csv(dataset_output_path)
+    print("The predictions have been saved in", dataset_output_path)
 
 if __name__ == "__main__":
     main()

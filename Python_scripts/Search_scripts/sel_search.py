@@ -29,7 +29,7 @@ from transformers import pipeline, AutoTokenizer, AutoModel
 from urllib.parse import urlparse
 
 #loading the configuration variables from the config.yaml file
-def load_config(filename="config.yaml"):
+def load_config(filename="my_config.yaml"):
     with open(filename, 'r') as f:
         config = yaml.safe_load(f)
     return config
@@ -77,7 +77,7 @@ user_agents = [
 def get_random_user_agent():
     return random.choice(user_agents)
 
-def google_search(query: str, date: str = "") -> str:
+def google_search(query: str, date: str = "", claim_domain: str = "") -> str:
     """
     Get the google search results given a query and a date (date is optional)
     
@@ -91,9 +91,9 @@ def google_search(query: str, date: str = "") -> str:
     if date != "":
         date = pd.to_datetime(date).date()
         query += " before:" + str(date)
-        #print("Query with date:", query)
+        print("Query with date:", query)
 
-    search_results = get_search_results(query)
+    search_results = get_search_results(query, claim_domain = claim_domain)
     n_good_results = 0
     for result in search_results:
         print("GETTING page:", result)
@@ -138,7 +138,7 @@ def get_domain(url: str) -> str:
         domain = domain[4:]
     return domain
 
-def filter_urls(urls):
+def filter_urls(urls, claim_domain=""):
     """
     Filters a list of URLs based on validity and allowed domains.
     Args:
@@ -157,6 +157,8 @@ def filter_urls(urls):
     def is_allowed_domain(url):
         parsed_url = urlparse(url)
         domain = parsed_url.netloc.lower()
+        if domain == claim_domain:
+            return False
         return not any(excluded in domain for excluded in url_blacklist)
     
     def is_allowed_type(url):
@@ -234,7 +236,7 @@ def get_all_text(url, max_retries=3, delay=1):
                 raise Exception("Failed to fetch page")
 
 
-def get_search_results(query, keep_browser_open=False):
+def get_search_results(query, claim_domain = "", keep_browser_open=False):
     """
     Get the search results for a given query. Uses Selenium to scrape the urls of the search results from Google.
     Args:
@@ -291,7 +293,7 @@ def get_search_results(query, keep_browser_open=False):
                 search_results.append(result.get_attribute("href"))
             except Exception as e:
                 search_results.append("NULL")
-        search_results = filter_urls(search_results)
+        search_results = filter_urls(search_results, claim_domain = claim_domain)
         return search_results
 
     finally:

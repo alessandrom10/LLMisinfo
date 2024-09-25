@@ -14,8 +14,13 @@ import pprint
 import re
 import time
 
+def load_config(filename = 'my_config.yaml'):
+    with open(filename, 'r') as f:
+        config = yaml.safe_load(f)
+    return config
+
 # Load the configuration variables
-my_config = load_config()
+my_config = load_config("my_config.yaml")
 model_name = my_config['model_name']
 model_id = my_config['model_id']
 temperature = my_config['temperature']
@@ -23,12 +28,15 @@ max_tokens = my_config['max_tokens']
 language = my_config['language']
 
 if language == "en":
+    print("English language selected.")
     confident_message = {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"}
     hiss_config = load_config("Prompts/hiss_kshot.yaml")
 elif language == "it":
-    confident_message = {"role": "user", "content": "Dimmi se sei sicuro di poter rispondere alla domanda o no. Rispondi con 'sì' o 'no':"}
+    print("Lingua italiana selezionata.")
+    confident_message = {"role": "user", "content": "Dimmi se sei sicuro di poter rispondere alla domanda o no. Rispondi con 'si' o 'no':"}
     hiss_config = load_config("Prompts/hiss_kshot_it.yaml")
 start_messages = hiss_config["hiss_messages"]
+print("Loaded HiSS configuration:",start_messages[0])
 
 # Load the Hugging Face API token from the environment variables
 try:
@@ -78,8 +86,8 @@ def extract_yes_no(llm_output: str) -> str:
         pattern = r"(Yes|No)"
     elif language == "it":
         pattern = r"(S[ìi]|No)"
-    # Search for the pattern in the LLM output, not caring about the upper/lower case
-    match = re.search(pattern, llm_output, re.IGNORECASE)
+    # Search for the pattern in the LLM output in the first 5 characters, not caring about the upper/lower case
+    match = re.search(pattern, llm_output[:5], re.IGNORECASE)
     if match:
         # If the extracted string is "Si" (which means yes in Italian), translate it to english and return that instead
         confidence = match.group(1).lower()
@@ -89,10 +97,6 @@ def extract_yes_no(llm_output: str) -> str:
     # If no match is found, return an empty string
     return ""
     
-def load_config(filename = 'my_config.yaml'):
-    with open(filename, 'r') as f:
-        config = yaml.safe_load(f)
-    return config
 
 def chat_completion(messages):
     """
@@ -149,7 +153,7 @@ def generate_output(user_input):
             if confidence == "yes": # If the model is confident, it will also provide an answer to the question so:
                 messages.append({"role": "assistant", "content": response}) 
             elif confidence == "no": # Otherwise we search on Google
-                search_results = google_search(question, date = user_input["date"])
+                search_results = google_search(question, date = user_input["date"], claim_domain = user_input["domain"])
                 if language == "en":
                     messages.append({"role": "user", "content": "Answer: " + search_results})
                 elif language == "it":
