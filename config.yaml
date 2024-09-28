@@ -8,6 +8,7 @@ dataset_output_path: 'Datasets/___.csv'
 ## few-shot examples related configurations (STANDARD PROMPTING):
 kshot_examples_path: "Prompts/standard_kshot.txt"
 italian_kshot_examples_path: "Prompts/standard_kshot_it.txt"
+spanish_kshot_examples_path: "Prompts/standard_kshot_es.txt"
 
 ## Column names:
 label_column_name: 'converted_label' #'reviewRating.alternateName'
@@ -68,6 +69,11 @@ italian_system_prompt_1: >
   Rispondi sempre nel formato 'Query: {query}' e termina la generazione per dire all'utente di fare una ricerca su google con la query da te scelta,
   oppure rispondere nel formato 'Ragionamento: {ragionamento} Verdetto finale: {verdetto}'.
 
+spanish_system_prompt_1: >
+  Eres un experto en verificación de hechos. Evalúa la veracidad de un claim dado por el usuario.
+  Responde siempre en el formato 'Query: {query}' y termina la generación para decir al usuario que realice una búsqueda en Google con la consulta que elegiste,
+  o responde en el formato 'Razonamiento: {razonamiento} Veredicto final: {veredicto}'.
+
 #standard_system_prompt_2: >
 #  Consider your sources, context and date while assessing. to answer return 'Final answer: {verdict}, {reason}.'
 #  You must respond with a valid verdict ('false','mostly-false','half-true','mostly-true','true') or 'uncertain',
@@ -82,9 +88,14 @@ standard_system_prompt_2: >
   providing reasoning and citing sources by providing the domain of the pertinent search results.
 
 italian_system_prompt_2: >
-    Considera le tue fonti, il contesto e la data mentre valuti.
-    Devi rispondere con un verdetto valido ['false','mostly-false','mixture','mostly-true','true'],
-    fornendo ragionamento e citando le fonti fornendo il dominio dei risultati di ricerca pertinenti.
+  Considera le tue fonti, il contesto e la data mentre valuti.
+  Devi rispondere con un verdetto valido ['false','mostly-false','mixture','mostly-true','true'],
+  fornendo ragionamento e citando le fonti fornendo il dominio dei risultati di ricerca pertinenti.
+
+spanish_system_prompt_2: >
+  Considera tus fuentes, el contexto y la fecha mientras evalúas.
+  Debes responder con un veredicto válido ['false', 'mostly-false', 'mixture', 'mostly-true', 'true'],
+  proporcionando razonamiento y citando las fuentes, incluyendo el dominio de los resultados de búsqueda pertinentes.
 
 ## Tools:
 tools: [{
