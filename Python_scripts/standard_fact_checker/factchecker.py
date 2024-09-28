@@ -1,6 +1,6 @@
 # Description: This script is the main script for the standard fact checker. It uses the Hugging Face API to load the model and make it assess the claim. 
 # The user's input is a claim, a date and an author. The model's output is the final assessment of the claim. The search results are also printed.
-# Up to now, supported languages are English and Italian. (Spanish TODO)
+# Up to now, supported languages are English, Italian and Spanish. 
 import sys 
 sys.path.insert(0, './Python_scripts/search_scripts')
 from sel_search import *
@@ -103,6 +103,15 @@ elif language == "it":
         standard_system_prompt += "puoi fare fino a "+str(max_searches)+" ricerche su google. "
     standard_system_prompt += config['italian_system_prompt_2']
     print("Italian language selected:"+standard_system_prompt)
+elif language == "es":
+    kshot_examples_path = config['spanish_kshot_examples_path']
+    standard_system_prompt = config['spanish_system_prompt_1']
+    if max_searches == 1:
+        standard_system_prompt += "puedes hacer solo una búsqueda en google. "
+    else:
+        standard_system_prompt += "puedes hacer hasta "+str(max_searches)+" búsquedas en google. "
+    standard_system_prompt += config['spanish_system_prompt_2']
+    print("Spanish language selected:"+standard_system_prompt)
 
 
 # Load the Hugging Face API token from the environment variables
