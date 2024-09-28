@@ -1,0 +1,131 @@
+- <user>: 
+    claim: 
+      texto: "El presidente ha aprobado una nueva ley que permite reducir los impuestos a las grandes empresas, afectando directamente a las pequeñas y medianas empresas."
+      fuente: "factcheck.org"
+      fecha: "10/05/2023"
+
+  <assistant>: 
+    query: "reducción de impuestos a grandes empresas ley 2023"
+
+    busqueda_1:
+      motor: "Google"
+      terminos: "reducción de impuestos a grandes empresas ley 2023"
+      resultados:
+        - fuente: "elmundo.es"
+          descripcion: "Se ha aprobado una nueva ley fiscal que introduce incentivos para la inversión empresarial, con ciertos beneficios fiscales para empresas de gran tamaño. Sin embargo, estos incentivos también están disponibles para PYMES bajo condiciones específicas."
+        - fuente: "elpais.com"
+          descripcion: "La ley recientemente aprobada reduce algunos impuestos para grandes empresas, pero establece medidas compensatorias para las PYMES a fin de mitigar el impacto negativo."
+        - fuente: "lavanguardia.com"
+          descripcion: "El gobierno ha negado que la nueva ley esté enfocada únicamente en reducir impuestos a grandes empresas, y ha señalado que las PYMES también pueden beneficiarse de otras reducciones fiscales."
+
+    busqueda_2:
+      motor: "Google"
+      terminos: "ley reducción impuestos a PYMES 2023"
+      resultados:
+        - fuente: "expansion.com"
+          descripcion: "Aunque la ley incluye ciertas exenciones fiscales para grandes empresas, también se han implementado medidas que buscan fortalecer el crecimiento de las PYMES mediante reducciones específicas en impuestos locales."
+        - fuente: "abc.es"
+          descripcion: "Las PYMES no se ven excluidas de los beneficios de la nueva reforma fiscal. La ley incluye deducciones y créditos fiscales que también se aplican a las pequeñas y medianas empresas en sectores clave."
+
+    razonamiento: "Las investigaciones muestran que la nueva ley sí incluye reducciones de impuestos para grandes empresas, pero también introduce beneficios fiscales para las PYMES. Aunque el claim es parcialmente cierto en cuanto a los beneficios para las grandes empresas, omite la parte de la ley que también favorece a las pequeñas y medianas empresas."
+
+    respuesta_final: "Mixture"
+
+- <user>: 
+    claim: 
+      texto: "La contaminación en las ciudades ha aumentado un 20% en el último año, lo que representa un grave peligro para la salud pública."
+      fuente: "saludnoticias.com"
+      fecha: "15/06/2023"
+
+  <assistant>: 
+    query: "aumento de contaminación en ciudades 2023"
+
+    busqueda_1:
+      motor: "Google"
+      terminos: "aumento contaminación ciudades 2023"
+      resultados:
+        - fuente: "elperiodico.com"
+          descripcion: "Un informe reciente indica que la contaminación ha aumentado un 10% en algunas ciudades, pero no se ha documentado un aumento general del 20% a nivel nacional."
+        - fuente: "laverdad.es"
+          descripcion: "Las mediciones de calidad del aire han mostrado incrementos en ciertos contaminantes, pero las cifras varían según la región y no alcanzan el 20% en promedio."
+        - fuente: "elpais.com"
+          descripcion: "El aumento de la contaminación ha sido un tema de discusión, pero las cifras varían. Se confirma un aumento, pero no se alcanzan los niveles del 20% citados."
+
+    busqueda_2:
+      motor: "Google"
+      terminos: "contaminación salud pública 2023"
+      resultados:
+        - fuente: "abc.es"
+          descripcion: "Los expertos advierten que la contaminación del aire afecta la salud pública, pero el aumento no ha sido del 20% en todas las ciudades. Las políticas ambientales están en discusión para abordar el problema."
+        - fuente: "20minutos.es"
+          descripcion: "Estudios muestran que la contaminación del aire está relacionada con problemas de salud, pero el aumento generalizado del 20% no se ha confirmado."
+
+    razonamiento: "Aunque se reconoce que ha habido un aumento en la contaminación del aire, los datos no respaldan la afirmación de un incremento del 20% en todo el país. Las cifras son variables y no hay un consenso sobre el porcentaje exacto."
+
+    respuesta_final: "False"
+
+- <user>: 
+    claim: 
+      texto: "El gobierno ha decidido prohibir el uso de plásticos en todo el país a partir del próximo año."
+      fuente: "novedades.com"
+      fecha: "01/07/2023"
+
+  <assistant>: 
+    query: "prohibición de plásticos gobierno 2024"
+
+    busqueda_1:
+      motor: "Google"
+      terminos: "prohibición de plásticos gobierno 2024"
+      resultados:
+        - fuente: "infobae.com"
+          descripcion: "El gobierno ha anunciado la intención de reducir el uso de plásticos, pero no se ha formalizado una prohibición total a nivel nacional. Se están considerando regulaciones más estrictas."
+        - fuente: "elpais.com"
+          descripcion: "Existen planes para limitar el uso de plásticos, pero la implementación de una prohibición total aún está en discusión y no se ha anunciado oficialmente."
+        - fuente: "republica.com"
+          descripcion: "Las autoridades han mencionado la necesidad de regular el uso de plásticos, pero la prohibición completa aún no es una medida adoptada."
+
+    busqueda_2:
+      motor: "Google"
+      terminos: "ley plásticos prohibición 2024"
+      resultados:
+        - fuente: "abc.es"
+          descripcion: "Se han propuesto nuevas leyes para reducir el uso de plásticos, pero la prohibición completa en todo el país no se ha confirmado ni establecido."
+        - fuente: "cronica.com"
+          descripcion: "La discusión sobre la prohibición de plásticos avanza, pero aún no hay detalles sobre una implementación a gran escala o a nivel nacional."
+
+    razonamiento: "La afirmación de una prohibición total de plásticos a nivel nacional no está respaldada por la evidencia actual. Si bien hay movimientos hacia una regulación más estricta, no se ha oficializado una prohibición."
+
+    respuesta_final: "Mostly False"
+
+- <user>: 
+    claim: 
+      texto: "Un estudio revela que el 70% de los jóvenes en el país están a favor de la legalización de la marihuana."
+      fuente: "juventudnoticias.com"
+      fecha: "20/08/2023"
+
+  <assistant>: 
+    query: "legalización marihuana jóvenes 2023"
+
+    busqueda_1:
+      motor: "Google"
+      terminos: "estudio legalización marihuana jóvenes 2023"
+      resultados:
+        - fuente: "elconfidencial.com"
+          descripcion: "Un estudio reciente muestra que el 68% de los jóvenes apoya la legalización de la marihuana, aunque los datos varían según la región y el grupo demográfico."
+        - fuente: "elpais.com"
+          descripcion: "La mayoría de los encuestados en un estudio respaldan la legalización, con un porcentaje que ronda el 70% entre los jóvenes, aunque la cifra exacta es del 68%."
+        - fuente: "abc.es"
+          descripcion: "Los jóvenes están cada vez más a favor de la legalización de la marihuana, con encuestas que muestran cifras cercanas al 70%, pero no todos los estudios coinciden."
+
+    busqueda_2:
+      motor: "Google"
+      terminos: "opinión legalización marihuana 2023"
+      resultados:
+        - fuente: "laverdad.es"
+          descripcion: "La aceptación social hacia la legalización de la marihuana ha crecido, y un alto porcentaje de jóvenes se pronuncian a favor, aunque no todos los estudios reportan el mismo número."
+        - fuente: "nacion.com"
+          descripcion: "Los datos sugieren que un alto porcentaje de jóvenes apoya la legalización de la marihuana, pero el 70% mencionado en el claim es una estimación."
+
+    razonamiento: "Los datos confirman que una gran mayoría de jóvenes apoya la legalización de la marihuana, aunque el porcentaje específico puede variar ligeramente. La cifra del 70% es una aproximación correcta en este contexto."
+
+    respuesta_final: "Mostly True"

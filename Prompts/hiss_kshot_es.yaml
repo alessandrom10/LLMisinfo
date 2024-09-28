@@ -1,0 +1,39 @@
+hiss_messages: [
+    # Ejemplo 1
+    {"role": "system", "content": "Eres un experto en verificación de hechos que clasifica las afirmaciones en una de las siguientes etiquetas: ['falso', 'mayormente-falso', 'mezcla', 'mayormente-cierto', 'cierto']. Las siguientes reglas son muy importantes: responde con el siguiente paso en el proceso de verificación de hechos siguiendo los ejemplos proporcionados. No puedes generar una pregunta en el mismo paso en que das tu evaluación final. Cuando el usuario pregunte si estás seguro de poder dar la respuesta: si respondes sí, proporciona la respuesta a continuación; si respondes no, termina inmediatamente y el usuario proporcionará la información buscada en Internet en lugar de la respuesta, y luego procede con la siguiente pregunta, subafirmación o evaluación final."},
+    {"role": "user", "content": "Afirmación: \"En Argentina, las vacunas contra el COVID-19 contienen microchips para controlar a la población.\""},
+    {"role": "assistant", "content": "Un verificador de hechos dividirá la afirmación en 3 subafirmaciones que son más fáciles de verificar:\n1. Las vacunas contra el COVID-19 en Argentina contienen microchips.\n2. Estos microchips están diseñados para controlar a la población.\n3. Esto ha sido implementado en todo el país.\nPara verificar la subafirmación 1, un verificador de hechos seguirá un proceso paso a paso para plantear y responder una serie de preguntas relevantes para su veracidad. Aquí están los pasos específicos que seguirá para plantear cada pregunta y buscar una respuesta:\nPregunta: ¿Las vacunas contra el COVID-19 en Argentina contienen microchips?"}, 
+    {"role": "user", "content": "Dime si estás seguro de responder la pregunta o no. Responde con 'sí' o 'no':"},
+    {"role": "assistant", "content": "No."},
+    {"role": "user", "content": "Respuesta: No hay pruebas científicas ni información creíble que indique que las vacunas contra el COVID-19 en Argentina o en cualquier otro lugar contengan microchips."},
+    {"role": "assistant", "content": "Para verificar la subafirmación 2, un verificador de hechos seguirá un proceso paso a paso para plantear y responder una serie de preguntas relevantes para su veracidad. Aquí están los pasos específicos que seguirá para plantear cada pregunta y buscar una respuesta:\nPregunta: ¿Estos microchips están diseñados para controlar a la población?"}, 
+    {"role": "user", "content": "Dime si estás seguro de responder la pregunta o no. Responde con 'sí' o 'no':"},
+    {"role": "assistant", "content": "No."},
+    {"role": "user", "content": "Respuesta: No hay evidencia que respalde la afirmación de que los microchips dentro de las vacunas puedan controlar a la población."},
+    {"role": "assistant", "content": "Para verificar la subafirmación 3, un verificador de hechos seguirá un proceso paso a paso para plantear y responder una serie de preguntas relevantes para su veracidad. Aquí están los pasos específicos que seguirá para plantear cada pregunta y buscar una respuesta:\nPregunta: ¿Esto ha sido implementado en todo el país?"}, 
+    {"role": "user", "content": "Dime si estás seguro de responder la pregunta o no. Responde con 'sí' o 'no':"},
+    {"role": "assistant", "content": "No."},
+    {"role": "user", "content": "Respuesta: No hay informes confiables que indiquen que tal tecnología haya sido implementada en Argentina o en cualquier otra parte."},
+    {"role": "assistant", "content": "Con base en la información recopilada, está claro que entre Falso, Mayormente-Falso, Mezcla, Mayormente-Cierto y Cierto, la afirmación puede clasificarse como Falso."},
+
+    # Ejemplo 2
+    {"role": "user", "content": "Afirmación: \"El gobierno de México ha prohibido completamente el uso de plásticos de un solo uso en todo el país.\""},
+    {"role": "assistant", "content": "Un verificador de hechos dividirá la afirmación en 2 subafirmaciones que son más fáciles de verificar:\n1. El gobierno de México ha prohibido los plásticos de un solo uso.\n2. La prohibición aplica a todo el país.\nPara verificar la subafirmación 1, un verificador de hechos seguirá un proceso paso a paso para plantear y responder una serie de preguntas relevantes para su veracidad. Aquí están los pasos específicos que seguirá para plantear cada pregunta y buscar una respuesta:\nPregunta: ¿El gobierno de México ha prohibido los plásticos de un solo uso?"}, 
+    {"role": "user", "content": "Dime si estás seguro de responder la pregunta o no. Responde con 'sí' o 'no':"},
+    {"role": "assistant", "content": "Sí.\nRespuesta: Sí, en México ha habido iniciativas para prohibir los plásticos de un solo uso en varias regiones del país."},
+    {"role": "assistant", "content": "Para verificar la subafirmación 2, un verificador de hechos seguirá un proceso paso a paso para plantear y responder una serie de preguntas relevantes para su veracidad. Aquí están los pasos específicos que seguirá para plantear cada pregunta y buscar una respuesta:\nPregunta: ¿La prohibición aplica a todo el país?"}, 
+    {"role": "user", "content": "Dime si estás seguro de responder la pregunta o no. Responde con 'sí' o 'no':"},
+    {"role": "assistant", "content": "No."},
+    {"role": "user", "content": "Respuesta: No, la prohibición de plásticos de un solo uso no aplica en todo el país, ya que algunas entidades federativas han adoptado estas medidas, mientras que otras no."},
+    {"role": "assistant", "content": "Con base en la información recopilada, está claro que entre Falso, Mayormente-Falso, Mezcla, Mayormente-Cierto y Cierto, la afirmación puede clasificarse como Mayormente-Cierto."},
+
+    # Ejemplo 3
+    {"role": "user", "content": "Afirmación: \"El Amazonas produce el 20% del oxígeno de la Tierra y por eso se le conoce como el 'pulmón del mundo'.\""},
+    {"role": "assistant", "content": "Un verificador de hechos dividirá la afirmación en 2 subafirmaciones que son más fáciles de verificar:\n1. El Amazonas produce el 20% del oxígeno de la Tierra.\n2. Por eso se le conoce como el 'pulmón del mundo'.\nPara verificar la subafirmación 1, un verificador de hechos seguirá un proceso paso a paso para plantear y responder una serie de preguntas relevantes para su veracidad. Aquí están los pasos específicos que seguirá para plantear cada pregunta y buscar una respuesta:\nPregunta: ¿El Amazonas produce el 20% del oxígeno de la Tierra?"}, 
+    {"role": "user", "content": "Dime si estás seguro de responder la pregunta o no. Responde con 'sí' o 'no':"},
+    {"role": "assistant", "content": "Sí.\nRespuesta: El Amazonas produce aproximadamente el 20% del oxígeno del mundo, pero la mayor parte de este oxígeno es consumido por la propia selva a través de la respiración y descomposición."},
+    {"role": "assistant", "content": "Para verificar la subafirmación 2, un verificador de hechos seguirá un proceso paso a paso para plantear y responder una serie de preguntas relevantes para su veracidad. Aquí están los pasos específicos que seguirá para plantear cada pregunta y buscar una respuesta:\nPregunta: ¿Por eso se le conoce como el 'pulmón del mundo'?"}, 
+    {"role": "user", "content": "Dime si estás seguro de responder la pregunta o no. Responde con 'sí' o 'no':"},
+    {"role": "assistant", "content": "Sí.\nRespuesta: Sí, el Amazonas es comúnmente llamado el 'pulmón del mundo' debido a la gran cantidad de oxígeno que produce, aunque no todo ese oxígeno es liberado a la atmósfera."},
+    {"role": "assistant", "content": "Con base en la información recopilada, está claro que entre Falso, Mayormente-Falso, Mezcla, Mayormente-Cierto y Cierto, la afirmación puede clasificarse como Mezcla."}
+]
