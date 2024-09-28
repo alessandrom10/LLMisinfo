@@ -63,22 +63,3 @@ hiss_messages: [
     {"role": "user", "content": "Answer: The ad makes a misleading connection between the two issues and does not accurately represent Beasley's position on tax hikes for families making under $75,000 per year."},
     {"role": "assistant", "content": "Based on the answers to these questions, it is clear that among False, Mostly-False, Mixture, Mostly-True and True, the claim is classified as Mostly-False."}
 ]
-
-test_hiss_prompt: [
-    {"role": "user", "content": "Claim: \"Donald Trump has said he loves war, 'including with nukes.'s\""},
-    {"role": "assistant", "content": "A fact checker will decompose the claim into 2 subclaims that are easier to verify:\n1. Donald Trump has expressed a love for war.\n2. Donald Trump has expressed a love for nuclear wars.\nTo verify subclaim 1, a fact-checker will go through a step-by-step process to ask and answer a series of questions relevant to its factuality. Here are the specific steps he/she raise each question and look for an answer:\nQuestion: Has Donald Trump expressed a love for war?"},
-    {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"},
-    {"role": "assistant", "content": "No."},
-    {"role": "user", "content": "Answer: [...] Donald Trump said \"I'm really good at war. I love war in a certain way. But only when we win.\" [...]"},
-    {"role": "assistant", "content": "Question: In what context did Donald Trump express a love for war?"},
-    {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"},
-    {"role": "assistant", "content": "No."},
-    {"role": "user", "content": "Answer: [...] after he said that former Iraqi President Saddam Hussein claimed to have weapons of mass destruction as a strategy \"to scare\" Iran. [...]"},
-    {"role": "assistant", "content": "To verify subclaim 2, a fact-checker will go through a step-by-step process to ask and answer a series of questions relevant to its factuality. Here are the specific steps he/she raise each question and look for an answer:\nQuestion: Has Donald Trump expressed a love for war including nukes?"},
-    {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"},
-    {"role": "assistant", "content": "Yes.\nAnswer: No. The voices talking up dangers of nuclear war include Trump.\nQuestion: What was the context Trump express 'including nukes'?"},
-    {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"},
-    {"role": "assistant", "content": "No."},
-    {"role": "user", "content": "Answer:[...] Trump suggested that Japan might need to acquire nuclear weapons to defend against neighboring North Korea [...]"},
-    {"role": "assistant", "content": "Based on the answers to these questions, it is clear that among False, Mostly-False, Mixture, Mostly-True and True, the claim is classified as Mixture."},
-]

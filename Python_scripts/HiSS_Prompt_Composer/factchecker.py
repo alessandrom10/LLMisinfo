@@ -5,14 +5,12 @@
 #from Python_scripts.Search_scripts.sel_search import *
 import sys
 sys.path.insert(0,"Python_scripts/Search_scripts")
-from sel_search import *
-import yaml
 from huggingface_hub import InferenceClient
+from sel_search import *
 import os
-import pandas as pd
-import pprint
 import re
 import time
+import yaml
 
 def load_config(filename = 'my_config.yaml'):
     with open(filename, 'r') as f:
@@ -26,17 +24,19 @@ model_id = my_config['model_id']
 temperature = my_config['temperature']
 max_tokens = my_config['max_tokens']
 language = my_config['language']
+kshot_path_en = my_config['kshot_path_en']
+kshot_path_it = my_config['kshot_path_it']
+#kshot_path_es = my_config['kshot_path_es'] # TODO
 
 if language == "en":
     print("English language selected.")
     confident_message = {"role": "user", "content": "Tell me if you are confident to answer the question or not. Answer with 'yes' or 'no':"}
-    hiss_config = load_config("Prompts/hiss_kshot.yaml")
+    kshots = load_config(kshot_path_en)["hiss_messages"]
 elif language == "it":
     print("Lingua italiana selezionata.")
     confident_message = {"role": "user", "content": "Dimmi se sei sicuro di poter rispondere alla domanda o no. Rispondi con 'si' o 'no':"}
-    hiss_config = load_config("Prompts/hiss_kshot_it.yaml")
-start_messages = hiss_config["hiss_messages"]
-print("Loaded HiSS configuration:",start_messages[0])
+    kshots = load_config(kshot_path_it)["hiss_messages"]
+print("Loaded HiSS configuration: ", kshots[0])
 
 # Load the Hugging Face API token from the environment variables
 try:
@@ -107,6 +107,7 @@ def chat_completion(messages):
             response = client.chat_completion(messages = messages, max_tokens = 1000, temperature = temperature)
             return response.choices[0].message.content
         except Exception as e:
+            print(f"Error is: \n {e}\n End of error")
             print("API is busy or overloaded. Waiting and retrying...")
             time.sleep(5*60)
 
@@ -120,7 +121,7 @@ def generate_output(user_input):
     Returns:
         The model's final assessment of the claim as a string. The search results are also printed.
     """
-    messages = list(start_messages) #  We set it to the few shot shamples
+    messages = list(kshots) #  We set it to the few shot shamples
     print("<" + messages[0]['role'] + "> " + messages[0]['content']) # We check if the file has been correctly loaded
     print("<user and assistant> Loaded few-shot examples.")
     formatted_claim = "Claim: " + user_input["claim"] + ". " # We create a string with "Claim: <claim>"
@@ -184,7 +185,7 @@ def main():
     output = generate_output(user_input)
 
     # Print the model's output
-    #print("Model Output:\n" + str(output))
+    print("Model Output:\n" + str(output))
 
 if __name__ == "__main__":
     main()
