@@ -1,6 +1,6 @@
 # Description: This script is the main script for the HiSS (Hierarchical Step-by-Step prompting style) fact checker. It uses the Hugging Face API to load the model and make it assess the claim. 
 # The user's input is a claim, a date and an author. The model's output is the final assessment of the claim. The search results are also printed.
-# Up to now, supported languages are English and Italian. (Spanish TODO)
+# Up to now, supported languages are English, Italian and Spanish.
 
 #from Python_scripts.Search_scripts.sel_search import *
 import sys
@@ -26,7 +26,7 @@ max_tokens = my_config['max_tokens']
 language = my_config['language']
 kshot_path_en = my_config['kshot_path_en']
 kshot_path_it = my_config['kshot_path_it']
-#kshot_path_es = my_config['kshot_path_es'] # TODO
+kshot_path_es = my_config['kshot_path_es']
 
 if language == "en":
     print("English language selected.")
@@ -36,6 +36,10 @@ elif language == "it":
     print("Lingua italiana selezionata.")
     confident_message = {"role": "user", "content": "Dimmi se sei sicuro di poter rispondere alla domanda o no. Rispondi con 'si' o 'no':"}
     kshots = load_config(kshot_path_it)["hiss_messages"]
+elif language == "es":
+    print("Lengua española seleccionada.")
+    confident_message = {"role": "user", "content": "Dime si estás seguro de poder responder a la pregunta o no. Responde con un 'si' o un 'no':"}
+    kshots = load_config(kshot_path_es)["hiss_messages"]
 print("Loaded HiSS configuration: ", kshots[0])
 
 # Load the Hugging Face API token from the environment variables
@@ -62,6 +66,8 @@ def extract_question(llm_output: str) -> str:
         pattern = r"Question: (.+)"
     elif language == "it":
         pattern = r"Domanda: (.+)"
+    elif language == "es":
+        pattern = r"Pregunta: (.+)"
     # Search for the pattern in the LLM output, not caring about the upper/lower case
     match = re.search(pattern, llm_output, re.IGNORECASE)
     if match:
@@ -86,6 +92,8 @@ def extract_yes_no(llm_output: str) -> str:
         pattern = r"(Yes|No)"
     elif language == "it":
         pattern = r"(S[ìi]|No)"
+    elif language == "es":
+        pattern = r"(Si|No)"
     # Search for the pattern in the LLM output in the first 5 characters, not caring about the upper/lower case
     match = re.search(pattern, llm_output[:5], re.IGNORECASE)
     if match:
@@ -130,11 +138,15 @@ def generate_output(user_input):
             formatted_claim += "Made by " + user_input["author"] + "."
         elif language == "it":
             formatted_claim += "Di " + user_input["author"] + "."
+        elif language == "es":
+            formatted_claim += "Hecho por " + user_input["author"] + "."
     if user_input["date"] != "": # Same with the date
         if language == "en":
             formatted_claim += " Date: " + user_input["date"] + "."
         elif language == "it":
             formatted_claim += " Data: " + user_input["date"] + "."
+        elif language == "es":
+            formatted_claim += " Fecha: " + user_input["date"] + "."
     messages.append({"role": "user", "content": formatted_claim}) # We add the fact that user has said this formatted claim to the messages array of dictionaries
     print("<user> " + formatted_claim) # We print it to show it's working 
     # Get the answer from the llm, it should stop when it thinks it's the user that needs to add information
@@ -159,6 +171,8 @@ def generate_output(user_input):
                     messages.append({"role": "user", "content": "Answer: " + search_results})
                 elif language == "it":
                     messages.append({"role": "user", "content": "Risposta: " + search_results})
+                elif language == "es":
+                    messages.append({"role": "user", "content": "Respuesta: " + search_results})
                 print("<user> " + messages[-1]["content"])
                 response = chat_completion(messages = messages)
                 print("<assistant> " + response)
