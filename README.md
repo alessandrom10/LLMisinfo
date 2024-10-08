@@ -34,15 +34,15 @@ Repository created for the Large Language Models for fact-checking online misinf
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/username/repository-name.git
-    cd repository-name
+    git clone https://github.com/alessandrom10/LLMisinfo-MDP
+    cd LLMisinfo-MDP
     ```
 
 2. **Create and activate a virtual environment (optional but recommended):**
 
     ```bash
-    python3 -m venv venv
-    source venv/bin/activate   # On Windows, use: venv\Scripts\activate
+    python3 -m venv venv-name
+    source venv-name/bin/activate   # On Windows, use: venv-name\Scripts\activate
     ```
 
 3. **Install required dependencies:**
@@ -55,7 +55,7 @@ Repository created for the Large Language Models for fact-checking online misinf
 
 Before running the script, you can configure the prompting method and other variables in the `my_config.yaml` file.
 
-    ```yaml
+    ```bash
     prompting: "standard" # nosearch - standard - hiss - react
     ```
 
