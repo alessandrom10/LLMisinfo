@@ -1,0 +1,28 @@
+start_messages: [
+    {"role": "system", "content": "Sei un espero di fact-checking che classifica i claim in una delle seguenti etichette: 'False', 'Mostly-False', 'Mixture', 'Mostly-True' o 'True'. Rispondi con la tua risposta finale iniziando con 'Basandomi sulla mia conoscenza, è chiaro che tra False, Mostly False, Mixture, Mostly True e True il claim può essere classificato come' e fornendo una di quelle etichette di veridicità. Segui gli esempi forniti qui sotto:"},
+    #{"role": "system", "content": "Sei un espero di fact-checking che classifica i claim in una delle seguenti etichette: 'False', 'Mostly-False', 'Mostly-True' o 'True'. Rispondi con la tua risposta finale iniziando con 'Basandomi sulla mia conoscenza, è chiaro che tra False, Mostly False, Mostly True e True il claim può essere classificato come' e fornendo una di quelle etichette di veridicità. Segui gli esempi forniti qui sotto:"},
+    
+    # Example 1
+    {"role": "user", "content": "Claim: “Olanda. Gigantesco supermercato di Bill Gates che produceva carne sintetica (fatta in laboratorio) va a fuoco”. Data: 12/07/2022."},
+    {"role": "assistant", "content": "Basandomi sulla mia conoscenza, è chiaro che tra False, Mostly False, Mixture, Mostly True e True il claim può essere classificato come False."},
+    #{"role": "assistant", "content": "Basandomi sulla mia conoscenza, è chiaro che tra False, Mostly False, Mostly True e True il claim può essere classificato come False."},
+    
+    # Example 2
+    {"role": "user", "content": "Claim: “Nel silenzio generale, la Francia ha spostato i confini di Stato con l'Italia: hanno fatto rientrare in territorio francese la vetta del Monte Bianco”. Data: 20/10/2020."},
+    {"role": "assistant", "content": "Basandomi sulla mia conoscenza, è chiaro che tra False, Mostly False, Mixture, Mostly True e True il claim può essere classificato come Mixture."},
+    
+    # Example 3
+    {"role": "user", "content": "Claim: “Aleksandra Zelenska, la figlia di Zelenski odia suo padre, definendolo un nazista e un assassino del popolo ucraino. Lei stessa è fuggita in Polonia e rivela tutta la verità su suo padre”. Data: 03/05/2022."},
+    {"role": "assistant", "content": "Basandomi sulla mia conoscenza, è chiaro che tra False, Mostly False, Mixture, Mostly True e True il claim può essere classificato come Mostly False."},
+    #{"role": "assistant", "content": "Basandomi sulla mia conoscenza, è chiaro che tra False, Mostly False, Mostly True e True il claim può essere classificato come Mostly False."},
+    
+    # Example 4
+    {"role": "user", "content": "Claim: “Ecco la certificazione che questo governo a trazione Cinquestelle sta facendo male al Paese. Nei primi 3 mesi del 2019 la pressione fiscale è aumentata dello 0,3 per cento”. Data: 28/06/2019."},
+    {"role": "assistant", "content": "Basandomi sulla mia conoscenza, è chiaro che tra False, Mostly False, Mixture, Mostly True e True il claim può essere classificato come Mostly True."},
+    #{"role": "assistant", "content": "Basandomi sulla mia conoscenza, è chiaro che tra False, Mostly False, Mostly True e True il claim può essere classificato come Mostly True."},
+
+    # Example 5
+    {"role": "user", "content": "Claim: “Al momento nel 'magazzino' dell'Agenzia delle Entrate-Riscossione ci sono 987 miliardi di crediti fiscali. Il 91% dei quali (895,8 miliardi) praticamente, non esiste: perchè fa riferimento a contribuenti deceduti o falliti o su cui sono già state effettuate tutte le azioni di recupero possibili”."},
+    {"role": "assistant", "content": "Basandomi sulla mia conoscenza, è chiaro che tra False, Mostly False, Mixture, Mostly True e True il claim può essere classificato come True."},
+    #{"role": "assistant", "content": "Basandomi sulla mia conoscenza, è chiaro che tra False, Mostly False, Mostly True e True il claim può essere classificato come True."},
+]

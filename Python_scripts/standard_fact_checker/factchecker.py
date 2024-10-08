@@ -9,6 +9,7 @@ from huggingface_hub import InferenceClient
 import os
 import re
 import ast
+import time
 
 def extract_query(llm_output: str) -> str:
     """
@@ -80,7 +81,6 @@ config = load_config()
 max_searches = config['max_searches']
 model_name = config['model_name']
 model_id = config['model_id']
-tools = config['tools']
 temperature = config['temperature']
 max_tokens = config['max_tokens']
 language = config['language']

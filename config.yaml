@@ -9,6 +9,14 @@ dataset_output_path: 'Datasets/___.csv'
 kshot_examples_path: "Prompts/standard_kshot.txt"
 italian_kshot_examples_path: "Prompts/standard_kshot_it.txt"
 spanish_kshot_examples_path: "Prompts/standard_kshot_es.txt"
+# (HISS PROMPTING):
+kshot_path_en: "Prompts/hiss_kshot.yaml"
+kshot_path_it: "Prompts/hiss_kshot_it.yaml"
+kshot_path_es: "Prompts/hiss_kshot_es.yaml"
+# (NO SEARCH PROMPTING):
+kshot_path_no_search_en: "Prompts/no_search_kshot.yaml"
+kshot_path_no_search_it: "Prompts/no_search_kshot_it.yaml"
+kshot_path_no_search_es: "Prompts/no_search_kshot_es.yaml"
 
 ## Column names:
 label_column_name: 'converted_label' #'reviewRating.alternateName'
@@ -24,6 +32,7 @@ max_sentences: 3
 max_searches: 3
 max_scraped_sentences: 250 #limit the number of sentences scraped from the web page for performance reasons
 max_sentence_length: 1000
+already_predicted_claims: 0
 
 ## Window related configurations:
 windowed: False
@@ -36,15 +45,11 @@ overlap_rate: 0
 language: "en"
 #model_name: "Llama 3.1 8B"
 model_name: "Llama 3.1 70B"
-#model_name: "Llama 3.1 405B"
-#model_name: "Gemma 2 9B"
 #model_id: "meta-llama/Meta-Llama-3.1-8B-Instruct"
 model_id: "meta-llama/Meta-Llama-3.1-70B-Instruct"
-#model_id: "meta-llama/Meta-Llama-3.1-405B-Instruct"
-#model_id: "google/gemma-2-9b-it"
 temperature: 0
 max_tokens: 1000
-already_predicted_claims: 0
+prompting: "standard" #standard, hiss, react, nosearch
 
 possible_labels: ['mostly false', 'mostly-false', 'mostly true', 'mostly-true', 'false', 'mixture', 'true']
 

@@ -1,0 +1,29 @@
+start_messages: [
+    {"role": "system", "content": "Eres un experto en verificación de hechos que clasifica afirmaciones en una de las siguientes etiquetas: 'False', 'Mostly False', 'Mixture', 'Mostly True' o 'True'. Responde con tu respuesta final comenzando con 'Basado en mi conocimiento personal, está claro que entre False, Mostly False, Mixture, Mostly True y True, la afirmación se puede clasificar como' y proporcionando una de esas etiquetas de veracidad. Sigue los ejemplos proporcionados a continuación:"},
+    #{"role": "system", "content": "Eres un experto en verificación de hechos que clasifica afirmaciones en una de las siguientes etiquetas: 'False', 'Mostly False', 'Mostly True' o 'True'. Responde con tu respuesta final comenzando con 'Basado en mi conocimiento personal, está claro que entre False, Mostly False, Mostly True y True, la afirmación se puede clasificar como' y proporcionando una de esas etiquetas de veracidad. Sigue los ejemplos proporcionados a continuación:"},
+    
+    # Example 1
+    {"role": "user", "content": "Claim: El candidato presidencial Boric tuiteó: “Gracia a los jóvenes y a todos fueron a saquear supermercados”. Hecho por Varias fuentes. Fecha: 2021-11-23."},
+    {"role": "assistant", "content": "Basado en mi conocimiento personal, está claro que entre False, Mostly False, Mixture, Mostly True y True, la afirmación se puede clasificar como False."},
+    #{"role": "assistant", "content": "Basado en mi conocimiento personal, está claro que entre False, Mostly False, Mostly True y True, la afirmación se puede clasificar como False."},
+    
+    # Example 2
+    {"role": "user", "content": "Claim: La obstrucción de vías es un delito, los bloqueos no hacen valer derechos. Fecha: 2021-08-05."},
+    {"role": "assistant", "content": "Basado en mi conocimiento personal, está claro que entre False, Mostly False, Mixture, Mostly True y True, la afirmación se puede clasificar como Mixture."},
+    
+    # Example 3
+    {"role": "user", "content": "Claim: \"Aquí van a ser alojados 100 emigrantes ilegales. Esto es lo que quiere la siniestra\". Fecha: 2020-09-15."},
+    {"role": "assistant", "content": "Basado en mi conocimiento personal, está claro que entre False, Mostly False, Mixture, Mostly True y True, la afirmación se puede clasificar como Mostly False."},
+    #{"role": "assistant", "content": "Basado en mi conocimiento personal, está claro que entre False, Mostly False, Mostly True y True, la afirmación se puede clasificar como Mostly False."},
+    
+    # Example 4
+    {"role": "user", "content": "Claim: La venta de coches ha caído un 30% [en términos interanuales] y un 9% a lo largo del año. Hecho por Teodoro García Egea. Fecha: 2019-09-19."},
+    {"role": "assistant", "content": "Basado en mi conocimiento personal, está claro que entre False, Mostly False, Mixture, Mostly True y True, la afirmación se puede clasificar como Mostly True."},
+    #{"role": "assistant", "content": "Basado en mi conocimiento personal, está claro que entre False, Mostly False, Mostly True y True, la afirmación se puede clasificar como Mostly True."},
+
+    # Example 5
+    {"role": "user", "content": "Claim: Quino dijo que Mafalda habría sido una desaparecida de la dictadura militar argentina. Hecho por Varias fuentes. Fecha: 2020-09-30."},
+    {"role": "assistant", "content": "Basado en mi conocimiento personal, está claro que entre False, Mostly False, Mixture, Mostly True y True, la afirmación se puede clasificar como True."},
+    #{"role": "assistant", "content": "Basado en mi conocimiento personal, está claro que entre False, Mostly False, Mostly True y True, la afirmación se puede clasificar como True."},
+
+]

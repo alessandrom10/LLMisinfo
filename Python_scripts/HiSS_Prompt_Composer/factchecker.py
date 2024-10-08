@@ -193,13 +193,13 @@ def main():
     claim = input("Enter the claim to fact-check: ")
     date = input("Enter the date of the claim (optional): ")
     author = input("Enter the author of the claim (optional): ")
-    user_input = {"claim": claim, "date": date, "author": author}
+    user_input = {"claim": claim, "date": date, "author": author, "domain": ""}
 
     # Generate output from the model
     output = generate_output(user_input)
 
     # Print the model's output
-    print("Model Output:\n" + str(output))
+    #print("Model Output:\n" + str(output))
 
 if __name__ == "__main__":
     main()

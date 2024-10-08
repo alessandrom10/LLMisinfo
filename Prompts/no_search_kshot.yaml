@@ -1,9 +1,11 @@
-hiss_messages: [
+start_messages: [
     {"role": "system", "content": "You are a fact-checking expert classifying claims to one of the following labels: 'False', 'Mostly-False', 'Mixture', 'Mostly-True' or 'True'. Reply with your final answer starting with 'Based on' and providing one of those veracity label. Follow the provided examples below:"},
+    #{"role": "system", "content": "You are a fact-checking expert classifying claims to one of the following labels: 'False', 'Mostly-False', 'Mostly-True' or 'True'. Reply with your final answer starting with 'Based on' and providing one of those veracity label. Follow the provided examples below:"},
     
     # Example 1
     {"role": "user", "content": "Claim: \"Emerson Moser, who was Crayola's top crayon molder for almost 40 years, was colorblind.\""},
     {"role": "assistant", "content": "Based on my personal knowledge, it is clear that among False, Mostly-False, Mixture, Mostly-True and True the claim can be classified as Mostly-True."},
+    #{"role": "assistant", "content": "Based on my personal knowledge, it is clear that among False, Mostly-False, Mostly-True and True the claim can be classified as Mostly-True."},
     
     # Example 2
     {"role": "user", "content": "Claim: \"Bernie Sanders said 85 million Americans have no health insurance.\""},
@@ -12,8 +14,10 @@ hiss_messages: [
     # Example 3
     {"role": "user", "content": "Claim: \"JAG charges Nancy Pelosi with treason and seditious conspiracy.\""},
     {"role": "assistant", "content": "Based on my personal knowledge, it is clear that among False, Mostly-False, Mixture, Mostly-True and True, the claim is classified as False."},
+    #{"role": "assistant", "content": "Based on my personal knowledge, it is clear that among False, Mostly-False, Mostly-True and True, the claim is classified as False."},
     
     # Example 4
     {"role": "user", "content": "Claim: \"Cheri Beasley 'backs tax hikes— even on families making under $75,000.'\""},
     {"role": "assistant", "content": "Based on my personal knowledge, it is clear that among False, Mostly-False, Mixture, Mostly-True and True, the claim is classified as Mostly-False."}
+    #{"role": "assistant", "content": "Based on my personal knowledge, it is clear that among False, Mostly-False, Mostly-True and True, the claim is classified as Mostly-False."}
 ]
