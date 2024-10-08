@@ -53,7 +53,7 @@ Repository created for the Large Language Models for fact-checking online misinf
 
 ## Configuration
 
-Before running the script, you can configure the prompting method and other variables in the `my_config.yaml` file.
+**Before running the script, you can configure the prompting method and other variables in the `my_config.yaml` file.**
 
     ```bash
     prompting: "standard" # nosearch - standard - hiss - react
