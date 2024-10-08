@@ -29,3 +29,48 @@ Repository created for the Large Language Models for fact-checking online misinf
 - RAWFC: Zhiwei Yang, Jing Ma, Hechang Chen, Hongzhan Lin, Ziyang Luo, and Yi Chang. 2022. A coarse-to-fine cascaded evidence-distillation neural network for ex-plainable fake news detection. In COLING, pages 2608–2621. https://aclanthology.org/2022.coling-1.230.pdf
 - LIAR: William Yang Wang. 2017. “liar, liar pants on fire”: A new benchmark dataset for fake news detection. In ACL (short), pages 422–426. https://aclanthology.org/P17-2067/
 
+## Installation
+
+1. **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/username/repository-name.git
+    cd repository-name
+    ```
+
+2. **Create and activate a virtual environment (optional but recommended):**
+
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate   # On Windows, use: venv\Scripts\activate
+    ```
+
+3. **Install required dependencies:**
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+## Configuration
+
+Before running the script, you can configure the prompting method and other variables in the `my_config.yaml` file.
+
+    ```yaml
+    prompting: "standard" # nosearch - standard - hiss - react
+    ```
+
+Save the changes before running the script.
+
+## Running the Script - Fact-check a claim
+
+1. **Make sure you are in the main project folder (where the script is located):**
+
+    ```bash
+    cd path/to/main/folder
+    ```
+
+2. **Run the Python script:**
+
+    ```bash
+    python main_factchecker.py
+    ```
