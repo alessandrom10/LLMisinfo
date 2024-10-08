@@ -398,7 +398,7 @@ def extract_relevant_sentences(content, query):#, top_n=5, windowed=False, windo
         for i in top_indices:
             start = max(0, i-(window_size//2))
             end = min(len(ranked_sentences), i+(window_size//2)+1)
-            top_sentences.append(" ".join(filtered_sentences[start:end]))
+            top_sentences.append(" ".join(sentences[start:end]))
     else:
         top_sentences = ranked_sentences[:max_sentences]
 
