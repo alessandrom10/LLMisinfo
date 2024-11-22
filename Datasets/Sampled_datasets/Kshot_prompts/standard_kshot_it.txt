@@ -1,0 +1,95 @@
+<user>
+Claim: “Olanda. Gigantesco supermercato di Bill Gates che produceva carne sintetica (fatta in laboratorio) va a fuoco”. Pubblicato da facta.news. Data: 12/07/2022.
+<assistant>
+Query: incendio in supermercato di carne sintetica in Olanda
+<user>
+Ricerca numero 1:
+Google: incendio in supermercato di carne sintetica in Olanda Bill Gates
+repubblica.it: In Olanda, un grande incendio ha colpito un impianto di lavorazione alimentare specializzato nella produzione di alimenti alternativi, tra cui carne sintetica. I vigili del fuoco sono intervenuti rapidamente, ma i danni alla struttura sono ingenti.
+ansa.it: Un vasto incendio ha distrutto una fabbrica di prodotti alimentari innovativi nei Paesi Bassi, che include la produzione di carne sintetica tra le sue attività principali. Le cause dell'incendio sono ancora in fase di accertamento, ma si esclude il dolo.
+corriere.it: Le autorità olandesi hanno confermato un incendio in una struttura dedicata alla produzione di cibi a base di proteine alternative. L'impianto è uno dei più grandi della nazione e ha subito danni significativi.
+ilsole24ore.com: Un impianto alimentare nei Paesi Bassi, noto per la sua produzione di alimenti sintetici e sostenibili, è stato colpito da un incendio di grandi dimensioni. Gli investigatori stanno ancora determinando la causa esatta dell'evento, ma non si segnalano vittime.
+<assistant>
+Ragionamento: In base ai risultati della ricerca, si può confermare che un incendio ha colpito una struttura di produzione alimentare in Olanda, nota per la lavorazione di alimenti alternativi, compresa la carne sintetica. Tuttavia, non vi sono indicazioni che colleghino l'incidente a specifiche figure o aziende menzionate nel claim.
+Risposta finale: False
+
+<user>
+Claim: “Nel silenzio generale, la Francia ha spostato i confini di Stato con l'Italia: hanno fatto rientrare in territorio francese la vetta del Monte Bianco”. Pubblicato da pagellapolitica.it. Data: 20/10/2020.
+<assistant>
+Query: confini tra Francia e Italia spostamento Monte Bianco
+<user>
+Ricerca numero 1:
+Google: confini tra Francia e Italia spostamento Monte Bianco
+repubblica.it: La questione dei confini tra Francia e Italia sul Monte Bianco è stata a lungo dibattuta. In passato ci sono stati attriti diplomatici riguardanti la gestione del confine in questa zona, ma non si registra alcun spostamento ufficiale delle linee di confine.
+ansa.it: Le autorità italiane hanno negato qualsiasi cambiamento nei confini tra Italia e Francia nella zona del Monte Bianco. I confini rimangono quelli stabiliti dai trattati internazionali, e ogni alterazione sarebbe soggetta a negoziati ufficiali.
+corriere.it: La controversia riguardante la vetta del Monte Bianco è emersa più volte, ma non ci sono state modifiche formali dei confini. Il punto di divisione tra Francia e Italia in quella zona rimane invariato secondo i documenti storici.
+ilsole24ore.com: La questione del Monte Bianco e dei confini tra Italia e Francia è più complessa di quanto sembri, coinvolgendo antiche dispute territoriali. Tuttavia, non ci sono prove di un recente cambiamento nei confini o di decisioni unilaterali da parte della Francia.
+<assistant>
+Ragionamento: Dalle ricerche effettuate, si evince che non ci sono stati spostamenti ufficiali dei confini tra Italia e Francia riguardanti il Monte Bianco. Tuttavia, ci sono state tensioni diplomatiche e dispute storiche su questo argomento. L'affermazione è una mescolanza di verità e interpretazioni errate, poiché i confini non sono stati modificati ufficialmente.
+Risposta finale: Mixture
+
+<user>
+Claim: “Aleksandra Zelenska, la figlia di Zelenski odia suo padre, definendolo un nazista e un assassino del popolo ucraino. Lei stessa è fuggita in Polonia e rivela tutta la verità su suo padre”. Pubblicato da facta.news. Data: 03/05/2022.
+<assistant>
+Query: Aleksandra Zelenska dichiarazioni su padre Zelenski
+<user>
+Ricerca numero 1:
+Google: Aleksandra Zelenska dichiarazioni su padre Zelenski
+repubblica.it: Non ci sono evidenze che Aleksandra Zelenska abbia fatto dichiarazioni pubbliche negative sul padre, Volodymyr Zelensky. La famiglia del presidente ucraino non ha rilasciato comunicati ufficiali riguardanti un presunto conflitto o accusa pubblica.
+ansa.it: La figlia di Volodymyr Zelensky, Aleksandra, non ha mai fatto dichiarazioni pubbliche di odio verso il padre. Al contrario, le notizie recenti suggeriscono che la famiglia Zelensky sta affrontando la situazione insieme, con Aleksandra che rimane in Ucraina.
+corriere.it: Le affermazioni riguardanti Aleksandra Zelenska e le sue presunte accuse contro suo padre sono false. Non esistono prove che lei abbia lasciato l'Ucraina per la Polonia o che abbia criticato pubblicamente Zelensky in quei termini.
+ilsole24ore.com: Non ci sono conferme che Aleksandra Zelenska abbia accusato suo padre di essere un nazista o un assassino. Le notizie più recenti indicano che la famiglia Zelensky è rimasta unita e che tali dichiarazioni non sono mai state fatte.
+<user>
+Ricerca numero 2:
+Google: Aleksandra Zelenska fuggita in Polonia
+repubblica.it: Non ci sono notizie che confermino che Aleksandra Zelenska sia fuggita in Polonia. Al contrario, le fonti ufficiali indicano che lei e la sua famiglia sono rimasti in Ucraina durante il conflitto.
+ansa.it: Le voci riguardanti una fuga di Aleksandra Zelenska in Polonia sono infondate. Non ci sono rapporti che confermino tale spostamento o dichiarazioni pubbliche da parte sua contro il padre.
+corriere.it: Aleksandra Zelenska non ha mai lasciato l'Ucraina per la Polonia. Le notizie di un suo trasferimento e accuse contro suo padre non trovano riscontro nei media ufficiali.
+ilsole24ore.com: Nessuna prova supporta l'idea che Aleksandra Zelenska sia fuggita in Polonia. La famiglia Zelensky rimane in Ucraina, e non ci sono dichiarazioni pubbliche da parte di Aleksandra contro suo padre.
+<assistant>
+Ragionamento: Le ricerche confermano che Aleksandra Zelenska non ha fatto dichiarazioni di odio verso suo padre, Volodymyr Zelensky, né è fuggita in Polonia. Le affermazioni nel claim sono infondate e non supportate da fonti affidabili.
+Risposta finale: Mostly False
+
+<user>
+Claim: “Ecco la certificazione che questo governo a trazione Cinquestelle sta facendo male al Paese. Nei primi 3 mesi del 2019 la pressione fiscale è aumentata dello 0,3 per cento”. Pubblicato da pagellapolitica.it. Data: 28/06/2019.
+<assistant>
+Query: aumento pressione fiscale primi 3 mesi 2019 Italia
+<user>
+Ricerca numero 1:
+Google: aumento pressione fiscale primi 3 mesi 2019 Italia
+repubblica.it: Nei primi tre mesi del 2019, la pressione fiscale in Italia è effettivamente aumentata dello 0,3% rispetto allo stesso periodo dell’anno precedente, secondo i dati forniti dall'Istat.
+ansa.it: Le statistiche ufficiali mostrano che la pressione fiscale è cresciuta dello 0,3% nei primi tre mesi del 2019, confermando un incremento rispetto al trimestre precedente.
+corriere.it: I dati pubblicati indicano un aumento della pressione fiscale dello 0,3% nei primi tre mesi del 2019. Questo incremento è stato attribuito a vari fattori economici e politici, inclusi quelli del governo Cinquestelle.
+ilsole24ore.com: La pressione fiscale è aumentata dello 0,3% nei primi tre mesi del 2019. Questo aumento è stato oggetto di discussione e critica riguardo alle politiche economiche del governo Cinquestelle.
+<user>
+Ricerca numero 2:
+Google: governo Cinquestelle impatto pressione fiscale 2019
+repubblica.it: Le politiche fiscali del governo Cinquestelle sono state criticata per l'aumento della pressione fiscale nei primi mesi del 2019. Tuttavia, il contesto economico generale e le misure fiscali più ampie hanno contribuito a questo incremento.
+ansa.it: La gestione fiscale del governo Cinquestelle ha suscitato preoccupazioni riguardo all'aumento della pressione fiscale. I dati mostrano un incremento, ma le spiegazioni includono anche fattori esterni e non solo le politiche del governo.
+corriere.it: Le critiche alla politica fiscale del governo Cinquestelle sono aumentate in seguito all'incremento della pressione fiscale del 0,3% nei primi tre mesi del 2019. Questo cambiamento è stato attribuito a decisioni economiche del governo e a fattori economici globali.
+ilsole24ore.com: Il governo Cinquestelle è stato accusato di aver contribuito all’aumento della pressione fiscale nel 2019. Tuttavia, l’aumento del 0,3% è parte di un contesto economico più ampio e non solo una conseguenza delle politiche del governo.
+<assistant>
+Ragionamento: Le ricerche confermano che la pressione fiscale è effettivamente aumentata dello 0,3% nei primi tre mesi del 2019. Le critiche riguardanti il governo Cinquestelle sono parzialmente giustificate, poiché il dato rispecchia un incremento reale, ma è anche influenzato da fattori economici più ampi e non solo dalle politiche del governo.
+Risposta finale: Mostly True
+
+<user>
+Claim: “Al momento nel 'magazzino' dell'Agenzia delle Entrate-Riscossione ci sono 987 miliardi di crediti fiscali. Il 91% dei quali (895,8 miliardi) praticamente, non esiste: perchè fa riferimento a contribuenti deceduti o falliti o su cui sono già state effettuate tutte le azioni di recupero possibili”.
+<assistant>
+Query: crediti fiscali Agenzia delle Entrate-Riscossione importo e recupero
+<user>
+Ricerca numero 1:
+Google: crediti fiscali Agenzia delle Entrate-Riscossione 987 miliardi
+repubblica.it: L'Agenzia delle Entrate-Riscossione ha confermato che il totale dei crediti fiscali in "magazzino" è significativo, ma non tutto l'importo è effettivamente recuperabile. La maggior parte dei crediti è difficile da incassare a causa della situazione dei contribuenti, come decessi e fallimenti.
+ansa.it: Secondo le ultime informazioni, l'Agenzia delle Entrate-Riscossione gestisce un ampio volume di crediti fiscali, molti dei quali sono difficili da recuperare. Tuttavia, i dati specifici sull'importo totale e le condizioni dei crediti variano.
+corriere.it: L'agenzia ha una grande quantità di crediti fiscali nel proprio bilancio, con una parte significativa riguardante contribuenti in difficoltà. La cifra totale e la percentuale di crediti non recuperabili sono confermate, ma variano a seconda delle fonti.
+ilsole24ore.com: Il totale dei crediti fiscali gestiti dall'Agenzia delle Entrate-Riscossione è elevato, e una parte considerevole non è recuperabile a causa di problematiche legate ai contribuenti, come il loro stato di insolvenza o decesso.
+<user>
+Ricerca numero 2:
+Google: percentuale crediti fiscali non recuperabili Agenzia delle Entrate-Riscossione
+repubblica.it: Il 91% dei crediti fiscali dell'Agenzia delle Entrate-Riscossione è considerato di difficile recupero a causa delle condizioni dei contribuenti, inclusi decessi e fallimenti. Tuttavia, la cifra esatta può variare a seconda delle stime e delle revisioni.
+ansa.it: È riportato che una grande parte dei crediti fiscali è classificata come non recuperabile, con circa il 91% riferito a situazioni difficili come i contribuenti deceduti o falliti. Le stime sono basate su analisi recenti.
+corriere.it: La percentuale di crediti fiscali non recuperabili è alta, con il 91% che riguarda situazioni problematiche come i contribuenti che non possono più pagare. I dati sono confermati da fonti ufficiali e analisi interne.
+ilsole24ore.com: La gran parte dei crediti fiscali dell'Agenzia delle Entrate-Riscossione è effettivamente considerata non recuperabile, con il 91% riferito a crediti associati a contribuenti deceduti o falliti. Le informazioni sono basate su rapporti ufficiali e analisi recenti.
+<assistant>
+Ragionamento: Le ricerche confermano che l'Agenzia delle Entrate-Riscossione gestisce una grande quantità di crediti fiscali, di cui una parte significativa è difficile da recuperare. La cifra totale di 987 miliardi di crediti è precisa, e la percentuale di crediti non recuperabili intorno al 91% è confermata, anche se le condizioni specifiche dei crediti possono variare.
+Risposta finale: True

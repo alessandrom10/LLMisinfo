@@ -1,0 +1,46 @@
+<user>
+Claim: “The average commute time for people who drive to work in (New York City) is 43 minutes, the longest in the nation.”. Made by Carl Weisbrod. Date: 2024-03-03.
+<assistant>
+Query: average commute time for people who drive to work in New York City
+<user>
+Search number 1:
+Google: average commute time for people who drive to work in New York City
+1. bankrate.com: Although longer commutes became more common starting in 2010, the portion of workers who reported having at least a one-hour commute dropped from its peak of 9.8 percent in 2019 to 7.7 percent in 2021.
+New Yorkers have the longest commute, with an average travel time of 33.2 minutes.
+The most recent data from 2022 shows nearly 76 percent of workers commute daily.
+2. nytimes.com: Average hours spent commuting per week by education level for all workers High school or less 0 1 2 3 4 hours ’12 ’22 3.1 Some college ’12 ’22 2.8 Bachelor’s degree ’12 ’22 2.3 Graduate degree ’12 ’22 2.2
+According to a Labor Department source, the American Time Use Survey, those who commute by public transit spend roughly twice as much time traveling to and from work as people who drive.
+The average commute distance changed much less, an indication that commuters are driving faster — but also, more people are driving.
+3. reddit.com: Trying to decide if an hour commute to live in an area I’m more comfortable in would be worth it.
+Top posts of August 30, 2023 Reddit reReddit: Top posts of August 2023 Reddit reReddit: Top posts of 2023
+Skip to main content Reddit and its partners use cookies and similar technologies to provide you with a better experience.
+4. stacker.com: Stacker compiled statistics about the average commute in New York City using data from the U.S. Census Bureau .
+Skip to main content New York City, NY News Written by: Stacker July 7, 2022 Canetti // Shutterstock Publish this story American commutes are getting longer, with a U.S. Census Bureau report released in 2021 revealing the average one-way commute in 2019 reached a record high of 27.6 minutes.
+- Average commute: 37 minutes --- Workers with a 1+ hour commute: 22% - Workers who drive to work: 54.7% - Workers who carpool to work: 6.3% - Workers who take public transportation to work: 29.8% - Workers who work from home: 7.4% - Left for work from 12 a.m. to 6 a.m.: 9.5% - Worked outside county of residence: 39.47% Metros with the worst average commute #1.
+5. metro-manhattan.com: A commute is more than just a daily routine—it’s integral to you and your team’s overall satisfaction and productivity.
+The calculator then provides an accurate estimate of the daily commute, allowing you to objectively compare locations side-by-side and rank them based on your specific criteria.
+The perfect property is just a click—and a shorter commute—away.
+<assistant>
+Query: average commute time for people who drive to work in New York City 2023
+<user>
+Search number 2:
+Google: average commute time for people who drive to work in New York City 2023
+1. nytimes.com: Average hours spent commuting per week by education level for all workers High school or less 0 1 2 3 4 hours ’12 ’22 3.1 Some college ’12 ’22 2.8 Bachelor’s degree ’12 ’22 2.3 Graduate degree ’12 ’22 2.2 Source: American Time Use Survey Note: Data for 2020 is not included.
+According to a Labor Department source, the American Time Use Survey, those who commute by public transit spend roughly twice as much time traveling to and from work as people who drive.
+The average commute distance changed much less, an indication that commuters are driving faster — but also, more people are driving.
+2. bankrate.com: Although longer commutes became more common starting in 2010, the portion of workers who reported having at least a one-hour commute dropped from its peak of 9.8 percent in 2019 to 7.7 percent in 2021.
+New Yorkers have the longest commute, with an average travel time of 33.2 minutes.
+The most recent data from 2022 shows nearly 76 percent of workers commute daily.
+3. jobera.com: New York City has the longest average commute time in the U.S. at 34.7 minutes.
+Average work commute time had been increased from 22 minutes in 1990 to 27 minutes in 2020.
+New York City has the longest commute time.
+4. metro-manhattan.com: A commute is more than just a daily routine—it’s integral to you and your team’s overall satisfaction and productivity.
+The calculator then provides an accurate estimate of the daily commute, allowing you to objectively compare locations side-by-side and rank them based on your specific criteria.
+The perfect property is just a click—and a shorter commute—away.
+5. census.gov: Average one-way commuting time among those who traveled to a workplace increased by almost 1 minute from 25.6 minutes in 2021 to 26.4 minutes in 2022, still well short of its historic high of 27.6 minutes in 2019.
+This represented an increase from the 2.5% of workers commuting by public transportation in 2021.
+Public transportation commuting in the United States remained well below the 2019 share of 5.0% of workers at 3.1% in 2022.
+<assistant>
+Reasoning: Based on the search results, the average commute time for people who drive to work in New York City is reported to be around 33-37 minutes (bankrate.com, stacker.com), less than what Carl Weisbrod states. However, it is true that the commute time in New York City is the longest in the nation (bankrate.com, jobera.com)
+Final answer: mostly-true
+
