@@ -21,7 +21,7 @@ Repository created for the Large Language Models for fact-checking online misinf
 - H. Dai et al., “AUGGPT: Leveraging ChatGPT for text Data augmentation,” arXiv.org, Feb. 25, 2023. https://arxiv.org/abs/2302.13007
 
 ### Related Papers - foud on Google Scholar
-- **(FOLLOW THE PROMPT STRUCTURE)** X. Zhang and W. Gao, “Towards LLM-based Fact Verification on News Claims with a Hierarchical Step-by-Step Prompting Method,” arXiv.org, Sep. 30, 2023. https://arxiv.org/abs/2310.00305
+- X. Zhang and W. Gao, “Towards LLM-based Fact Verification on News Claims with a Hierarchical Step-by-Step Prompting Method,” arXiv.org, Sep. 30, 2023. https://arxiv.org/abs/2310.00305
 - Z. Li, H. Zhang, and J. Zhang, “A Revisit of Fake News Dataset with Augmented Fact-checking by ChatGPT,” arXiv.org, Dec. 19, 2023. https://arxiv.org/abs/2312.
 - N. Lee, Y. Bang, A. Madotto, and P. Fung, “Misinformation Has High Perplexity,” arXiv.org, Jun. 08, 2020. https://arxiv.org/abs/2006.04666
 
