@@ -1,5 +1,5 @@
-# LLMisinfo-MDP
-Repository created for the Large Language Models for fact-checking online misinformation (LLMisinfo) Multidisciplinary project
+# LLMisinfo
+This repository explores the use of Large Language Models (LLMs) for fact-checking statements found online. It includes experiments with various models and techniques to evaluate their effectiveness in identifying and verifying online misinformation.
 
 ## References
 ### The implementation follows 2 different styles of prompt structure to check the veracity of a claim based on these papers:
